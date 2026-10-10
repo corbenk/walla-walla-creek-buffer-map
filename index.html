@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Walla Walla Stream Buffer Map</title>
+<meta name="description" content="Check whether your Walla Walla property falls inside the City's proposed 100-foot stream buffer under the Critical Areas Ordinance update.">
+<meta property="og:title" content="Is your property inside Walla Walla's proposed 100-foot stream buffer?">
+<meta property="og:description" content="Type your address. See the proposed buffer on a map. Learn what it would mean, and how to tell the City Council what you think.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="styles.css?v=20261010b">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
+</head>
+<body>
+<div id="map" role="application" aria-label="Map of Walla Walla showing streams and the proposed buffer"></div>
+
+<aside class="panel" id="panel">
+  <header>
+    <h1>Is your property in the proposed 100-foot stream buffer?</h1>
+    <p class="sub">City of Walla Walla Critical Areas Ordinance update. Type an address or tap the map.</p>
+  </header>
+  <div class="body">
+    <form class="search" id="searchForm" autocomplete="off">
+      <input id="q" type="text" placeholder="e.g. 123 S Division St" aria-label="Street address" inputmode="text">
+      <button id="go" type="submit">Check</button>
+    </form>
+    <p class="hint" id="hint">Any Walla Walla County address (matched to the County parcel) or a 12-digit parcel number. Nothing you type is stored.</p>
+
+    <div class="widths" id="widths">
+      <span class="lbl">Buffer width to show (City proposes 100 ft):</span>
+    </div>
+
+    <div id="result" class="hidden"></div>
+    <div id="faq"></div>
+
+    <div class="stats" id="stats" hidden></div>
+    <div class="ask" id="ask" hidden></div>
+
+    <p class="footer" id="disclaimerFooter"></p>
+    <p class="footer" id="aboutData"></p>
+  </div>
+</aside>
+
+<div class="legend" id="legend">
+  <div><span class="sw" style="background:#1d6fb8"></span> Mapped stream</div>
+  <div><span class="sw" style="background:rgba(178,58,42,.45);border:1px solid #b23a2a"></span> Proposed buffer (<span id="legendW">100</span> ft)</div>
+  <div class="legend-src" id="legendSrc"></div>
+  <div><span class="sw" style="border:2px dashed #333;background:transparent"></span> City limits</div>
+  <div><span class="sw" style="border:1px solid #777;background:transparent"></span> Parcels (zoom in)</div>
+</div>
+
+<div class="banner hidden" id="banner"></div>
+
+<div class="modal" id="modal">
+  <div class="card">
+    <h2>Before you look</h2>
+    <p id="disclaimerModal"></p>
+    <div class="actions">
+      <button class="btn primary" id="agree">I understand, show me the map</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy-friendly analytics slot (disabled until an account exists). Example:
+<script data-goatcounter="https://YOURCODE.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script> -->
+<script src="app.js?v=20261010b"></script>
+</body>
+</html>

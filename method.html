@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How we computed the buffer numbers</title>
+<meta name="description" content="Method and caveats behind the stream-mile, acreage, and parcel counts on the Walla Walla stream buffer map.">
+<style>
+  :root { --bg:#fff; --text:#1b1f24; --muted:#5b6470; --line:#e3e7ec; --accent:#b23a2a; --stream:#1d6fb8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0f1317; --text:#e8edf2; --muted:#9aa5b1; --line:#2a323c; } }
+  :root[data-theme="dark"] { --bg:#0f1317; --text:#e8edf2; --muted:#9aa5b1; --line:#2a323c; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif; line-height:1.5; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 24px; margin: 0 0 4px; } h2 { font-size: 18px; margin: 28px 0 8px; } p, li { font-size: 15px; }
+  .sub { color: var(--muted); margin: 0 0 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 16px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; } td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  code { font-size: 13px; background: rgba(127,127,127,.12); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
+  a { color: var(--stream); } .back { display:inline-block; margin-bottom: 12px; }
+  .callout { border-left: 4px solid var(--accent); padding: 8px 12px; margin: 12px 0; background: rgba(178,58,42,.07); }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="./">&larr; Back to the map</a>
+  <h1>How we computed the buffer numbers</h1>
+  <p class="sub">Computed 2026-10-10 from the City of Walla Walla's and Walla Walla County's own public GIS services. Nothing here is an official determination; see the disclaimer on the map.</p>
+
+  <h2>What the map shows</h2>
+  <ul>
+    <li><b>Stream centerlines</b> and the <b>100-ft buffer band</b> are read live, every time the page loads, from the City of Walla Walla GIS Group's public map service <code>WW_Streams_Riparian_Buffer</code> (published 2026-10-06). The 100-ft band is the City's own polygon, named by the City "Visible Streams Buffer 100 Feet From Stream Centerline."</li>
+    <li>The <b>35, 50, 75 and 150-ft comparison bands</b> are computed in your browser by offsetting the same City centerlines (Turf.js). They are for comparison only.</li>
+    <li><b>Parcels</b> are read live, one at a time, from Walla Walla County's public Tax Parcels service. The share of a parcel inside the band is computed in your browser from the parcel polygon and the band polygon.</li>
+    <li>No City or County geometry is copied to this website.</li>
+  </ul>
+
+  <h2>The numbers on the stats strip</h2>
+  <p>Computed offline on 2026-10-10 with GeoPandas/Shapely in Washington State Plane South (EPSG:2927, US survey feet). City limits: Walla Walla County GIS "City Limits" polygon (9,103.5 acres; the City's own line layer says 9,029 acres).</p>
+  <table>
+    <tr><th>Buffer width (from centerline)</th><th class="n">Acres inside city limits</th><th class="n">City parcels touching the band</th></tr>
+    <tr><td>35 ft (roughly today's standard on most creeks)</td><td class="n">163.2</td><td class="n">982</td></tr>
+    <tr><td>50 ft</td><td class="n">236.0</td><td class="n">1,064</td></tr>
+    <tr><td>75 ft</td><td class="n">357.3</td><td class="n">1,307</td></tr>
+    <tr><td><b>100 ft (proposed), recomputed from City centerlines</b></td><td class="n"><b>476.9</b></td><td class="n"><b>1,489</b></td></tr>
+    <tr><td>100 ft, the City's own published polygon</td><td class="n">479.3</td><td class="n">1,490</td></tr>
+    <tr><td>150 ft</td><td class="n">708.8</td><td class="n">1,881</td></tr>
+  </table>
+  <ul>
+    <li><b>Stream miles:</b> 17.93 miles of the City's "visible streams" fall inside city limits (Garrison 4.81, Stone 3.45, Yellowhawk 2.45, Bryant 1.52, Butcher 0.88, Stone N. Fork 0.79, Lincoln 0.56, College 0.56, Titus 0.50, Caldwell 0.43, Stone S. Fork 0.41, Russell 0.29, plus springs and short reaches). Mill Creek is not in the City layer because it is regulated under the Shoreline Master Program, not the CAO.</li>
+    <li><b>Parcels touched</b> = Walla Walla County tax parcels whose polygon intersects the band and whose center lies inside city limits (12,582 such parcels in total). "Touching" includes lots the band clips by only a few feet, and street and park parcels.</li>
+    <li>The recomputed 100-ft band and the City's published polygon differ by only 2.4 acres, so the City buffered the same centerlines the same way.</li>
+  </ul>
+
+  <h2>Reconciling with the City consultant's figures</h2>
+  <div class="callout">
+    <p>The City's consultant (Facet, July 2026) reports the buffer area growing from <b>268.8 to 757.4 acres</b> on <b>43.2 stream miles</b> (29.7 open + 13.5 piped). The map's band is <b>477 acres on 17.9 miles</b>.</p>
+    <p>These are both the City's numbers, and they measure different things. Facet's stream network is roughly 2.4 times longer than the City's Oct 6 "visible streams" layer: it includes piped reaches (13.5 miles), and, by its length, additional open reaches that the visible-streams layer does not draw (the USGS National Hydrography Dataset shows about 36 miles of flowlines inside city limits, and County hydrography about 28). 43.2 miles buffered 100 ft on each side is about 1,047 acres before accounting for overlaps and the city boundary, which is consistent with Facet's 757 acres inside the city. The map band should therefore be read as the <b>minimum</b> extent on mapped open channels; the consultant's figure is the broader estimate the City is working from.</p>
+    <p>A figure of "1,100 acres" that has circulated is not in any City document we found; 42 miles corresponds to Facet's 43.2.</p>
+  </div>
+
+  <h2>Caveats</h2>
+  <ul>
+    <li><b>Centerline vs. ordinary high-water mark.</b> Every band on this map, including the City's own, is measured from a digitized stream <i>centerline</i>. The draft ordinance measures from the ordinary high-water mark, top of bank, or channel migration zone, whichever is greater. For a channel 20 to 60 ft wide, the regulated edge is 10 to 30 ft farther out than drawn. That is why the result card flags lots within 150 ft as "possibly affected."</li>
+    <li><b>Positional accuracy.</b> The City's centerlines are attributed "Placed on Map" (digitized from imagery, not surveyed). Expect tens of feet of uncertainty; a result within about 30 ft of a threshold should be treated as undetermined.</li>
+    <li><b>Which streams.</b> The City layer draws visible open channels inside city limits only: it omits Mill Creek, piped reaches, and all streams in the unincorporated Urban Growth Area, although the draft ordinance also covers "intermittent open channels between piped sections" and the UGA.</li>
+    <li><b>Parcel data</b> is the County Assessor's working layer (2026-09-28). Owner names are never requested or displayed.</li>
+    <li>Only the City of Walla Walla can determine whether a specific property is subject to critical-areas rules. Confirm with Development Services (509-524-4710, permits@wallawallawa.gov).</li>
+  </ul>
+
+  <h2>Sources and reproducibility</h2>
+  <ul>
+    <li>City of Walla Walla GIS, <code>https://services1.arcgis.com/F8n8WJgK0mEjXgtm/arcgis/rest/services/WW_Streams_Riparian_Buffer/FeatureServer</code> (layers 0-3), published 2026-10-06; interactive map embedded on the City's <a href="https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance" rel="noopener">Critical Areas Ordinance page</a>.</li>
+    <li>Walla Walla County GIS / Assessor, <code>https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/Tax_Parcels/FeatureServer/0</code> and <code>City_Limits/FeatureServer/0</code>.</li>
+    <li>Cross-checks: USGS National Hydrography Dataset (HUC8 17070102) and WA DNR Forest Practices hydrography.</li>
+    <li>The processing script, raw downloads, and a full data inventory are kept in the project repository (<code>data/scripts/process_buffers.py</code>, <code>research/03-gis-data-inventory.md</code>).</li>
+  </ul>
+</main>
+</body>
+</html>

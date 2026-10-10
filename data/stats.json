@@ -1,0 +1,28 @@
+{
+  "stream_miles_city": 17.93,
+  "buffer_acres_city": 476.9,
+  "parcels_touched": 1489,
+  "width_ft": 100,
+  "by_width": {
+    "35":  { "acres": 163.2, "parcels": 982 },
+    "50":  { "acres": 236.0, "parcels": 1064 },
+    "75":  { "acres": 357.3, "parcels": 1307 },
+    "100": { "acres": 476.9, "parcels": 1489 },
+    "150": { "acres": 708.8, "parcels": 1881 }
+  },
+  "city_published_100ft_polygon": { "acres": 479.3, "parcels": 1490 },
+  "city_limits_acres": 9103.5,
+  "source": "City of Walla Walla GIS + Walla Walla County parcels, computed 2026-10-10",
+  "computed": "2026-10-10",
+  "method_url": "method.html",
+  "consultant": {
+    "label": "City consultant (Facet, July 2026)",
+    "acres_today": 268.8,
+    "acres_proposed": 757.4,
+    "stream_miles": 43.2,
+    "open_miles": 29.7,
+    "piped_miles": 13.5,
+    "note": "Facet counts piped reaches and more stream segments than the City's Oct 6 visible-streams layer, so its acreage is higher than the band drawn here; both are the City's own numbers.",
+    "source": "Facet memo to the City, 2026-07-01 (research/FACTS.md F-044)"
+  }
+}

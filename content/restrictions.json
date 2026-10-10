@@ -1,0 +1,117 @@
+{
+  "version": "2026-10-10",
+  "status": "DRAFT — written from the City's draft amendments table (Oct 14, 2026 hearing draft), the City CAO webpage, and WWMC 20.212, all captured 2026-10-10. Legal Lead to review before launch.",
+  "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the buffer band come from the City of Walla Walla's own public GIS layers (Oct 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
+  "inside": {
+    "headline": "This point is inside the proposed 100-foot stream buffer.",
+    "summary": "Under the draft Critical Areas Ordinance going to City Council on Oct 14, 2026, the minimum buffer on every named creek in the city jumps from 35 feet (50 on Yellowhawk) to 100 feet, plus a new 15-foot building setback beyond the buffer. Inside the band, the draft says all structures and activities must be located outside the buffer unless an exception applies.",
+    "items": [
+      {
+        "q": "Can my existing house stay?",
+        "a": "Yes. Legally built homes and structures continue as nonconforming structures under city code chapter 20.212. The new rules bite when you want to build, expand, or rebuild.",
+        "basis": "draft"
+      },
+      {
+        "q": "Can I repair or maintain what I have?",
+        "a": "Yes. The draft allows maintenance and repair of existing buildings, fences, driveways, utilities, landscaping, patios and gardens, as long as the work does not encroach further into the buffer. Fences can be replaced or built.",
+        "basis": "draft"
+      },
+      {
+        "q": "Can I add on, build a shop, shed, ADU, or new patio inside the band?",
+        "a": "Generally no. New structures must be outside the buffer and the 15-foot setback. City code lets a nonconforming building extend along its existing line but not closer to the stream, and single-family homes can enlarge up to lot coverage only outside the buffer. Anything inside needs a critical-areas report and either a buffer reduction (never below 75 feet) or a reasonable-use exception.",
+        "basis": "draft"
+      },
+      {
+        "q": "If my house burns down, can I rebuild?",
+        "a": "Only if you move fast. Under city code 20.212.070, a damaged nonconforming structure loses its grandfathered status unless you apply for a building permit to repair or rebuild within six months of the damage. Reconstruction costing more than 25% of replacement value also requires a conditional-use permit.",
+        "basis": "draft"
+      },
+      {
+        "q": "Can I remove trees or clear brush inside the band?",
+        "a": "Noxious weeds and hazard trees (with an arborist) can be removed. Other clearing and grading inside the buffer requires authorization, and restoration of native vegetation is the City's stated goal for degraded buffers.",
+        "basis": "draft"
+      },
+      {
+        "q": "Can I subdivide or build on a vacant lot with a creek?",
+        "a": "Only the land outside the 100-foot buffer plus the 15-foot setback counts. On a standard 9,600 sq ft R-96 lot (about 100 by 100 feet), a creek along one edge can leave no buildable area. The only outs are buffer averaging (narrowest point at least 75 feet), a reduction to 75 feet with a professional enhancement plan and five years of monitoring, or a reasonable-use exception that requires proving the code denies ALL reasonable use.",
+        "basis": "draft"
+      },
+      {
+        "q": "Will this change my property value or assessment?",
+        "a": "Buildable area drives value. The City has not published any economic, parcel-count, or housing-capacity analysis of the change. You may have grounds to request a reassessment.",
+        "basis": "typical"
+      },
+      {
+        "q": "What does it cost to find out if I can build?",
+        "a": "The CAO requires a field investigation by a qualified professional (typically a biologist) to locate the ordinary high water mark and prepare a critical-areas report, which is valid for five years.",
+        "basis": "draft"
+      }
+    ]
+  },
+  "near": {
+    "headline": "This point is just outside the 100-foot band as mapped.",
+    "summary": "You are within 50 feet of the band's edge. The band on this map is measured from the stream centerline; the ordinance measures from the ordinary high water mark or channel migration zone, and adds a 15-foot building setback beyond the buffer. Your property may still be affected.",
+    "items": [
+      {
+        "q": "Why might I still be affected?",
+        "a": "The regulated buffer starts at the ordinary high water mark (the edge of the channel), not the centerline shown here, so it extends farther than this map draws. A professional field survey sets the real line.",
+        "basis": "draft"
+      },
+      {
+        "q": "What is the 15-foot setback?",
+        "a": "The draft requires buildings to sit 15 feet back from the buffer edge (up from 5 feet today). Landscaping, uncovered decks, walkways, patios, and rain gardens are allowed in that setback; buildings are not.",
+        "basis": "draft"
+      }
+    ]
+  },
+  "outside": {
+    "headline": "This point is outside the proposed 100-foot band as mapped.",
+    "summary": "Based on the City's mapped creeks, this location is not inside the band. Wetlands, floodplains, piped or unmapped drainages, and the ordinary-high-water-mark measurement can still bring critical-areas rules into play.",
+    "items": [
+      {
+        "q": "Why should I care?",
+        "a": "The City's own consultant says the buffer area nearly triples, from 269 to 757 acres (2.1% to 5.8% of the city), and the City's GIS shows about 1,490 parcels touching the band on mapped creeks. Lost buildable lots mean fewer homes, less infill, and a smaller tax base while the City must plan for 2,348 new homes by 2046.",
+        "basis": "draft"
+      },
+      {
+        "q": "Is the County doing this too?",
+        "a": "Walla Walla County published its own minimum riparian buffer layer in August 2026 using tiered widths of 35, 50, 75, and 100 feet. The City's draft uses one width, 100 feet, for every creek.",
+        "basis": "draft"
+      }
+    ]
+  },
+  "ask": {
+    "headline": "Tell the City Council: get the local science before drawing the line.",
+    "body": "The public hearing is Wednesday, Oct 14, 2026 at 6:30 pm, City Hall, 15 N 3rd Ave (3-minute comments; written comments to CityClerk@wallawallawa.gov before the hearing). On Sept 14 the City's own Planning Commission voted 7-0 to send this draft back for local science; staff's Oct 9 draft still has the flat 100 feet. Ask Council to honor that 7-0 recommendation before the Oct 28 vote: commission the locally scoped science review, adopt tiered buffers that match each creek's real condition, and protect existing homes.",
+    "email_to": "CityClerk@wallawallawa.gov",
+    "email_subject": "Critical Areas Ordinance: please do not adopt a flat 100-foot buffer on Oct 28",
+    "email_body": "Dear Mayor and Councilmembers,\n\nI live at [ADDRESS]. The proposed Critical Areas Ordinance's 100-foot buffer (up from 35 feet today) [touches my property / affects my neighborhood].\n\nOn Sept 14 the Planning Commission voted 7-0 to recommend that staff revise this draft using science matching local conditions. The Oct 9 draft still proposes a flat 100 feet on every creek. Before the Oct 28 vote, please honor that recommendation: (1) complete a locally scoped best-available-science review; (2) replace the single 100-foot width with tiered buffers that reflect each creek's condition and fish use, as Walla Walla County's own August 2026 buffer map does; (3) publish a parcel-level and housing-capacity analysis; and (4) protect existing homes explicitly, including additions that do not encroach further, ADUs on the non-stream side, and rebuilding after fire without losing grandfathered status in six months.\n\nThank you,\n[NAME]\n[ADDRESS]"
+  },
+  "about_data": {
+    "streams_source": "City of Walla Walla GIS, \"WW_Streams_Riparian_Buffer\" public map service (visible stream centerlines and 100-ft buffer), published Oct 6, 2026; parcels from Walla Walla County GIS (Sept 2026)",
+    "streams_date": "2026-10-06",
+    "method": "Buffer bands are offsets from the City's digitized stream centerlines in Washington State Plane South (US feet). The ordinance measures from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area is larger than drawn. Mill Creek and piped reaches are not in the City's layer."
+  },
+  "sources": [
+    {
+      "label": "City of Walla Walla, Critical Areas Ordinance project page (hearing Oct 14, adoption Oct 28)",
+      "url": "https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance"
+    },
+    {
+      "label": "2026 Draft Critical Areas Code Amendments Table (City Council Public Hearing, Oct 14, 2026)",
+      "url": "https://www.wallawallawa.gov/home/showpublisheddocument/12498/639245384228670000"
+    },
+    {
+      "label": "WWMC Chapter 20.212, Nonconforming Situations",
+      "url": "https://ecode360.com/46542537"
+    },
+    {
+      "label": "RCW 36.70A.172, Critical areas and best available science",
+      "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=36.70A.172"
+    },
+    {
+      "label": "WAC 365-195-900 to -925, Best available science",
+      "url": "https://app.leg.wa.gov/WAC/default.aspx?cite=365-195-900"
+    }
+  ]
+}
