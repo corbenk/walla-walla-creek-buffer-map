@@ -24,11 +24,12 @@
   code { font-size: 13px; background: rgba(127,127,127,.12); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
   a { color: var(--stream); } .back { display:inline-block; margin-bottom: 12px; }
   .callout { border-left: 4px solid var(--accent); padding: 8px 12px; margin: 12px 0; background: var(--accent-soft); border-radius: 0 12px 12px 0; }
+.tabs{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}.tabs a{font-weight:600;font-size:13px;font-family:inherit;color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}.tabs a[aria-current]{color:var(--text);border-color:var(--accent);background:rgba(178,58,42,.08)}
 </style>
 </head>
 <body>
 <main>
-  <a class="back" href="./">&larr; Back to the map</a>
+  <nav class="tabs" aria-label="CreekChecker sections"><a href="./">Map</a><a href="impact.html">Walla Walla impact</a><a href="method.html" aria-current="page">How we computed this</a></nav>
   <h1>How we computed the buffer numbers</h1>
   <p class="sub">Computed 2026-10-10 from the City of Walla Walla's and Walla Walla County's own public GIS services. Nothing here is an official determination; see the disclaimer on the map.</p>
 
@@ -39,6 +40,28 @@
     <li><b>Parcels</b> are read live, one at a time, from Walla Walla County's public Tax Parcels service. The share of a parcel inside the band is computed in your browser from the parcel polygon and the band polygon.</li>
     <li>No City or County geometry is copied to this website.</li>
   </ul>
+
+  <h2>Where the rules change: city, County, College Place, Mill Creek</h2>
+  <ul>
+    <li><b>You are in:</b> every check first locates the point. Inside the City's own limit rings (even-odd test on the City's 2026-10-06 limit layer; it reproduces the City's 9,029-acre figure exactly) the proposed CAO band applies. Otherwise the County's City_Limits and Urban_Growth_Areas polygons decide between College Place, a UGA (unincorporated, County rules) and unincorporated county.</li>
+    <li><b>Outside city limits</b> the card tests the point and lot against Walla Walla County's <i>working</i> riparian buffer layer (published 2026-08-31; tiered 35/50/75/100 ft per reach via its <code>buff_dist</code> attribute) and names the nearest County-mapped stream. The County has not published a draft ordinance or hearing dates; its periodic update is due 2026-12-31. The layer is a preview, not a rule.</li>
+    <li><b>College Place</b> has its own critical-areas code and no public buffer layer; the map shows only its boundary.</li>
+    <li><b>Mill Creek</b> is excluded from the draft CAO ("See SMP"). It is drawn from the County hydrography layer (name MILL CREEK / MILL CREEK (CHANNEL)) for the in-city reach, with the Shoreline Master Program's 35-ft flood-channel buffer (SMP Table 6.5-1, Gose St to the Bennington Lake diversion) and the 200-ft shoreline jurisdiction noted on the card. We do not claim SMP widths for reaches outside the flood channel; the SMP PDF could not be text-extracted for this check (see research/05).</li>
+  </ul>
+
+  <h2>Coverage check: what the City layer leaves out</h2>
+  <p>Inside city limits, County hydrography holds 27.9 stream-miles and DNR 28.7, against the City's 17.9. Of the County miles, 63.9% lie within 50 ft of a City centerline; the rest, longer than 300 ft, are (full table in <code>research/07-coverage-check.md</code>):</p>
+  <table>
+    <tr><th>Reach (County layer)</th><th class="n">Length without a City line (ft)</th><th>Likely reason</th></tr>
+    <tr><td>Mill Creek (channel), three pieces: Wilbur Ave, 6th Ave/Sumach St, Myra Rd</td><td class="n">28,170</td><td>Excluded from the CAO; Shoreline Master Program (35-ft flood-channel buffer)</td></tr>
+    <tr><td>Lincoln Creek, W Poplar St / S 11th Ave</td><td class="n">8,606</td><td>Not in the City's visible-streams layer: piped or culverted reach (verify with City GIS)</td></tr>
+    <tr><td>Butcher Creek, Hwy 12 / N 7th Ave and Rees Ave / Sumach St</td><td class="n">5,858</td><td>Piped / culverted reach (verify)</td></tr>
+    <tr><td>Bryant Creek, Coast Guard Dr / Parade Loop (VA campus) and McAuliff Ave / Chestnut St</td><td class="n">4,906</td><td>Not digitized by the City; likely piped through the VA grounds (verify)</td></tr>
+    <tr><td>Owen Spring, Valencia St / Isaacs Ave</td><td class="n">788</td><td>Spring run not in the City layer</td></tr>
+    <tr><td>Garrison Creek, S Division St / E Chestnut St</td><td class="n">391</td><td>Short gap in the City line at Division St (culvert)</td></tr>
+  </table>
+  <p>These County-only reaches can be switched on in the Layers panel ("County-mapped reaches not in the City's layer"), and the result card says so when one lies within 150 ft of the point checked; the City's draft would not buffer them unless the City adds them.</p>
+  <p>The short blue stubs on the map are real City segments: the one at Francis Ave / S Division St is StreamName "Unknown" (subtype 5, a spring, 167 ft); the stubs around Whitman College (Boyer Ave / Merriam St, Stanton St / University St) are College Creek (73 and 555 ft); Barber Creek and Butcher Creek appear as a dozen 40&ndash;400 ft pieces between Figueroa St and E Rees Ave where they surface between piped sections; Owen, Peter and Gose springs are subtype-5 spring runs. DNR adds a further set of unnamed intermittent lines (mostly along Hwy 12 and Myra Rd) and two perennial ditches (Bush St / Garrison St; Oxford St / University Dr) that neither the City nor the County maps as creeks.</p>
 
   <h2>The numbers on the stats strip</h2>
   <p>Computed offline on 2026-10-10 with GeoPandas/Shapely in Washington State Plane South (EPSG:2927, US survey feet). City limits: Walla Walla County GIS "City Limits" polygon (9,103.5 acres; the City's own line layer says 9,029 acres).</p>
@@ -74,11 +97,24 @@
   </ul>
 
   <h2>Sources and reproducibility</h2>
+  <p>Every layer is read live in your browser from a public map service (nothing is copied to this site). Payloads are generalized server-side to about 2 m for the City + UGA area; sizes measured 2026-10-10.</p>
+  <table>
+    <tr><th>Layer (panel name)</th><th>Service</th><th>Fields used</th><th>Size / when fetched</th></tr>
+    <tr><td>City-mapped streams; City proposed 100-ft band; City limits</td><td><code>services1.arcgis.com/F8n8WJgK0mEjXgtm/.../WW_Streams_Riparian_Buffer/FeatureServer</code> layers 0, 1, 2 (City of Walla Walla GIS, 2026-10-06)</td><td>StreamName, Intermittent, Subtype; BUFF_DIST; NAME, GIS_ACRES</td><td>0.22 + 0.93 + 0.06 MB, on load</td></tr>
+    <tr><td>Parcels (zoom in); address search; click-to-parcel</td><td><code>services8.arcgis.com/COL6rRPkF9w28VGX/.../Tax_Parcels/FeatureServer/0</code> (County Assessor, 2026-09-28)</td><td>geo_id, prop_id, full_situs, situs_*, size_acres, link (never owner fields)</td><td>per parcel / per view at zoom 16+</td></tr>
+    <tr><td>College Place limits; jurisdiction</td><td><code>.../City_Limits/FeatureServer/0</code> (County GIS)</td><td>name</td><td>25 KB, on load</td></tr>
+    <tr><td>Urban Growth Area boundary; unincorporated shading; jurisdiction</td><td><code>.../Urban_Growth_Areas/FeatureServer/0</code> (County GIS)</td><td>name</td><td>16 KB, on load</td></tr>
+    <tr><td>County working buffer (Aug 2026, tiered 35&ndash;100 ft)</td><td><code>.../Minimum_Riparian_Buffer/FeatureServer/0</code> "WallaWallaCounty_Minimum_Riparian_Buffer_20260831" (County GIS)</td><td>name, buff_dist</td><td>~0.5 MB, on load (default on)</td></tr>
+    <tr><td>County-mapped streams; Mill Creek (SMP)</td><td><code>.../Hydrologic_Features/FeatureServer/0</code> (County GIS, 2021)</td><td>name</td><td>~0.35 MB, on load (default on)</td></tr>
+    <tr><td>County zoning districts</td><td><code>.../Zoning/FeatureServer/0</code> (County GIS; unincorporated + UGA only)</td><td>zon_abbrev, zoning, jurisdicti</td><td>0.2 MB, first time switched on</td></tr>
+    <tr><td>Floodplain (FEMA Q3 via County, legacy)</td><td><code>.../FEMA/FeatureServer/0</code> (County GIS). Walla Walla County is not in FEMA's digital NFHL.</td><td>zone, floodway, sfha</td><td>~0.4 MB (zones other than X), first time switched on</td></tr>
+    <tr><td>DNR watercourses (water type)</td><td><code>gis.dnr.wa.gov/site2/.../WADNR_PUBLIC_FP_Hydro/MapServer/0</code> (WA DNR Forest Practices)</td><td>WC_GNIS_NM, FP_WTRTY_CD, WC_PERIOD_LABEL_NM</td><td>~0.65 MB, first time switched on</td></tr>
+    <tr><td>Zoning inside the two cities</td><td colspan="3">No public City of Walla Walla or College Place zoning map service exists (the City publishes a 2013 PDF only), so the panel offers County zoning alone.</td></tr>
+  </table>
   <ul>
-    <li>City of Walla Walla GIS, <code>https://services1.arcgis.com/F8n8WJgK0mEjXgtm/arcgis/rest/services/WW_Streams_Riparian_Buffer/FeatureServer</code> (layers 0-3), published 2026-10-06; interactive map embedded on the City's <a href="https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance" rel="noopener">Critical Areas Ordinance page</a>.</li>
-    <li>Walla Walla County GIS / Assessor, <code>https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/Tax_Parcels/FeatureServer/0</code> and <code>City_Limits/FeatureServer/0</code>.</li>
-    <li>Cross-checks: USGS National Hydrography Dataset (HUC8 17070102) and WA DNR Forest Practices hydrography.</li>
-    <li>The processing script, raw downloads, and a full data inventory are kept in the project repository (<code>data/scripts/process_buffers.py</code>, <code>research/03-gis-data-inventory.md</code>).</li>
+    <li>City of Walla Walla <a href="https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance" rel="noopener">Critical Areas Ordinance page</a> (the City's interactive map embeds the same service).</li>
+    <li>City of Walla Walla <a href="https://fortress.wa.gov/ecy/ezshare/SEA/FinalSMPs/WallaWallaCounty/WallaWalla/WallaWallaSMPDec2023.pdf" rel="noopener">Shoreline Master Program (Dec 2023)</a>, Appendix A Table 6.5-1: 35-ft buffer on the Mill Creek flood channel; shoreline jurisdiction 200 ft.</li>
+    <li>Cross-checks: USGS National Hydrography Dataset (HUC8 17070102) and WA DNR Forest Practices hydrography. Processing script, raw downloads and the full data inventory are in the project repository (<code>data/scripts/</code>, <code>research/03-gis-data-inventory.md</code>, <code>research/07-coverage-check.md</code>).</li>
   </ul>
 </main>
 </body>
