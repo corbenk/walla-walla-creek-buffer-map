@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-10.2",
+  "version": "2026-10-10.3",
   "status": "DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
   "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
@@ -18,7 +18,7 @@
       },
       {
         "q": "Can I add on, or build a shop, shed, ADU, or new patio inside the band?",
-        "a": "The draft says new structures must be outside the buffer and the 15-foot setback, and it has no rule for additions to homes already inside the band. Existing city code (20.212) lets a nonconforming building extend along its existing line but not closer to the stream. Whether a landward addition or ADU on a house inside the band will be allowed, or will need a critical-areas report and a buffer reduction (never below 75 feet) or a reasonable-use exception, has not been answered in writing; staff's answer on Sept 21 was 'it would depend.' A new patio or uncovered deck is allowed in the 15-foot setback but not in the buffer.",
+        "a": "The draft says new structures must be outside the buffer and the 15-foot setback, and it has no rule for additions to homes already inside the band. Existing city code (20.212) lets a nonconforming building extend along its existing line but not closer to the stream. Whether a landward addition or ADU on a house inside the band will be allowed, or will need a critical-areas report and a buffer reduction (never below 75 feet) or a reasonable-use exception, has not been answered in writing. A new patio or uncovered deck is allowed in the 15-foot setback but not in the buffer.",
         "basis": "unknown"
       },
       {
@@ -33,7 +33,7 @@
       },
       {
         "q": "Can I subdivide or build on a vacant lot with a creek?",
-        "a": "Only the land outside the 100-foot buffer plus the 15-foot setback counts: 115 feet from the high-water mark before a wall can go up. On a standard 9,600 sq ft R-96 lot (about 100 by 100 feet), a creek along one edge can leave no buildable area. The outs are buffer averaging (narrowest point at least 75 feet), a reduction to 75 feet with a professional enhancement plan and five years of monitoring, or a reasonable-use exception, which the draft defines as applying only where the code 'would deny all reasonable use of the property.'",
+        "a": "Only the land outside the 100-foot buffer plus the 15-foot setback counts: 115 feet from the high-water mark before a wall can go up. On a 9,600 sq ft lot (the R-96 minimum, common in the city; about 100 by 100 feet), a creek along one edge can leave no buildable area. The outs are buffer averaging (narrowest point at least 75 feet), a reduction to 75 feet with a professional enhancement plan and five years of monitoring, or a reasonable-use exception, which the draft defines as applying only where the code 'would deny all reasonable use of the property.'",
         "basis": "draft"
       },
       {
@@ -87,7 +87,7 @@
   },
   "outside_city": {
     "headline": "This address is outside Walla Walla city limits.",
-    "summary": "The City's proposed ordinance applies inside city limits, and the City's stream map stops at the boundary, so this map cannot tell you about this property. In the unincorporated growth area, Walla Walla County's critical-areas rules apply; the County's own August 2026 buffer layer uses tiered widths of 35, 50, 75 and 100 feet, and the County's periodic update is due Dec 31, 2026.",
+    "summary": "The City's proposed ordinance applies inside city limits, and the City's stream map stops at the boundary, so this map cannot tell you about this property. In the unincorporated growth area, Walla Walla County's critical-areas rules apply; addresses inside the City of College Place fall under College Place's own code; the County's own August 2026 buffer layer uses tiered widths of 35, 50, 75 and 100 feet, and the County's periodic update is due Dec 31, 2026.",
     "items": [
       {
         "q": "Why does the map show no creek near me?",
