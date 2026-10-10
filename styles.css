@@ -36,6 +36,7 @@ button { font-family: inherit; }
 .result.inside { background: var(--accent-soft); border-color: var(--accent); }
 .result.near { background: rgba(179,116,26,.12); border-color: var(--warn); }
 .result.outside { background: rgba(43,122,61,.10); border-color: var(--ok); }
+.result.outside_city { background: rgba(91,100,112,.10); border-color: var(--muted); }
 .result .status { font-weight: 700; font-size: 16px; margin: 0 0 4px; }
 .result .detail { font-size: 13.5px; color: var(--text); margin: 0; line-height: 1.45; }
 .result .meta { font-size: 12px; color: var(--muted); margin: 8px 0 0; }

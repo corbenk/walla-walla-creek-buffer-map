@@ -24,7 +24,7 @@
   const CITY_LABEL = 'City of Walla Walla GIS, Oct 6 2026';
   const COMPUTED_LABEL = 'computed in your browser from the City’s stream centerlines (' + CITY_LABEL + ')';
 
-  const state = { w: Number(params.get('w')) || 100, wantW: null, streams: null, buffers: {}, bufferSource: {}, city: null,
+  const state = { w: Number(params.get('w')) || 100, wantW: null, streams: null, buffers: {}, bufferSource: {}, city: null, cityRings: null,
                   content: null, stats: null, marker: null, lastPoint: null, lastLabel: null, lastParcel: null };
 
   // ---------- Helpers ----------
@@ -63,7 +63,7 @@
   function addLayers() {
     if (state.city && !map.getSource('city')) {
       map.addSource('city', { type: 'geojson', data: state.city, attribution: DEMO ? '' : 'City limit: City of Walla Walla GIS' });
-      map.addLayer({ id: 'city-line', type: 'line', source: 'city', paint: { 'line-color': '#333', 'line-width': 2, 'line-dasharray': [3, 2] } });
+      map.addLayer({ id: 'city-line', type: 'line', source: 'city', paint: { 'line-color': '#222', 'line-width': 2.8, 'line-dasharray': [3, 1.6] } });
     }
     WIDTHS.forEach(w => {
       const fc = state.buffers[w]; if (!fc || map.getSource('buf' + w)) return;
@@ -116,7 +116,7 @@
     if (DEMO) {
       tries.push(getJSON(DATA + 'streams.geojson').then(d => state.streams = d).catch(() => null));
       WIDTHS.forEach(w => tries.push(getJSON(DATA + 'buffer_' + w + '.geojson').then(d => { state.buffers[w] = d; state.bufferSource[w] = 'DEMO data'; }).catch(() => null)));
-      tries.push(getJSON(DATA + 'city_limits.geojson').then(d => state.city = d).catch(() => null));
+      tries.push(getJSON(DATA + 'city_limits.geojson').then(d => { state.city = d; buildCityRings(); }).catch(() => null));
     } else {
       banner('Loading live City of Walla Walla GIS layers…');
       tries.push(arcgis(CITY_FS + '/0', { outFields: 'StreamName,WaterVisible,Intermittent,Subtype,Basin_Name' })
@@ -126,7 +126,7 @@
         .then(fc => { state.buffers[100] = fc; state.bufferSource[100] = CITY_LABEL; })
         .catch(e => console.warn('City buffer layer failed', e)));
       tries.push(arcgis(CITY_FS + '/2', { outFields: 'NAME,LABEL,GIS_ACRES' })
-        .then(fc => { fc.features.forEach(f => { f.properties = f.properties || {}; f.properties.name = f.properties.NAME; }); state.city = fc; })
+        .then(fc => { fc.features.forEach(f => { f.properties = f.properties || {}; f.properties.name = f.properties.NAME; }); state.city = fc; buildCityRings(); })
         .catch(e => console.warn('City limit layer failed', e)));
     }
     await Promise.all(tries);
@@ -270,6 +270,27 @@
   }
   const inBox = (x, y) => x >= BBOX.w && x <= BBOX.e && y >= BBOX.s && y <= BBOX.n;
 
+  // ---------- City limits test ----------
+  // The City's limit layer is a set of closed rings (outer boundary, exclaves, unincorporated islands). A point is inside the
+  // city when an odd number of rings contain it (even-odd rule). Polygon layers (demo) are tested directly.
+  function buildCityRings() {
+    const rings = [];
+    for (const f of (state.city && state.city.features) || []) {
+      const g = f.geometry; if (!g) continue;
+      if (g.type === 'Polygon' || g.type === 'MultiPolygon') { rings.push({ poly: f, direct: true }); continue; }
+      const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+      for (const c of lines) { if (c.length >= 4 && c[0][0] === c[c.length - 1][0] && c[0][1] === c[c.length - 1][1]) { try { rings.push({ poly: turf.polygon([c]) }); } catch {} } }
+    }
+    state.cityRings = rings.length ? rings : null;
+  }
+  function inCity(pt) {
+    if (!state.cityRings) return null;
+    const direct = state.cityRings.filter(r => r.direct);
+    if (direct.length) return direct.some(r => turf.booleanPointInPolygon(pt, r.poly));
+    let n = 0; for (const r of state.cityRings) if (turf.booleanPointInPolygon(pt, r.poly)) n++;
+    return n % 2 === 1;
+  }
+
   // ---------- Evaluation ----------
   function nearestStream(pt) {
     if (!state.streams) return null; let best = null;
@@ -314,6 +335,20 @@
     if (parcel && pDist != null) { distFt = pDist; inside = pDist <= w || (share && share.pct > 0.05); }
     else { distFt = ptDistFt; inside = ptInside; }
     const edgeFt = distFt == null ? null : distFt - w;
+    const cityTest = inCity(pt);                      // null = unknown (limit layer not loaded)
+    if (cityTest === false) {                          // outside city limits: the ordinance and the City's stream layer do not apply
+      const oc = (state.content && state.content.outside_city) || {}; const pp = parcel ? parcel.properties || {} : {};
+      r.className = 'result outside_city';
+      r.innerHTML = '<p class="status">' + esc(oc.headline || 'This address is outside Walla Walla city limits.') + '</p>' +
+        '<p class="detail">' + esc(oc.summary || 'The City\u2019s proposed ordinance applies inside city limits, and the City\u2019s stream map stops at the boundary.') + '</p>' +
+        '<p class="meta">' + (label ? '<b>' + esc(label) + '</b><br>' : '') +
+        (parcel ? 'Parcel <b>' + esc(pp.geo_id || '') + '</b>' + (pp.full_situs ? ' (' + esc(pp.full_situs) + ')' : '') + ' is in unincorporated Walla Walla County. ' +
+                  (pp.link ? '<a href="' + esc(pp.link) + '" target="_blank" rel="noopener">County Assessor record</a>. ' : '')
+                : (!DEMO && !parcelResolved ? '<span class="muted">Looking up the County parcel at this point\u2026</span>' : 'No distance is shown because the City\u2019s stream layer stops at the city limits.')) +
+        '</p><div class="actions"><button class="btn" type="button" id="zoomTo">Zoom here</button></div>';
+      $('zoomTo').onclick = () => map.flyTo({ center: lnglat, zoom: 16 });
+      renderFAQ('outside_city'); syncURL(); return;
+    }
     const cls = inside ? 'inside' : (edgeFt != null && edgeFt <= NEAR_FT ? 'near' : 'outside');
     const uncertain = !inside && distFt != null && distFt > w && distFt <= UNCERTAIN_FT;
     const c = (state.content && state.content[cls]) || {};
