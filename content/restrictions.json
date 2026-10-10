@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-10.3",
+  "version": "2026-10-10.4",
   "status": "DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
   "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
@@ -18,13 +18,13 @@
       },
       {
         "q": "Can I add on, or build a shop, shed, ADU, or new patio inside the band?",
-        "a": "The draft says new structures must be outside the buffer and the 15-foot setback, and it has no rule for additions to homes already inside the band. Existing city code (20.212) lets a nonconforming building extend along its existing line but not closer to the stream. Whether a landward addition or ADU on a house inside the band will be allowed, or will need a critical-areas report and a buffer reduction (never below 75 feet) or a reasonable-use exception, has not been answered in writing. A new patio or uncovered deck is allowed in the 15-foot setback but not in the buffer.",
+        "a": "The draft says new structures must be outside the buffer and the 15-foot setback, and it has no rule for additions to homes already inside the band. Existing city code (20.212) lets a nonconforming building extend along its existing line but not closer to the stream. Whether a landward addition or ADU on a house inside the band will be allowed, or will need a critical-areas report and a buffer reduction (averaging and enhancement reductions both stop at 75 feet on a 100-foot buffer; a separate rule lets the director exclude buffer areas cut off by pavement or buildings) or a reasonable-use exception, has not been answered in writing. A new patio or uncovered deck is allowed in the 15-foot setback but not in the buffer.",
         "basis": "unknown"
       },
       {
         "q": "If my house burns down, can I rebuild?",
-        "a": "Yes, if you apply within six months. The draft itself is silent and defers to existing city code 20.212, which says a damaged nonconforming structure loses its grandfathered status unless a building-permit application to repair or rebuild is filed within six months of the damage. Reconstruction costing more than 25% of replacement value also needs a conditional-use permit. Miss the six-month window and the new 100-foot buffer applies to the rebuild. The draft adds no fix, although residents and a commissioner asked for one at the Sept 14 hearing.",
-        "basis": "draft"
+        "a": "Yes, if you apply within six months. The draft itself is silent and defers to existing city code 20.212, which says a damaged nonconforming structure loses its grandfathered status unless a building-permit application to repair or rebuild is filed within six months of the damage. Under that same existing code, reconstruction costing more than 25% of replacement value also needs a conditional-use permit. Miss the six-month window and the structure loses its grandfathered status, so a rebuild would have to meet the new 100-foot buffer and setback. The draft adds no fix, although residents and a commissioner asked for one at the Sept 14 hearing.",
+        "basis": "code"
       },
       {
         "q": "Can I remove trees or clear brush inside the band?",

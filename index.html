@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="styles.css?v=20261010-community">
+<link rel="stylesheet" href="styles.css?v=20261010k">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
 </head>
@@ -67,10 +67,13 @@
     </section>
     <p class="scenario-result-note" id="scenarioResult" hidden></p>
     <div id="result" class="hidden" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Guide routing reads the existing result; it never determines a property classification. -->
+    <section class="result-next-step" id="resultNextStep" aria-labelledby="nextStepTitle" hidden><p class="eyebrow" id="nextStepContext"></p><h2 id="nextStepTitle">What can I do next?</h2><p id="nextStepSummary"></p><a class="btn primary" id="nextStepRead" href="next-steps.html">Read my next steps →</a><p class="next-step-choice">Read the guide now. No email needed.<br><a id="nextStepUpdates" href="next-steps.html#updates">Or choose relevant email updates</a></p></section>
     <!-- app.js renders the exact content.limits text here. No legal text is duplicated. -->
     <section class="limits" id="limits" hidden aria-label="What the draft would limit"></section>
     <div id="faq"></div>
-    <section class="map-next-step" aria-labelledby="nextStepTitle"><p class="eyebrow">When you are ready</p><h2 id="nextStepTitle">Understand it. Have your say.</h2><p>Read the evidence, find ways to take part, or choose optional email updates.</p><div class="actions"><a class="btn" href="learn.html">Learn more</a><a class="btn primary" href="get-involved.html">Get involved →</a></div></section>
+    
     <div class="home-context">
       <section class="civic-purpose" aria-labelledby="purposeTitle"><h2 id="purposeTitle">Built by residents. For residents.</h2><p>A resident-built civic project to help Washington State property owners see how proposed rules would affect their land.</p><p>Residents deserve a meaningful say before government limits how they can use their land. Check the sources. Understand the proposal. Speak for yourself.</p></section>
       <div class="home-note"><strong>35 ft today. 100 ft proposed.</strong><p>Today: 50 ft on Yellowhawk. The draft adds a 15-ft building setback beyond the proposed buffer.</p><a href="https://agendas.ci.walla-walla.wa.us/docs/2026/ccreg/20261014_4784/6053_2026_Draft_Critical_Areas_Amendments_Table_-_Updated_10.09.2026.pdf" target="_blank" rel="noopener">Source: draft Table 6 &amp; setback provisions</a></div>
@@ -81,7 +84,7 @@
     <details class="data-details"><summary>About the data</summary><p class="footer" id="aboutData"></p><a class="btn" href="method.html">How we computed this</a></details>
     <details class="data-details"><summary>Read the disclaimer</summary><p class="footer" id="disclaimerFooter">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p></details>
   </div>
-  <footer class="panel-foot"><div class="actions"><a class="btn primary" id="councilAction" href="mailto:CityClerk@wallawallawa.gov">Email the Council</a><button class="btn" type="button" id="copyAction">Copy link</button></div><a class="community-footer-link" href="get-involved.html#updates"><span>Want the next local update?</span><b>Stay informed →</b></a><div class="quiet"><span>Built by residents. Not legal advice.</span><a href="method.html">About the data</a></div></footer>
+  <footer class="panel-foot"><div class="actions"><a class="btn primary" id="councilAction" href="mailto:CityClerk@wallawallawa.gov">Email the Council</a><button class="btn" type="button" id="copyAction">Copy link</button></div><a class="community-footer-link next-step-footer" id="nextStepFooter" href="learn.html">Learn more &amp; get involved →</a><div class="quiet"><span>Built by residents. Not legal advice.</span><a href="method.html">About the data</a></div></footer>
 </aside>
 <div class="legend" id="legend" aria-label="Map legend">
   <div class="key-title">Read the map</div>
@@ -101,7 +104,7 @@
 <div class="banner hidden" id="banner" role="status"></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
 <!-- The disclaimer text below is an exact copy of restrictions.json, visible even before GIS loads. -->
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle" aria-describedby="disclaimerModal">
-  <div class="card"><div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></div><p class="eyebrow">A resident-built, resident-built, unpaid civic project.</p><h2 id="disclaimerTitle">Before you check your creek.</h2><p class="modal-purpose">We help Washington State property owners see how proposed rules would affect their land, using the governments' own data.</p><div class="privacy-promise"><p><strong>We will never sell your personal data.</strong> We don’t collect your address searches into a CreekChecker database. Live map and search providers receive the requests needed to run the map. Email updates are a separate, optional signup.</p></div><p id="disclaimerModal">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p><div class="actions"><button class="btn primary" id="agree" type="button">I understand, show me the map</button></div></div>
+  <div class="card"><div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></div><p class="eyebrow">A resident-built, unpaid civic project.</p><h2 id="disclaimerTitle">Before you check your creek.</h2><p class="modal-purpose">We help Washington State property owners see how proposed rules would affect their land, using the governments' own data.</p><div class="privacy-promise"><p><strong>We will never sell your personal data.</strong> We don’t collect your address searches into a CreekChecker database. Live map and search providers receive the requests needed to run the map. Email updates are a separate, optional signup.</p></div><p id="disclaimerModal">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p><div class="actions"><button class="btn primary" id="agree" type="button">I understand, show me the map</button></div></div>
 </div>
 <!-- Accessible letter-size fallback for the application's existing Print action. -->
 <article class="print-sheet"><div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></div><h1>Check your creek.</h1><p class="print-lede">Does Walla Walla’s proposed 100-foot creek buffer touch your lot?</p><p>Find your property at <b>creekchecker.com</b>. Read what the draft says and tell the City Council before the vote.</p><div class="print-facts"><div><b>17.9 mi</b>mapped creeks</div><div><b>477 ac</b>in the band</div><div><b>1,489</b>city parcels touched</div></div><p class="print-source">Our computation from City GIS centerlines and County parcels, Oct 10, 2026. The consultant’s broader network: 269 to 757 acres (Facet, July 1, 2026). Method: creekchecker.com/method.html.</p><p>Today: 35 ft, or 50 ft on Yellowhawk. Proposed: 100 ft plus a 15-ft building setback (Oct 9 draft, Table 6 and setback provisions).</p><p>On Sept 14, 2026, the Planning Commission voted 7-0 to send the draft back for science matching local conditions (draft Commission minutes).</p><div class="print-meeting"><h2>Public hearing · October 14</h2><p>Wednesday, October 14, 2026 · 6:30 pm<br>City Hall · 15 N 3rd Ave · Walla Walla</p><p>Vote scheduled October 28, 2026.<br>Written comments: CityClerk@wallawallawa.gov</p><p class="print-source">Source: City Council Oct 14 agenda, Item 6E; City CAO project page.</p></div><p class="print-disclaimer">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p></article>
@@ -287,7 +290,7 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('layersPanel').classList.contains('hidden'))$('layersClose')?.click();});
 })();
 </script>
-<script src="app.js?v=20261010j"></script>
+<script src="app.js?v=20261010k"></script>
 <script>/* Optional, hypothetical comparison. Never replaces the source application's
    jurisdiction, parcel result, County working band, width selector or statistics.
    Live geometry stays in this browser; no scenario data is re-hosted. */
@@ -414,6 +417,48 @@
   if (new URLSearchParams(location.search).get('demo')==='1') {
     enabled=false;$('scenarioToggle').disabled=true;$('scenarioToggle').textContent='What-if unavailable in demo';
   } else setEnabled(enabled,false);
+})();
+</script>
+<script>/* Presentation only: route the rendered result to a useful reading guide.
+   No geocoding, geometry, contact submission, storage or address transfer. */
+(function () {
+  'use strict';
+  const catalog={"inside": {"label": "City · inside the mapped band", "card": "Read what the draft says about existing homes, repairs, additions and rebuilding. Then take a specific question to the City.", "cta": "Read my property guide →"}, "near": {"label": "City · near the mapped edge", "card": "Understand the mapped edge and the additional setback before deciding whether your plans fit.", "cta": "Read my near-edge guide →"}, "outside": {"label": "City · outside the mapped band", "card": "Check the limits of an outside-band result, understand the wider impacts and choose how to take part.", "cta": "Read my outside-band guide →"}, "county": {"label": "County · working buffer map", "card": "The County working map and the City proposal are different. Find out what to ask about your land and what to watch for next.", "cta": "Read my County guide →"}, "outside_city": {"label": "Outside Walla Walla city limits", "card": "Confirm which planning office and rules apply. An empty City map is not a finding that your property has no restrictions.", "cta": "Find the right next step →"}, "millcreek": {"label": "Mill Creek · shoreline rules", "card": "Mill Creek has a separate shoreline explanation. Read that before applying the City creek-buffer proposal to your plans.", "cta": "Read my Mill Creek guide →"}, "college_place": {"label": "College Place · separate city code", "card": "College Place has its own rules. Read what the map can show and what to ask its planning office.", "cta": "Read my College Place guide →"}, "city_comparison": {"label": "City · comparison width selected", "card": "This result uses a comparison width. Read the distinction before applying it to the proposed rules for your property.", "cta": "Understand this comparison →"}, "other_city": {"label": "Another incorporated city", "card": "Your city has its own code. Use the named jurisdiction in your result to find the right planning office.", "cta": "Read my jurisdiction guide →"}};
+  function route({visible,jurisdictionReady,classes,mill,width,collegePlace}) {
+    if(!visible||!jurisdictionReady)return null;
+    if(classes.includes('college_place'))return collegePlace?'college_place':'other_city';
+    if(classes.includes('county'))return 'county';
+    if(classes.includes('outside_city'))return 'outside_city';
+    if(!classes.some(c=>['inside','near','outside'].includes(c)))return null;
+    if(mill)return 'millcreek';
+    if(width!==100)return 'city_comparison';
+    return ['inside','near','outside'].find(c=>classes.includes(c));
+  }
+  const result=document.getElementById('result'),card=document.getElementById('resultNextStep');
+  const footer=document.getElementById('nextStepFooter');
+  if(!result||!card||!footer)return;
+  function reflect() {
+    const key=route({visible:!result.classList.contains('hidden')&&!document.documentElement.classList.contains('homing')&&!!result.querySelector('.status'),
+      jurisdictionReady:!!result.querySelector('.juris b'),
+      classes:[...result.classList],mill:!!result.querySelector('.millnote'),
+      width:Number(document.querySelector('#widths button.active')?.dataset.w||100),
+      collegePlace:/College Place/.test(result.querySelector('.status')?.textContent||'')});
+    card.hidden=!key;
+    if(!key){footer.href='learn.html';footer.textContent='Learn more & get involved →';return;}
+    const guide=catalog[key],href='next-steps.html#'+key;
+    card.dataset.guide=key;
+    document.getElementById('nextStepContext').textContent=guide.label;
+    document.getElementById('nextStepSummary').textContent=guide.card;
+    const read=document.getElementById('nextStepRead');read.href=href;read.textContent=guide.cta;
+    document.getElementById('nextStepUpdates').href=href+'-updates';
+    footer.href=href;footer.textContent='Understand my result & next steps →';
+  }
+  const observer=new MutationObserver(reflect);
+  observer.observe(result,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  observer.observe(document.getElementById('widths'),{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  window.creekNextStep={route,get current(){return card.hidden?null:card.dataset.guide;}};
+  reflect();
 })();
 </script>
 </body></html>
