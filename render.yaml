@@ -1,0 +1,11 @@
+# Render Blueprint — free static site. Dashboard: New + → Blueprint → select this repo → Apply.
+services:
+  - type: web
+    name: walla-walla-creek-buffer-map
+    runtime: static
+    staticPublishPath: .
+    buildCommand: ""
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=300
