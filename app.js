@@ -17,6 +17,17 @@
   const DATA = DEMO ? 'dev-sample/' : 'data/';
   const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); // reduced motion: no animation, instant states
   const SHARED = !!(params.get('lat') && params.get('lng'));
+  const RMX = RM || params.get('rm') === '1';                 // reduced motion for the entry sequence (rm=1 is a test hook)
+  const HOMING = !SHARED && !DEMO && lsGet('ww_homed') !== '1'; // first-visit entry sequence: start on Washington State, home in on the lot
+  const WA_CENTER = [-120.6, 47.4], WA_ZOOM = 6;
+  const COUNTY_BBOX = [-119.047, 45.982, -117.966, 46.618];
+  // Walla Walla County ZIP areas (bbox from the County parcel layer's situs_zip extents, 99362 trimmed to the city area; 2026-10-10)
+  const ZIPS = { '99362': { name: 'Walla Walla', bbox: [-118.42, 46.01, -118.26, 46.12], pt: [-118.343, 46.065] }, '99324': { name: 'College Place', bbox: [-118.45, 46.02, -118.36, 46.08], pt: [-118.389, 46.048] },
+                 '99361': { name: 'Dixie / east valley', bbox: [-118.25, 46.08, -117.99, 46.30] }, '99348': { name: 'Prescott', bbox: [-118.77, 46.20, -118.23, 46.61] },
+                 '99360': { name: 'Touchet', bbox: [-118.87, 45.99, -118.34, 46.26] }, '99363': { name: 'Wallula', bbox: [-118.95, 46.03, -118.85, 46.12] },
+                 '99329': { name: 'Waitsburg', bbox: [-118.49, 46.01, -117.99, 46.20] }, '99323': { name: 'Burbank', bbox: [-119.03, 46.00, -118.75, 46.30] } };
+  const COUNTY_LINE = 'https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/Administrative_Boundaries/FeatureServer/0'; // County Boundary polygon (4 KB generalized)
+  const homing = { active: false, pending: false, skip: false, done: !HOMING };
   const DEFAULT_ZOOM = 12.6, INTRO_ZOOM_OUT = 0.9;  // intro eases from a slightly wider citywide view into the default view
   const BAND = { fill: '#d4891c', line: '#a86a10', fillOpacity: 0.35, lineOpacity: 0.8 }; // amber band
   const INK = '#15202b', CREEK = '#1d6fb8', TEAL = '#1F6F8B', SAGE = '#7a8f7f', MILLBLUE = '#17385c', ZONE = '#8c6bb1', FLOOD = '#3b8ea5';
@@ -46,7 +57,7 @@
   const state = { w: Number(params.get('w')) || 100, wantW: null, streams: null, buffers: {}, bufferSource: {}, city: null, cityRings: null,
                   content: null, stats: null, marker: null, lastPoint: null, lastLabel: null, lastParcel: null,
                   cityLimits: null, uga: null, unin: null, countyBuf: null, countyStreams: null, countyOut: null, mill: null, millBand: null,
-                  zoning: null, dnr: null, flood: null, countyGaps: null, layers: {}, loading: {} };
+                  zoning: null, dnr: null, flood: null, countyGaps: null, countyLine: null, layers: {}, loading: {} };
 
   // ---------- Helpers ----------
   const $ = (id) => document.getElementById(id);
@@ -70,6 +81,7 @@
 
   // ---------- Layer registry (onX-style panel). key = URL token; ids = map layer ids; load = lazy fetch on first switch-on ----------
   const LAYERS = [
+    { key: 'cty', group: 'Boundaries', label: 'Walla Walla County boundary', desc: 'County line (County GIS).', sw: 'cty', def: true, ids: ['county-line'], load: 'county_line' },
     { key: 'ww', group: 'Boundaries', label: 'City of Walla Walla limits', desc: 'The proposed ordinance applies inside this line (City GIS, Oct 6 2026).', sw: 'city', def: true, ids: ['city-line'] },
     { key: 'cp', group: 'Boundaries', label: 'City of College Place limits', desc: 'College Place has its own critical-areas code; boundary only (County GIS).', sw: 'cp', def: true, ids: ['cp-line', 'cp-label'], load: 'boundaries' },
     { key: 'uga', group: 'Boundaries', label: 'Urban Growth Area boundary', desc: 'County Urban_Growth_Areas. Unincorporated land inside the UGA follows County rules.', sw: 'uga', def: true, ids: ['uga-line', 'uga-label'], load: 'boundaries' },
@@ -104,8 +116,8 @@
   const map = new maplibregl.Map({
     container: 'map',
     style: 'https://tiles.openfreemap.org/styles/liberty',
-    center: [Number(params.get('lng')) || CENTER[0], Number(params.get('lat')) || CENTER[1]],
-    zoom: Number(params.get('z')) || (DEFAULT_ZOOM - (RM || SHARED ? 0 : INTRO_ZOOM_OUT)),
+    center: HOMING ? WA_CENTER : [Number(params.get('lng')) || CENTER[0], Number(params.get('lat')) || CENTER[1]],
+    zoom: HOMING ? WA_ZOOM : (Number(params.get('z')) || (DEFAULT_ZOOM - (RM || SHARED ? 0 : INTRO_ZOOM_OUT))),
     attributionControl: true
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
@@ -119,6 +131,10 @@
     const shown = intro.layersShown; const T = { duration: RM ? 0 : 350 }; // before the intro reveal, layers start transparent and fade in
     const below = (id) => (map.getLayer(id) ? id : undefined);
     // --- County context beneath everything: unincorporated shading, UGA, College Place, County buffer, County streams, zoning, flood
+    if (state.countyLine && !map.getSource('county')) {
+      map.addSource('county', { type: 'geojson', data: state.countyLine });
+      map.addLayer({ id: 'county-line', type: 'line', source: 'county', layout: { visibility: vis('cty') }, paint: { 'line-color': INK, 'line-width': 1.2, 'line-opacity': homing.active ? 0 : 0.8 } });
+    }
     if (state.unin && !map.getSource('unin')) {
       map.addSource('unin', { type: 'geojson', data: state.unin });
       map.addLayer({ id: 'unin-fill', type: 'fill', source: 'unin', layout: { visibility: vis('unin') }, paint: { 'fill-color': INK, 'fill-opacity': 0.06 } });
@@ -203,7 +219,7 @@
       map.addLayer({ id: 'parcel-hit-line', type: 'line', source: 'parcel-hit', paint: { 'line-color': INK, 'line-width': 2.2 } });
     }
     // keep the stacking order stable when context layers arrive after the City layers: context below 'city-line', Mill Creek below 'streams-line'
-    ['unin-fill', 'flood-fill', 'flood-line', 'flood-label', 'zon-fill', 'zon-line', 'zon-label', 'cbuf-fill', 'cbuf-line', 'cstreams-line', 'cstreams-label', 'cgaps-line', 'cgaps-label', 'dnr-line', 'dnr-label', 'uga-line', 'uga-label', 'cp-line', 'cp-label']
+    ['county-line', 'unin-fill', 'flood-fill', 'flood-line', 'flood-label', 'zon-fill', 'zon-line', 'zon-label', 'cbuf-fill', 'cbuf-line', 'cstreams-line', 'cstreams-label', 'cgaps-line', 'cgaps-label', 'dnr-line', 'dnr-label', 'uga-line', 'uga-label', 'cp-line', 'cp-label']
       .forEach(id => { if (map.getLayer(id) && map.getLayer('city-line')) map.moveLayer(id, 'city-line'); });
     ['mill-band-fill', 'mill-band-line', 'mill-line', 'mill-label'].forEach(id => { if (map.getLayer(id) && map.getLayer('streams-line')) map.moveLayer(id, 'streams-line'); });
     ['parcel-hit-fill', 'parcel-hit-casing', 'parcel-hit-line'].forEach(id => { if (map.getLayer(id)) map.moveLayer(id); });
@@ -230,7 +246,7 @@
   }
 
   // ---------- Layers panel ----------
-  const LOADERS = { boundaries: loadBoundaries, county: loadCountyLayers, dnr: loadDNR, zoning: loadZoning, flood: loadFlood };
+  const LOADERS = { boundaries: loadBoundaries, county: loadCountyLayers, dnr: loadDNR, zoning: loadZoning, flood: loadFlood, county_line: loadCountyLine };
   function applyLayer(key) {
     const L = LAYER_BY_KEY[key]; if (!L || L.note) return; const on = layerOn(key);
     L.ids.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none'); });
@@ -281,7 +297,8 @@
   function runIntro() { // after the disclaimer closes (at once for returning visitors): ease into the default view, reveal layers, stagger the panel
     if (intro.modalClosed) return; intro.modalClosed = true;
     html.classList.remove('pre-intro'); html.classList.add('intro-go');
-    if (!RM && !SHARED && !params.get('z')) { const go = () => map.easeTo({ zoom: DEFAULT_ZOOM, duration: 1600, easing: t => 1 - Math.pow(1 - t, 3) }); if (map.loaded()) go(); else map.once('load', go); }
+    if (HOMING) { html.classList.add('homing'); $('q').focus(); }
+    else if (!RM && !SHARED && !params.get('z')) { const go = () => map.easeTo({ zoom: DEFAULT_ZOOM, duration: 1600, easing: t => 1 - Math.pow(1 - t, 3) }); if (map.loaded()) go(); else map.once('load', go); }
     revealLayers(); afterIntroQ.splice(0).forEach(fn => fn());
   }
   const afterIntro = (fn) => intro.modalClosed ? fn() : afterIntroQ.push(fn);
@@ -428,6 +445,13 @@
     state.countyGaps = turf.featureCollection(gaps.filter(g => turf.length(g, { units: 'feet' }) >= 150));
     if (styleReady) addLayers();
     if (state.lastPoint) evaluate(state.lastPoint, state.lastLabel, state.lastParcel, true);
+  }
+  async function loadCountyLine() {
+    if (state.loading.county_line) return state.loading.county_line;
+    state.loading.county_line = (async () => { setLoading('county_line', true);
+      const f = await arcgis(COUNTY_LINE, { outFields: 'name', maxAllowableOffset: 0.0005, geometryPrecision: 5 }).catch(e => { console.warn('County boundary failed', e); return null; });
+      if (f) state.countyLine = f; if (styleReady) addLayers(); setLoading('county_line', false); })();
+    return state.loading.county_line;
   }
   async function loadZoning() {
     if (state.loading.zoning) return state.loading.zoning;
@@ -677,7 +701,7 @@
     const pp = parcel ? parcel.properties || {} : {};
     const jur = jurisdiction(pt); const zone = zoningAt(pt); const head = jurisLine(jur, zone);
     const zoomBtn = (z) => '<div class="actions"><button class="btn" type="button" id="zoomTo">Zoom here</button></div>';
-    const finish = (cls, faq, withMill) => { $('zoomTo').onclick = () => map.flyTo({ center: lnglat, zoom: 17, curve: 1.4 }); renderFAQ(faq, withMill); syncURL(); pulseAsk(); };
+    const finish = (cls, faq, withMill) => { $('zoomTo').onclick = () => map.flyTo({ center: lnglat, zoom: 17, curve: 1.4 }); renderLimits(cls); renderFAQ(faq, withMill); syncURL(); pulseAsk(); };
     if (!state.buffers[w] || !state.streams) { revealCard(r, '', key); r.innerHTML = '<p class="status">Map data not loaded</p><p class="detail">' + (DEMO ? 'Demo data missing.' : 'The City’s live GIS service is not responding right now. Please try again in a minute.') + '</p>'; return; }
 
     // --- College Place (own code; no public buffer layer) and other incorporated cities
@@ -772,6 +796,15 @@
       millNote + gapNote + zoomBtn();
     finish(cls, cls, !!millNote);
   }
+  function renderLimits(cls) { // "What it would limit on this lot": inside (full) and near (softened); nothing for other states
+    const L = state.content && state.content.limits; const el = $('limits'); if (!el) return;
+    if (!L || !L.items || !(cls === 'inside' || cls === 'near')) { el.hidden = true; el.innerHTML = ''; return; }
+    const tagText = { draft: 'per draft ordinance', typical: 'typical in WA CAOs', unknown: 'not yet confirmed', code: 'per existing city code' };
+    el.hidden = false;
+    el.innerHTML = '<h3>' + esc(cls === 'near' ? (L.near_title || 'Just outside as mapped: what it would limit if the line moves') : L.title) + '</h3>' +
+      (cls === 'near' ? '<p class="lead">' + esc(L.near_lead || '') + '</p>' : '') +
+      '<ul>' + L.items.map(i => '<li>' + esc(i.text) + '<span class="tag ' + esc(i.basis || '') + '">' + esc(tagText[i.basis] || i.basis || '') + '</span></li>').join('') + '</ul>';
+  }
   function renderFAQ(cls, withMill) {
     const c = state.content && state.content[cls]; const el = $('faq'); if (!c || !c.items) { el.innerHTML = ''; el.dataset.cls = ''; return; }
     const sig = cls + (withMill ? '+mill' : '');
@@ -789,7 +822,9 @@
 
   // ---------- Events ----------
   $('searchForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); const q = $('q').value.trim(); if (!q) return; const btn = $('go'); btn.disabled = true; btn.textContent = '…'; $('hint').textContent = 'Looking up the County parcel…';
+    e.preventDefault(); const q = $('q').value.trim(); if (!q) return; const btn = $('go');
+    if (!homing.done) { btn.disabled = true; try { await runHoming(q); } catch (err) { console.warn('homing failed', err); finishHoming(); } finally { btn.disabled = false; } return; }
+    btn.disabled = true; btn.textContent = '…'; $('hint').textContent = 'Looking up the County parcel…';
     busy(true); skeleton(true);
     try {
       let found = null;
@@ -808,6 +843,78 @@
   map.on('click', (e) => { const p = [e.lngLat.lng, e.lngLat.lat]; placeMarker(p); if (map.getZoom() < 15) map.flyTo({ center: p, zoom: 16, curve: 1.4 }); evaluate(p, 'Tapped location', null); fetchParcelAt(p); });
   map.on('moveend', syncURL);
   if ($('layersBtn')) $('layersBtn').onclick = () => toggleLayersPanel();
+
+  // ---------- Honing-in entry sequence (first visit: ZIP or address → county → rules → ZIP → lot → measurement) ----------
+  const sleep = (ms) => new Promise(r => setTimeout(r, (homing.skip || RMX) ? 0 : ms));
+  function flyAsync(opts, ms) { // resolve when the camera settles (or at once when skipping / reduced motion)
+    return new Promise(res => {
+      const instant = homing.skip || RMX; let done = false; const fin = () => { if (!done) { done = true; res(); } };
+      if (!instant) { map.once('moveend', fin); setTimeout(fin, (ms || 1600) + 400); }
+      try { if (opts.bounds) map.fitBounds(opts.bounds, { padding: opts.padding || 40, duration: instant ? 0 : (ms || 1600), easing: t => 1 - Math.pow(1 - t, 3) });
+            else map.flyTo({ center: opts.center, zoom: opts.zoom, duration: instant ? 0 : (ms || 1600), curve: 1.3 }); } catch (e) { console.warn(e); }
+      if (instant) setTimeout(fin, 0);
+    });
+  }
+  function setStep(step, status, cap) {
+    const li = document.querySelector('#stepper li[data-step="' + step + '"]'); if (!li) return;
+    li.classList.remove('active', 'done'); if (status) li.classList.add(status);
+    if (cap != null) { const c = li.querySelector('.cap'); if (c) c.textContent = cap; }
+  }
+  function lineOpacity(id, v, ms) { if (!map.getLayer(id)) return; map.setPaintProperty(id, 'line-opacity-transition', { duration: (homing.skip || RMX) ? 0 : ms }); map.setPaintProperty(id, 'line-opacity', v); }
+  const bboxCenter = (b) => [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
+  const JURIS_CAP = { ww: 'Inside the City of Walla Walla: the proposed ordinance applies here', cp: 'Inside the City of College Place: College Place’s own code applies',
+                      uga: 'Walla Walla UGA (unincorporated): County rules apply', county: 'Unincorporated county: County rules apply' };
+  async function runHoming(q) {
+    const st = $('stepper'); st.classList.remove('hidden'); html.classList.add('homing'); homing.active = true; homing.skip = false; busy(true);
+    $('skipIntro').onclick = (e) => { e.preventDefault(); homing.skip = true; };
+    const zipOnly = /^\d{5}$/.test(q); let zip = zipOnly ? q : ((q.match(/\b(\d{5})\b/) || [])[1] || null);
+    let found = null;
+    if (!homing.pending) {
+      if (!zipOnly) { $('hint').textContent = 'Looking up the County parcel…'; try { found = await findParcel(q); } catch (e) { console.warn(e); } if (found && !zip) zip = found.parcel.properties.situs_zip || null; }
+      const target = found ? turf.pointOnFeature(found.parcel).geometry.coordinates : (zip && ZIPS[zip] ? (ZIPS[zip].pt || bboxCenter(ZIPS[zip].bbox)) : null); // ZIP: a representative in-town point (ZIP areas cross city limits)
+      // 1. county
+      setStep('county', 'active'); $('hint').textContent = '';
+      const cl = loadCountyLine(); await flyAsync({ bounds: COUNTY_BBOX, padding: 30 }, 1700); await cl; lineOpacity('county-line', 0.8, 700); await sleep(500);
+      setStep('county', 'done');
+      // 2. rules
+      setStep('rules', 'active'); await loadBoundaries();
+      ['city-line', 'cp-line', 'uga-line'].forEach(id => lineOpacity(id, 0, 0));
+      for (const [i, id] of ['city-line', 'cp-line', 'uga-line'].entries()) { await sleep(i ? 450 : 150); lineOpacity(id, i === 0 ? 1 : 0.9, 600); }
+      const j = target ? jurisdiction(turf.point(target)) : null;
+      setStep('rules', 'active', j && j.code && JURIS_CAP[j.code] ? JURIS_CAP[j.code] : (j && j.name ? j.name : 'Three sets of rules: City of Walla Walla, College Place, and the County'));
+      await sleep(900); setStep('rules', 'done');
+      // 3. ZIP
+      if (zip && ZIPS[zip]) { $('stepZip').textContent = 'Zooming to ZIP ' + zip + ' (' + ZIPS[zip].name + ')'; setStep('zip', 'active'); await flyAsync({ bounds: ZIPS[zip].bbox, padding: 30 }, 1500); setStep('zip', 'done'); }
+      else if (zip) { // a WA ZIP outside the county: Nominatim postal lookup, then stop
+        $('stepZip').textContent = 'Zooming to ZIP ' + zip; setStep('zip', 'active');
+        let hit = null; try { const j2 = await (await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&postalcode=' + encodeURIComponent(zip) + '&countrycodes=us&viewbox=-124.9,49.1,-116.9,45.5&bounded=1', { headers: { Accept: 'application/json' } })).json(); hit = j2 && j2[0]; } catch (e) { console.warn(e); }
+        if (hit) { const bb = hit.boundingbox.map(Number); await flyAsync({ bounds: [bb[2], bb[0], bb[3], bb[1]], padding: 30 }, 1500); }
+        setStep('zip', 'done', hit ? 'CreekChecker covers Walla Walla County today; statewide is next.' : 'ZIP not found in Washington. CreekChecker covers Walla Walla County today.');
+        $('hint').textContent = 'CreekChecker covers Walla Walla County today; statewide is next. Try a Walla Walla County address or ZIP.';
+        finishHoming(); return;
+      } else { $('stepZip').textContent = 'ZIP skipped'; setStep('zip', 'done'); }
+      if (zipOnly) { homing.pending = true; busy(false); $('q').value = ''; $('q').placeholder = 'Now your street address'; $('hint').textContent = 'Now your street address (e.g. 123 S Division St).'; $('go').textContent = 'Find out'; $('q').focus(); return; }
+    } else { // second submit after a ZIP: continue with the lot
+      homing.pending = false; $('hint').textContent = 'Looking up the County parcel…'; try { found = await findParcel(q); } catch (e) { console.warn(e); }
+    }
+    // 4. lot
+    setStep('lot', 'active'); let p, label, parcel = null;
+    if (found) { p = turf.pointOnFeature(found.parcel).geometry.coordinates; label = found.label; parcel = found.parcel; $('hint').textContent = 'Matched County parcel ' + (found.parcel.properties.full_situs || found.parcel.properties.geo_id) + '. Not your lot? Tap it on the map.'; }
+    else { const g = await geocodeFallback(q); if (!g) { setStep('lot', 'active', 'No County parcel matched that address.'); $('hint').textContent = 'No County parcel matched that address. Try "123 S 2nd Ave" (number + street name), or tap your lot on the map.'; finishHoming(); return; }
+           p = [g.lng, g.lat]; label = g.label; $('hint').textContent = 'No parcel matched; located via ' + g.src + '. Tap your lot on the map if the pin is off.'; }
+    await flyAsync({ center: p, zoom: 16.5 }, 1800); placeMarker(p); if (parcel) setParcelHit(parcel); await sleep(500); setStep('lot', 'done');
+    // 5. measure
+    setStep('measure', 'active'); await sleep(600);
+    evaluate(p, label, parcel, !!parcel); if (!parcel) fetchParcelAt(p);
+    setStep('measure', 'done'); finishHoming();
+  }
+  function finishHoming() {
+    homing.done = true; homing.active = false; homing.pending = false; busy(false); lsSet('ww_homed', '1');
+    html.classList.remove('homing'); $('go').textContent = 'Check'; $('q').placeholder = 'e.g. 123 S Division St';
+    $('subline').textContent = 'City of Walla Walla Critical Areas Ordinance update. Type an address or tap the map.';
+    ['county-line', 'city-line', 'cp-line', 'uga-line'].forEach(id => { if (map.getLayer(id)) lineOpacity(id, id === 'county-line' ? 0.8 : (id === 'city-line' ? 1 : 0.9), 0); });
+    setTimeout(() => $('stepper').classList.add('hidden'), (RMX ? 0 : 2500));
+  }
 
   // ---------- Disclaimer modal → intro ----------
   function closeModal() { const m = $('modal'); if (RM) m.classList.add('hidden'); else { m.classList.add('closing'); setTimeout(() => m.classList.add('hidden'), 320); } runIntro(); }

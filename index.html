@@ -3,86 +3,417 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Walla Walla Creek Buffer Map</title>
-<meta name="description" content="Check whether your Walla Walla property falls inside the City's proposed 100-foot stream buffer under the Critical Areas Ordinance update.">
-<meta property="og:title" content="Is your property inside Walla Walla's proposed 100-foot stream buffer?">
-<meta property="og:description" content="Type your address. See the proposed buffer on a map. Learn what it would mean, and how to tell the City Council what you think.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://creekchecker.com/">
+<title>Check your creek. · CreekChecker</title>
+<meta name="description" content="Check your Walla Walla lot against the proposed creek buffer. Live City and County GIS. Unofficial, built by residents.">
+<meta property="og:title" content="Is the proposed creek buffer limiting your property?">
+<meta property="og:description" content="Check your creek. See the mapped band, read the draft, and tell the City Council.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://creekchecker.com/">
 <link rel="canonical" href="https://creekchecker.com/">
-<meta name="theme-color" content="#f2f5f7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1318" media="(prefers-color-scheme: dark)">
-<script>/* intro gate: hide the panel sections until the disclaimer closes (motion only; never under reduced motion; self-releases after 6 s) */
-(function(){var h=document.documentElement;if(!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){h.classList.add('pre-intro');setTimeout(function(){h.classList.remove('pre-intro')},6000)}})();</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:wght@400..700&display=swap">
+<meta name="theme-color" content="#eeeae1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="styles.css?v=20261010g">
+<link rel="stylesheet" href="styles.css?v=20261010-community">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
 </head>
-<body>
-<div id="map" role="application" aria-label="Map of Walla Walla showing streams and the proposed buffer"></div>
-
-<aside class="panel" id="panel" aria-label="Buffer check">
+<body class="map-page">
+<a class="skip-link" href="#q">Skip to property search</a>
+<div id="map" role="region" aria-label="Interactive map of Washington and Walla Walla creek buffers"></div>
+<div class="basemap-control" id="basemapControl" aria-label="Map background">
+  <div class="basemap-switch" role="group" aria-label="Map background"><button type="button" data-basemap-choice="aerial" aria-pressed="true">Aerial</button><button type="button" data-basemap-choice="street" aria-pressed="false">Street map</button></div>
+  <p id="imageryNote">Aerial imagery · <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer" target="_blank" rel="noopener">USGS / USDA</a> · dates vary</p>
+  <p id="basemapStatus" class="sr-only" role="status"></p>
+</div>
+<!-- Keep these application IDs: app.js owns data, results, FAQ and layer behavior. -->
+<aside class="panel" id="panel" aria-label="Check your property">
+  <button class="sheet-handle" id="sheetHandle" aria-label="Collapse panel to show more map" aria-expanded="true" aria-controls="panelBody" type="button"></button>
   <div class="progress" id="progress" aria-hidden="true"><i></i></div>
-  <header class="st" style="--i:0">
-    <div class="brand"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="1" y="1" width="18" height="18" rx="5" fill="#d4891c"/><path d="M3.6 8.1c2.1-2.3 4.2-2.3 6.4 0s4.3 2.3 6.4 0M3.6 12.9c2.1-2.3 4.2-2.3 6.4 0s4.3 2.3 6.4 0" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg><span>Walla Walla Creek Buffer Map</span></div>
-    <nav class="tabs" aria-label="CreekChecker sections"><a href="./" aria-current="page">Map</a><a href="impact.html">Walla Walla impact</a><a href="method.html">How we computed this</a></nav>
-    <h1>Is your property in the proposed 100-foot stream buffer?</h1>
-    <p class="sub">City of Walla Walla Critical Areas Ordinance update. Type an address or tap the map.</p>
+  <header>
+    <div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span><span class="unofficial">Unofficial</span></div>
+    <nav class="tabs" aria-label="CreekChecker sections"><a href="./" aria-current="page">Map</a><a href="learn.html">Learn more</a><a href="get-involved.html">Get involved</a></nav>
   </header>
-  <div class="body">
-    <form class="search st" id="searchForm" autocomplete="off" style="--i:1">
-      <input id="q" type="text" placeholder="e.g. 123 S Division St" aria-label="Street address" inputmode="text">
-      <button id="go" type="submit">Check</button>
-    </form>
-    <p class="hint st" id="hint" style="--i:2">Any Walla Walla County address (matched to the County parcel) or a 12-digit parcel number. Nothing you type is stored.</p>
-
-    <div class="widths st" id="widths" style="--i:3">
-      <span class="lbl">Buffer width to show (City proposes 100 ft):</span>
+  <div class="body" id="panelBody">
+    <div class="entry-intro">
+      <p class="eyebrow">Check your creek.</p>
+      <h1 class="entry-title">Is the City's proposed 100-foot creek buffer limiting your property?</h1>
+      <p class="entry-sub" id="subline">Find your lot. See the mapped band. Read what the draft would change.</p>
     </div>
-
-    <div id="result" class="hidden"></div>
+    <label class="search-label" for="q">Enter your ZIP code or address</label>
+    <form class="search" id="searchForm" autocomplete="off">
+      <input id="q" name="address" type="text" placeholder="ZIP code or street address" aria-describedby="hint searchPrivacy" inputmode="text" required>
+      <button id="go" type="submit">Find out</button>
+    </form>
+    <p class="hint" id="hint" role="status">Walla Walla County addresses or parcel numbers.</p>
+    <div class="privacy-promise" id="searchPrivacy"><p><strong>We will never sell your personal data.</strong> We don’t collect your address searches into a CreekChecker database. Contact details are collected only through a separate, optional signup.</p><a href="method.html#privacy">Privacy &amp; civic purpose</a></div>
+    <!-- This stepper reports actual lookup completion. ZIP-only input never evaluates a lot. -->
+    <section class="survey hidden" id="stepper" aria-label="Locating your property">
+      <div class="survey-head"><h2>From the valley to your lot.</h2><button class="text-button" type="button" id="skipIntro">Skip</button></div>
+      <ol><li data-step="county"><span>Finding Walla Walla County</span><small class="cap"></small></li><li data-step="rules"><span>Checking which rules apply</span><small class="cap" role="status"></small></li><li data-step="zip"><span id="stepZip">Zooming to your ZIP</span><small class="cap"></small></li><li data-step="lot"><span>Locating your lot</span><small class="cap"></small></li><li data-step="measure"><span>Measuring to the nearest creek</span><small class="cap"></small></li></ol>
+    </section>
+    <div class="widths" id="widths" role="group" aria-label="City buffer comparison width"><span class="lbl">City buffer width · feet</span></div>
+    <p class="width-source"><b>City of Walla Walla only:</b> 100 ft is proposed. Other widths are comparisons. County widths do not change with these buttons. <a href="method.html">Sources &amp; method</a></p>
+    <section class="scenario-card" aria-labelledby="scenarioTitle">
+      <h2 id="scenarioTitle">What if the buffer grows here?</h2>
+      <p>Outside the City? Explore a wider band without mistaking it for an adopted rule.</p>
+      <details class="policy-stages" id="policyStages"><summary>Today, proposed, possible future</summary>
+        <div><h3>Today · rules depend on location</h3><p>Walla Walla’s listed creek buffers are generally 35 ft, with 50 ft on the listed Yellowhawk reach. Exceptions and shoreline rules apply. Unincorporated land follows County rules; College Place has its own code. The County’s tiered working GIS layer is not proof of an adopted rule.</p><a href="https://ecode360.com/46538722" target="_blank" rel="noopener">Current City code · Table 6</a></div>
+        <div><h3>Proposed · City of Walla Walla</h3><p>The City draft proposes 100 ft per side plus a 15-ft building setback. It is not a blanket County rule. Mill Creek follows the Shoreline Master Program.</p><a href="https://agendas.ci.walla-walla.wa.us/docs/2026/ccreg/20261014_4784/6053_2026_Draft_Critical_Areas_Amendments_Table_-_Updated_10.09.2026.pdf" target="_blank" rel="noopener">City draft · Table 6 &amp; setback</a></div>
+        <div><h3>Possible future · a what-if, not a forecast</h3><p>The County’s planning charter includes a critical-areas update. That does not establish a future blanket 100-ft rule. If a wider buffer were adopted where you live, it could reduce space for new buildings, additions or a subdivision; the actual effect would depend on the adopted code and your site.</p><a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/2026%20Periodic%20Update/D1%20WallaWallaCounty_ProjectCharter_V3.0.pdf" target="_blank" rel="noopener">County project charter · page 5</a><p><strong>Ask for local science, a parcel impact analysis and clear protections for existing homes before new rules are adopted.</strong></p></div>
+      </details>
+      <button class="btn scenario-toggle" id="scenarioToggle" type="button" aria-pressed="false" aria-describedby="scenarioScope">Show a 100-ft what-if</button>
+      <p id="scenarioScope" class="scenario-scope"><strong>Hypothetical only.</strong> Adds a dashed red band 100 ft on each side of County-mapped waterways in the unincorporated Walla Walla valley. Excludes cities and Mill Creek. No extra setback is drawn. <a href="method.html#what-if">Coverage, sources &amp; limits</a></p>
+      <p id="scenarioStatus" class="scenario-status" role="status" hidden></p>
+    </section>
+    <p class="scenario-result-note" id="scenarioResult" hidden></p>
+    <div id="result" class="hidden" aria-live="polite" aria-atomic="true"></div>
+    <!-- app.js renders the exact content.limits text here. No legal text is duplicated. -->
+    <section class="limits" id="limits" hidden aria-label="What the draft would limit"></section>
     <div id="faq"></div>
-
-    <div class="stats st" id="stats" style="--i:4" hidden></div>
-    <div class="ask st" id="ask" style="--i:5" hidden></div>
-
-    <p class="footer st" id="disclaimerFooter" style="--i:6"></p>
-    <p class="footer st" id="aboutData" style="--i:6"></p>
+    <section class="map-next-step" aria-labelledby="nextStepTitle"><p class="eyebrow">When you are ready</p><h2 id="nextStepTitle">Understand it. Have your say.</h2><p>Read the evidence, find ways to take part, or choose optional email updates.</p><div class="actions"><a class="btn" href="learn.html">Learn more</a><a class="btn primary" href="get-involved.html">Get involved →</a></div></section>
+    <div class="home-context">
+      <section class="civic-purpose" aria-labelledby="purposeTitle"><h2 id="purposeTitle">Built by residents. For residents.</h2><p>A not-for-profit civic project to inform Washington State residents and defend their sovereignty and private land ownership.</p><p>Residents deserve a meaningful say before government limits how they can use their land. Check the sources. Understand the proposal. Speak for yourself.</p></section>
+      <div class="home-note"><strong>35 ft today. 100 ft proposed.</strong><p>Today: 50 ft on Yellowhawk. The draft adds a 15-ft building setback beyond the proposed buffer.</p><a href="https://agendas.ci.walla-walla.wa.us/docs/2026/ccreg/20261014_4784/6053_2026_Draft_Critical_Areas_Amendments_Table_-_Updated_10.09.2026.pdf" target="_blank" rel="noopener">Source: draft Table 6 &amp; setback provisions</a></div>
+      <div class="hearing"><div class="date-stamp"><small>OCT</small>14</div><p><b>Your voice goes in the record.</b><br>Wed Oct 14, 2026 · 6:30 pm<br>City Hall · 15 N 3rd Ave<br>Hearing Oct 14. Vote Oct 28.<a class="source" href="https://agendas.ci.walla-walla.wa.us/agenda_publish.cfm?id=&amp;mt=ALL&amp;get_month=10&amp;get_year=2026&amp;dsp=ag&amp;seq=4783" target="_blank" rel="noopener">City Council agenda · 2026</a></p></div>
+    </div>
+    <div class="stats" id="stats" hidden></div>
+    <div class="ask" id="ask" hidden></div>
+    <details class="data-details"><summary>About the data</summary><p class="footer" id="aboutData"></p><a class="btn" href="method.html">How we computed this</a></details>
+    <details class="data-details"><summary>Read the disclaimer</summary><p class="footer" id="disclaimerFooter">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p></details>
   </div>
+  <footer class="panel-foot"><div class="actions"><a class="btn primary" id="councilAction" href="mailto:CityClerk@wallawallawa.gov">Email the Council</a><button class="btn" type="button" id="copyAction">Copy link</button></div><a class="community-footer-link" href="get-involved.html#updates"><span>Want the next local update?</span><b>Stay informed →</b></a><div class="quiet"><span>Built by residents. Not legal advice.</span><a href="method.html">About the data</a></div></footer>
 </aside>
-
 <div class="legend" id="legend" aria-label="Map legend">
+  <div class="key-title">Read the map</div>
   <div><span class="sw stream"></span><span>City-mapped stream</span></div>
-  <div><span class="sw band"></span><span>City proposed buffer (<span id="legendW">100</span> ft)</span></div>
+  <div><span class="sw band"></span><span>City band · <span id="legendW">100</span> ft</span></div>
   <div class="legend-src" id="legendSrc"></div>
-  <div><span class="sw city"></span><span>City limits (ordinance applies inside)</span></div>
-  <div class="row-more"><span class="sw cbuf"></span><span>County working buffer (Aug 2026, tiered 35–100 ft)</span></div>
+  <div id="scenarioLegend" hidden><span class="sw scenario"></span><span id="scenarioLegendText">100-ft what-if · hypothetical</span></div>
+  <div class="row-city"><span class="sw city"></span><span>City limits</span></div>
+  <div class="row-more"><span class="sw cbuf"></span><span>County working band · tiered 35–100 ft</span></div>
   <div class="row-more"><span class="sw cstream"></span><span>County-mapped stream</span></div>
-  <div class="row-more"><span class="sw mill"></span><span>Mill Creek: Shoreline Master Program (35-ft flood-channel buffer; not part of this ordinance)</span></div>
-  <div class="row-parcels"><span class="sw parcel"></span><span>Parcels (zoom in)</span></div>
-  <button type="button" class="layers-btn" id="layersBtn" aria-expanded="false" aria-controls="layersPanel"><svg viewBox="0 0 20 20" aria-hidden="true" width="14" height="14"><path d="M10 3l8 4-8 4-8-4 8-4zm-8 7l8 4 8-4M2 13l8 4 8-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Layers</button>
+  <div class="row-more"><span class="sw mill"></span><span>Mill Creek · SMP 35-ft channel band</span></div>
+  <div class="row-parcels"><span class="sw parcel"></span><span>Parcels · zoom in</span></div>
+  <button type="button" class="layers-btn" id="layersBtn" aria-expanded="false" aria-controls="layersPanel"><svg viewBox="0 0 20 20" aria-hidden="true" width="18" height="18"><path d="M10 3l8 4-8 4-8-4 8-4zm-8 7l8 4 8-4M2 13l8 4 8-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Layers</button>
 </div>
 <div class="layers hidden" id="layersPanel" role="dialog" aria-label="Map layers" tabindex="-1"></div>
-
-<div class="banner hidden" id="banner" role="status"></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<div class="modal" id="modal">
-  <div class="card">
-    <h2>Before you look</h2>
-    <p id="disclaimerModal"></p>
-    <div class="actions">
-      <button class="btn primary" id="agree">I understand, show me the map</button>
-    </div>
-  </div>
+<div class="survey-scale" id="mapScale" aria-label="Map scale in feet"><div class="scale-labels"><span>0</span><span id="scaleValue">100 ft</span></div><div class="scale-rule" id="scaleRule"><i class="scale-100" id="scale100" hidden><span>100 ft</span></i></div></div>
+<div class="banner hidden" id="banner" role="status"></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- The disclaimer text below is an exact copy of restrictions.json, visible even before GIS loads. -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle" aria-describedby="disclaimerModal">
+  <div class="card"><div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></div><p class="eyebrow">A resident-built, not-for-profit civic project.</p><h2 id="disclaimerTitle">Before you check your creek.</h2><p class="modal-purpose">We inform Washington State residents and stand for their sovereignty and private land ownership.</p><div class="privacy-promise"><p><strong>We will never sell your personal data.</strong> We don’t collect your address searches into a CreekChecker database. Live map and search providers receive the requests needed to run the map. Email updates are a separate, optional signup.</p></div><p id="disclaimerModal">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p><div class="actions"><button class="btn primary" id="agree" type="button">I understand, show me the map</button></div></div>
 </div>
-
-<!-- Privacy-friendly analytics slot (disabled until an account exists). Example:
-<script data-goatcounter="https://YOURCODE.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script> -->
-<script src="app.js?v=20261010g"></script>
-</body>
-</html>
+<!-- Accessible letter-size fallback for the application's existing Print action. -->
+<article class="print-sheet"><div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></div><h1>Check your creek.</h1><p class="print-lede">Does Walla Walla’s proposed 100-foot creek buffer touch your lot?</p><p>Find your property at <b>creekchecker.com</b>. Read what the draft says and tell the City Council before the vote.</p><div class="print-facts"><div><b>17.9 mi</b>mapped creeks</div><div><b>477 ac</b>in the band</div><div><b>1,489</b>city parcels touched</div></div><p class="print-source">Our computation from City GIS centerlines and County parcels, Oct 10, 2026. The consultant’s broader network: 269 to 757 acres (Facet, July 1, 2026). Method: creekchecker.com/method.html.</p><p>Today: 35 ft, or 50 ft on Yellowhawk. Proposed: 100 ft plus a 15-ft building setback (Oct 9 draft, Table 6 and setback provisions).</p><p>On Sept 14, 2026, the Planning Commission voted 7-0 to send the draft back for science matching local conditions (draft Commission minutes).</p><div class="print-meeting"><h2>Public hearing · October 14</h2><p>Wednesday, October 14, 2026 · 6:30 pm<br>City Hall · 15 N 3rd Ave · Walla Walla</p><p>Vote scheduled October 28, 2026.<br>Written comments: CityClerk@wallawallawa.gov</p><p class="print-source">Source: City Council Oct 14 agenda, Item 6E; City CAO project page.</p></div><p class="print-disclaimer">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p></article>
+<noscript><div class="banner">JavaScript is needed for the live map. Read <a href="method.html">the method and sources</a>, or contact City Development Services at 509-524-4710.</div></noscript>
+<!-- Presentation adapter and separate opt-in scenario. app.js remains byte-for-byte unchanged. -->
+<script>/* PRESENTATION ADAPTER — intentionally outside app.js.
+   Retains every query, geometry test, width, result and FAQ in the existing app.
+   Observes rendered results; uses MapLibre's public API for camera/paint only.
+   A ZIP lookup is navigation only, never a parcel or buffer determination. */
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id), root = document.documentElement;
+  const rm = matchMedia('(prefers-reduced-motion: reduce)');
+  let map,zipPending=false;
+  let basemap='aerial',baseLayers=[];
+  try { if(localStorage.getItem('cc_basemap')==='street')basemap='street'; } catch {}
+  const css = name => getComputedStyle(root).getPropertyValue(name).trim();
+  const ui = window.creekUI = { get map() { return map; } };
+  const aerial=()=>basemap==='aerial';
+  const bufferLayer=id=>/^(?:buf\d+|cbuf|mill-band|whatif100)(?:-|$)/.test(id);
+  const waterwayLayer=id=>/^(?:streams|cstreams|cgaps|mill|dnr)(?:-|$)/.test(id);
+  function tint(layer) {
+    const l = {...layer, paint:{...layer.paint}}, id = l.id, src = l['source-layer'] || '';
+    let color;
+    if (/^county-line/.test(id)) color=css('--ink');
+    else if (bufferLayer(id)) color = css(l.type === 'fill' ? '--band' : '--band-edge');
+    else if (waterwayLayer(id)) color = css('--waterway');
+    else if (/^unin|^uga|^cp-/.test(id)) color = css('--sage');
+    else if (/^zon/.test(id)) color = css('--map-zone');
+    else if (/^flood/.test(id)) color = css('--map-flood');
+    else if (/^parcel-hit-fill/.test(id)) color = css('--creek');
+    else if (/^city-line|^parcel-hit-line/.test(id)) color = css('--ink');
+    else if (id === 'parcel-hit-casing') color = css('--map-halo');
+    else if (id === 'parcels-line') color = css('--map-parcel');
+    else if (l.type === 'background') l.paint['background-color'] = css('--map-land');
+    else if (l.type === 'fill' && /water/.test(src)) color = css('--map-water');
+    else if (l.type === 'line' && /water/.test(src)) color = css('--waterway');
+    else if (l.type === 'fill' && /landcover|landuse|park/.test(src)) { color = css('--map-green'); if(l.paint['fill-outline-color']) l.paint['fill-outline-color']=css('--line'); }
+    else if (l.type==='line'&&/park|landcover/.test(src)) color=css('--line');
+    else if (['fill','fill-extrusion'].includes(l.type) && /building/.test(src)) color = css('--map-building');
+    else if (l.type === 'line' && /transportation/.test(src)) color = css(/casing|outline/.test(id) ? '--line' : '--map-road');
+    if (color && ['fill','fill-extrusion','line','circle'].includes(l.type)) l.paint[l.type + '-color'] = color;
+    if (l.type === 'symbol' && l.layout && l.layout['text-field']) {
+      l.paint['text-color'] = color || css('--muted'); l.paint['text-halo-color'] = css('--map-halo');
+    }
+    if(aerial()) {
+      if(bufferLayer(id))color=css(l.type==='fill'?'--aerial-band':'--aerial-band-edge');
+      else if(waterwayLayer(id))color=css('--aerial-stream');
+      else if(/^unin|^uga|^cp-/.test(id))color=css('--aerial-county');
+      else if(/^city-line|^county-line|^parcels-line/.test(id))color=css('--aerial-boundary');
+      else if(/^parcel-hit-line/.test(id))color=css('--aerial-boundary');
+      else if(id==='parcel-hit-casing')color=css('--aerial-halo');
+      if(color&&['fill','line','circle'].includes(l.type))l.paint[l.type+'-color']=color;
+      if(l.type==='symbol'&&l.layout?.['text-field']){l.paint['text-color']=css('--aerial-label');l.paint['text-halo-color']=css('--aerial-label-halo');l.paint['text-halo-width']=2;}
+    }
+    if(/^city-line|^county-line|^uga-line|^cp-line/.test(id)) {
+      l.paint['line-width']=id==='city-line'?1.6:1.1;
+      if(l.paint['line-dasharray'])l.paint['line-dasharray']=[5,4];
+    }
+    return l;
+  }
+  function reflectBasemap(){
+    root.dataset.basemap=basemap;
+    document.querySelectorAll('[data-basemap-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.basemapChoice===basemap)));
+    if($('imageryNote'))$('imageryNote').hidden=!aerial();
+  }
+  function setBasemap(choice,save=true){
+    basemap=choice;reflectBasemap();
+    if(save&&$('basemapStatus'))$('basemapStatus').textContent='';
+    if(save)try{localStorage.setItem('cc_basemap',choice)}catch{}
+    if(!map?.getLayer('cc-aerial'))return;
+    map.setLayoutProperty('cc-aerial','visibility',aerial()?'visible':'none');
+    baseLayers.forEach(l=>{if(map.getLayer(l.id)&&l['source-layer']==='poi')map.setLayoutProperty(l.id,'visibility',aerial()?'none':(l.layout?.visibility||'visible'));});
+    repaint();
+  }
+  function addAerial(){
+    baseLayers=(map.getStyle().layers||[]).filter(l=>l.id!=='cc-aerial');
+    if(!map.getSource('cc-aerial'))map.addSource('cc-aerial',{type:'raster',tiles:['https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}'],tileSize:256,maxzoom:16,attribution:'Imagery: USDA / <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer" target="_blank" rel="noopener">USGS The National Map</a> (aerial imagery; dates vary)'});
+    if(!map.getLayer('cc-aerial'))map.addLayer({id:'cc-aerial',type:'raster',source:'cc-aerial',layout:{visibility:aerial()?'visible':'none'},paint:{'raster-fade-duration':rm.matches?0:180,'raster-resampling':'linear'}});
+    // Keep road and place labels above the photographs. GIS overlays are added
+    // afterward by app.js, so switching backgrounds never replaces their data.
+    baseLayers.filter(l=>l.type==='symbol').forEach(l=>map.moveLayer(l.id));
+    setBasemap(basemap,false);
+  }
+  document.querySelectorAll('[data-basemap-choice]').forEach(b=>b.addEventListener('click',()=>setBasemap(b.dataset.basemapChoice)));
+  reflectBasemap();
+  if (window.maplibregl) {
+    const BaseMap = maplibregl.Map;
+    maplibregl.Map = class extends BaseMap {
+      constructor(options) {
+        super({...options,attributionControl:innerWidth<=720?{compact:true}:options.attributionControl}); map = this;
+        const attribution=this.getContainer().querySelector('.maplibregl-ctrl-attrib');
+        let attributionUsed=false;
+        attribution?.addEventListener('click',()=>{attributionUsed=true;},true);
+        const compactAttribution=()=>{if(innerWidth<=720&&!attributionUsed&&attribution){attribution.removeAttribute('open');attribution.classList.remove('maplibregl-compact-show');}};
+        this.on('sourcedata',compactAttribution);this.on('styledata',compactAttribution);compactAttribution();
+        this.on('style.load', () => {
+          (this.getStyle().layers || []).forEach(l => { const next=tint(l); for (const [p,v] of Object.entries(next.paint)) if (JSON.stringify(v)!==JSON.stringify((l.paint||{})[p])) this.setPaintProperty(l.id,p,v); });
+          addAerial();
+          scale();
+        });
+        this.on('error',e=>{if(e.sourceId==='cc-aerial'&&aerial()){setBasemap('street',false);$('basemapStatus').textContent='Aerial imagery could not load. Street map is shown; you can try Aerial again.';}});
+        this.on('move',scale); this.on('resize',scale);
+      }
+      addLayer(layer,before) { return super.addLayer(tint(layer),before); }
+      easeTo(options,...rest) { return super.easeTo(rm.matches ? {...options,duration:0} : options,...rest); }
+      flyTo(options,...rest) { return super.flyTo(rm.matches ? {...options,duration:0} : options,...rest); }
+      fitBounds(bounds,options={}) {
+        // Keep the target in the uncovered map area during the app's county/ZIP sequence.
+        // Existing overlay padding centers the target in the uncovered map.
+        // Only add a symmetric margin here. Updating padding in this call would
+        // emit moveend early and prematurely finish app.js's camera step.
+        return super.fitBounds(bounds,{...options,padding:24,...(rm.matches?{duration:0}:{})});
+      }
+    };
+  } else {
+    $('banner').textContent='The map library could not load. Check your connection and reload. The hearing and source links are still available.';
+    $('banner').classList.remove('hidden'); $('go').disabled=true;
+  }
+  function repaint() { if(!map || !map.getStyle())return; (map.getStyle().layers||[]).forEach(l=>{ const n=tint(l); Object.entries(n.paint).forEach(([p,v])=>{if(JSON.stringify(v)!==JSON.stringify((l.paint||{})[p]))map.setPaintProperty(l.id,p,v);}); }); }
+  new MutationObserver(repaint).observe(root,{attributes:true,attributeFilter:['data-theme']});
+  function scale() {
+    if (!map) return;
+    const c=map.getCenter(), y=map.project(c).y, x=map.project(c).x;
+    const a=map.unproject([x,y]),b=map.unproject([x+100,y]),rad=Math.PI/180;
+    // Haversine stays numerically stable even for a few feet at maximum zoom.
+    const hav=Math.sin((b.lat-a.lat)*rad/2)**2+Math.cos(a.lat*rad)*Math.cos(b.lat*rad)*Math.sin((b.lng-a.lng)*rad/2)**2;
+    const feetPerPixel=2*6371008.8*Math.asin(Math.min(1,Math.sqrt(hav)))*3.280839895/100;
+    if(!Number.isFinite(feetPerPixel)||feetPerPixel<=0)return;
+    const feet=[1,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000,1000000,2000000,5000000,10000000,20000000,50000000].find(v=>v/feetPerPixel>=70)||50000000;
+    const px=feet/feetPerPixel; $('scaleRule').style.width=px+'px'; $('scaleValue').textContent=feet.toLocaleString()+' ft';
+    const tick=$('scale100'); tick.hidden=!(feet>100&&100/feetPerPixel>=18);tick.style.left=(100/feetPerPixel)+'px';
+    $('mapScale').setAttribute('aria-label','Map scale: '+feet.toLocaleString()+' feet');
+  }
+  function resize() {
+    const h=$('panel').getBoundingClientRect().height; root.style.setProperty('--panel-height',h+'px');
+    if(map)map.setPadding(innerWidth<=720?{top:0,right:0,left:0,bottom:h}:{top:0,right:0,bottom:0,left:$('panel').offsetWidth+48});
+  }
+  new ResizeObserver(resize).observe($('panel'));
+  const handle=$('sheetHandle');
+  function compact(on) { $('panel').classList.toggle('compact',on); handle.setAttribute('aria-expanded',String(!on));handle.setAttribute('aria-label',on?'Expand property check':'Collapse panel to show more map'); }
+  let dragY,dragged=false;
+  handle.addEventListener('click',()=>{if(dragged){dragged=false;return}compact(!$('panel').classList.contains('compact'));});
+  handle.addEventListener('pointerdown',e=>{dragY=e.clientY;dragged=false;handle.setPointerCapture(e.pointerId)});
+  handle.addEventListener('pointerup',e=>{if(dragY!=null&&Math.abs(e.clientY-dragY)>25){dragged=true;compact(e.clientY>dragY);e.preventDefault()}dragY=null});
+  handle.addEventListener('pointercancel',()=>{dragY=null;dragged=false});
+  function panelTo(el) { const b=$('panelBody');b.scrollTo({top:Math.max(0,el.offsetTop-b.offsetTop-12),behavior:'auto'}); }
+  let hadResult=false;
+  function reflectResult() {
+    const r=$('result'),visible=!r.classList.contains('hidden')&&!!r.querySelector('.status');if(root.classList.contains('has-result')!==visible)root.classList.toggle('has-result',visible);
+    if(visible&&!r.querySelector('.result-explanation')) {
+      const details=[...r.querySelectorAll(':scope > .detail, :scope > .meta')];
+      if(details.length){const disclosure=document.createElement('details');disclosure.className='result-explanation';
+        const summary=document.createElement('summary');summary.textContent='Read the result details and measurements';disclosure.appendChild(summary);
+        details[0].before(disclosure);details.forEach(el=>disclosure.appendChild(el));}
+    }
+    if(visible&&!hadResult&&!root.classList.contains('homing')) panelTo(r);
+    hadResult=visible;
+  }
+  new MutationObserver(reflectResult).observe($('result'),{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  // app.js owns the real stepper; this observer manages focus and compact phone layout only.
+  new MutationObserver(()=>{
+    const visible=!$('stepper').classList.contains('hidden');root.classList.toggle('surveying',visible&&root.classList.contains('homing'));
+    if(visible&&root.classList.contains('homing')&&!zipPending)panelTo($('stepper'));
+    document.querySelectorAll('#stepper li').forEach(li=>li.setAttribute('aria-current',li.classList.contains('active')?'step':'false'));
+  }).observe($('stepper'),{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  new MutationObserver(()=>{if(!root.classList.contains('homing')){if(root.classList.contains('surveying'))root.classList.remove('surveying');reflectResult();if(hadResult)panelTo($('result'));}}).observe(root,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(()=>{zipPending=$('q').placeholder==='Now your street address';root.classList.toggle('zip-pending',zipPending);if(zipPending)panelTo($('searchForm'));}).observe($('q'),{attributes:true,attributeFilter:['placeholder']});
+  $('searchForm').addEventListener('submit',()=>{compact(false);hadResult=false;zipPending=false;root.classList.remove('zip-pending');});
+  new MutationObserver(()=>{document.querySelectorAll('#widths button').forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('active'))));}).observe($('widths'),{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  // Keep the pinned actions bound to the existing, unmodified email/share handlers.
+  new MutationObserver(()=>{const a=document.querySelector('#ask a[href^="mailto:"]');if(a)$('councilAction').href=a.href;}).observe($('ask'),{childList:true,subtree:true});
+  $('copyAction').addEventListener('click',()=>{if($('share'))$('share').click();});
+  $('go').addEventListener('click',()=>compact(false));
+  // Acknowledgement dialog: explicit acceptance, keyboard containment, focus return.
+  const modal=$('modal');
+  function modalState(){const open=!modal.classList.contains('hidden');['panel','map','legend','layersPanel','basemapControl'].forEach(id=>$(id).inert=open);if(open){$('disclaimerTitle').tabIndex=-1;$('disclaimerTitle').focus({preventScroll:true});modal.querySelector('.card').scrollTop=0;}else if(document.activeElement===$('agree'))$('q').focus();}
+  new MutationObserver(modalState).observe(modal,{attributes:true,attributeFilter:['class']});
+  modal.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();$('agree').focus();}});
+  $('agree').addEventListener('click',()=>{if(!window.maplibregl){modal.classList.add('hidden');modalState();}});
+  // Without the GIS bundle, the exact disclaimer is still readable and dismissible.
+  window.addEventListener('load',()=>{modalState();resize();reflectResult();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('layersPanel').classList.contains('hidden'))$('layersClose')?.click();});
+})();
+</script>
+<script src="app.js?v=20261010j"></script>
+<script>/* Optional, hypothetical comparison. Never replaces the source application's
+   jurisdiction, parcel result, County working band, width selector or statistics.
+   Live geometry stays in this browser; no scenario data is re-hosted. */
+(function () {
+  'use strict';
+  const map = window.creekUI?.map, $ = id => document.getElementById(id);
+  if (!map || !window.turf) return;
+  const AREA = [-118.52, 45.96, -118.14, 46.16];
+  const BASE = 'https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/';
+  const IDS = ['whatif100-fill', 'whatif100-line'];
+  const EMPTY = {type:'FeatureCollection', features:[]};
+  let inputStreams;
+  let enabled = location.hash === '#whatif-100', data, cities, excluded, loading, failure = false;
+  const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  function inArea(point) {
+    const [x,y] = point.geometry.coordinates;
+    return x >= AREA[0] && x <= AREA[2] && y >= AREA[1] && y <= AREA[3];
+  }
+  async function query(service, fields) {
+    // Fetch a margin outside the preview rectangle, then clip the derived band.
+    // This keeps streams just beyond its edge from producing a false clear strip.
+    const q = new URLSearchParams({where:'1=1',outFields:fields,f:'geojson',outSR:'4326',returnGeometry:'true',
+      geometry:[AREA[0]-.002,AREA[1]-.002,AREA[2]+.002,AREA[3]+.002].join(','),
+      geometryType:'esriGeometryEnvelope',inSR:'4326',spatialRel:'esriSpatialRelIntersects',
+      maxAllowableOffset:'0.00002',geometryPrecision:'6'});
+    const controller = new AbortController(), timeout = setTimeout(()=>controller.abort(),20000);
+    try {
+      const response = await fetch(BASE+service+'/FeatureServer/0/query?'+q,{signal:controller.signal});
+      if (!response.ok) throw new Error('County service unavailable');
+      const fc = await response.json();
+      if (fc.error || fc.exceededTransferLimit || fc.properties?.exceededTransferLimit || !Array.isArray(fc.features) || !fc.features.length)
+        throw new Error('County service returned incomplete data');
+      if (fc.features.some(f=>!f.geometry)) throw new Error('County geometry is incomplete');
+      return fc;
+    } finally { clearTimeout(timeout); }
+  }
+  async function build() {
+    const [streams, boundaries] = await Promise.all([
+      query('Hydrologic_Features','name'), query('City_Limits','name')
+    ]);
+    if (!boundaries.features.some(f=>/WALLA WALLA/i.test(f.properties?.name||'')) ||
+        !boundaries.features.some(f=>/COLLEGE PLACE/i.test(f.properties?.name||''))) throw new Error('City boundaries are incomplete');
+    inputStreams=streams;
+    const area = turf.bboxPolygon(AREA), features = [], omitted = [];
+    for (let i=0;i<streams.features.length;i++) {
+      const stream=streams.features[i], name=String(stream.properties?.name||'').trim();
+      if (!['LineString','MultiLineString'].includes(stream.geometry.type)) throw new Error('Unexpected stream geometry');
+      // Mill Creek has a separate shoreline framework. Do not imply it is in the City proposal.
+      if (/^MILL CREEK(?:\s*\(CHANNEL\))?$/i.test(name)) { omitted.push(stream); continue; }
+      let band=turf.buffer(stream,100,{units:'feet',steps:8});
+      if (!band) throw new Error('Could not compute a complete preview');
+      band=turf.intersect(turf.featureCollection([band,area]));
+      for (const city of boundaries.features) {
+        if (!['Polygon','MultiPolygon'].includes(city.geometry.type)) throw new Error('Unexpected city geometry');
+        if (band) band=turf.difference(turf.featureCollection([band,city]));
+      }
+      if (band) {band.properties={scenario:'Hypothetical only',buffer_ft:100,source:'County Hydrologic Features',name};features.push(band);}
+      // Give the phone a chance to paint and accept an Off click while computing.
+      if (i%8===0) await new Promise(resolve=>setTimeout(resolve,0));
+    }
+    cities=boundaries; excluded=turf.featureCollection(omitted);
+    return turf.featureCollection(features);
+  }
+  function draw() {
+    if (!map.isStyleLoaded() || !data) return;
+    if (!map.getSource('whatif100')) map.addSource('whatif100',{type:'geojson',data,
+      attribution:'What-if only: 100-ft centerline comparison computed from Walla Walla County Hydrologic Features; not a regulation'});
+    // Above existing bands, below mapped streams and selected parcel outlines.
+    const before=['cstreams-line','streams-line','parcel-hit-fill'].find(id=>map.getLayer(id));
+    const fill=css(document.documentElement.dataset.basemap==='aerial'?'--aerial-band':'--band');
+    const edge=css(document.documentElement.dataset.basemap==='aerial'?'--aerial-band-edge':'--band-edge');
+    if (!map.getLayer(IDS[0])) map.addLayer({id:IDS[0],type:'fill',source:'whatif100',layout:{visibility:enabled?'visible':'none'},paint:{'fill-color':fill,'fill-opacity':.22}},before);
+    if (!map.getLayer(IDS[1])) map.addLayer({id:IDS[1],type:'line',source:'whatif100',layout:{visibility:enabled?'visible':'none'},paint:{'line-color':edge,'line-width':2,'line-dasharray':[5,3],'line-opacity':.95}},before);
+    IDS.forEach(id=>map.setLayoutProperty(id,'visibility',enabled?'visible':'none'));
+  }
+  function finding() {
+    if (!enabled) return '';
+    if (failure) return 'Preview unavailable. The County data could not be loaded or completely processed. No hypothetical band is shown. Turn this off and on to retry.';
+    if (!data) return 'Loading the County stream and boundary data for this optional comparison…';
+    const p=new URLSearchParams(location.search), lng=Number(p.get('lng')), lat=Number(p.get('lat'));
+    if (!p.has('lng') || !p.has('lat') || !Number.isFinite(lng) || !Number.isFinite(lat))
+      return 'Preview on. Tap an unincorporated valley location to compare the selected point. The normal property result stays separate.';
+    const point=turf.point([lng,lat]);
+    if (!inArea(point)) return 'This point is outside the preview’s Walla Walla valley coverage. No what-if finding is available here.';
+    if (cities.features.some(f=>turf.booleanPointInPolygon(point,f)))
+      return 'This point is inside a city and excluded from the County what-if overlay. Use the City proposal or that city’s own rules.';
+    const touches=data.features.some(f=>turf.booleanPointInPolygon(point,f));
+    const millNear=excluded.features.some(f=>turf.flatten(f).features.some(line=>turf.pointToLineDistance(point,line,{units:'feet'})<=100));
+    return (touches?'The selected point is inside the hypothetical 100-foot band.':'The selected point is outside the hypothetical band on the mapped reaches included here.')+
+      (millNear?' Mill Creek is nearby and excluded from this preview.':'')+
+      ' This compares a point, not the whole lot. It does not determine restrictions or whether land is buildable.';
+  }
+  function reflect() {
+    $('scenarioToggle').setAttribute('aria-pressed',String(enabled));
+    $('scenarioToggle').textContent=enabled?'100-ft what-if: on':'Show a 100-ft what-if';
+    $('scenarioStatus').textContent=finding();
+    $('scenarioStatus').hidden=!enabled;
+    $('scenarioLegend').hidden=!enabled;
+    $('scenarioLegendText').textContent=failure?'What-if unavailable':data?'100-ft what-if · hypothetical':'100-ft what-if · loading';
+    const hasResult=!$('result').classList.contains('hidden');
+    $('scenarioResult').hidden=!hasResult || !enabled;
+    $('scenarioResult').textContent=enabled?'What-if overlay is '+(failure?'unavailable':data?'on':'loading')+'. The result below still describes the original City proposal or County working map.':'';
+  }
+  async function ensureData() {
+    if (data || loading) return loading;
+    failure=false;
+    loading=(async()=>{try {data=await build();} catch(e) {failure=true;console.warn('Optional what-if preview unavailable:',e.message);} finally {loading=null;if(enabled)draw();reflect();}})();
+    return loading;
+  }
+  function setEnabled(on, updateURL=true) {
+    enabled=on;
+    if (updateURL) {const u=new URL(location.href);u.hash=on?'whatif-100':'';history.replaceState(null,'',u);}
+    if (on) ensureData();
+    draw();
+    IDS.forEach(id=>{if(map.getLayer(id))map.setLayoutProperty(id,'visibility',on?'visible':'none');});
+    reflect();
+  }
+  $('scenarioToggle').addEventListener('click',()=>setEnabled(!enabled));
+  window.addEventListener('hashchange',()=>setEnabled(location.hash==='#whatif-100',false));
+  map.on('idle',()=>{if(enabled){if(data&&!map.getLayer(IDS[0]))draw();reflect();}});
+  map.on('moveend',()=>{if(enabled)reflect();});
+  new MutationObserver(()=>{if(enabled)reflect();}).observe($('result'),{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  window.creekUI.scenario={get enabled(){return enabled;},get data(){return data||EMPTY;},get cities(){return cities;},get streams(){return inputStreams;},get coverage(){return AREA.slice();}};
+  if (new URLSearchParams(location.search).get('demo')==='1') {
+    enabled=false;$('scenarioToggle').disabled=true;$('scenarioToggle').textContent='What-if unavailable in demo';
+  } else setEnabled(enabled,false);
+})();
+</script>
+</body></html>

@@ -7,33 +7,18 @@
 <meta name="description" content="Method and caveats behind the stream-mile, acreage, and parcel counts on the Walla Walla stream buffer map.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:wght@400..700&display=swap">
-<style>
-  :root { --bg:#f2f5f7; --text:#15202b; --muted:#5d6974; --line:#dfe5ea; --accent:#d4891c; --accent-soft:rgba(212,137,28,.12); --stream:#1d6fb8;
-    --display:"Bricolage Grotesque","Avenir Next","Helvetica Neue",Arial,sans-serif; --body:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0e1318; --text:#e7ecf1; --muted:#9aa6b2; --line:#28323c; --accent:#e6a23c; --accent-soft:rgba(230,162,60,.14); --stream:#5aa3e6; } }
-  :root[data-theme="dark"] { --bg:#0e1318; --text:#e7ecf1; --muted:#9aa6b2; --line:#28323c; --accent:#e6a23c; --accent-soft:rgba(230,162,60,.14); --stream:#5aa3e6; }
-  body { margin:0; background:var(--bg); color:var(--text); font-family:var(--body); line-height:1.5; font-variant-numeric: tabular-nums; }
-  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
-  h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.015em; }
-  h1 { font-size: 26px; margin: 0 0 4px; } h2 { font-size: 18px; margin: 28px 0 8px; } p, li { font-size: 15px; }
-  .sub { color: var(--muted); margin: 0 0 16px; }
-  table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 16px; }
-  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { color: var(--muted); font-weight: 600; } td.n { text-align: right; font-variant-numeric: tabular-nums; }
-  code { font-size: 13px; background: rgba(127,127,127,.12); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
-  a { color: var(--stream); } .back { display:inline-block; margin-bottom: 12px; }
-  .callout { border-left: 4px solid var(--accent); padding: 8px 12px; margin: 12px 0; background: var(--accent-soft); border-radius: 0 12px 12px 0; }
-.tabs{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}.tabs a{font-weight:600;font-size:13px;font-family:inherit;color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}.tabs a[aria-current]{color:var(--text);border-color:var(--accent);background:rgba(178,58,42,.08)}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css?v=20261010-community">
 </head>
-<body>
+<body class="document-page method-page">
 <main>
-  <nav class="tabs" aria-label="CreekChecker sections"><a href="./">Map</a><a href="impact.html">Walla Walla impact</a><a href="method.html" aria-current="page">How we computed this</a></nav>
-  <h1>How we computed the buffer numbers</h1>
+  <div class="document-header"><a class="brand" href="./" aria-label="CreekChecker map"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M2 2h26v32H2zM17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></a><nav class="tabs" aria-label="CreekChecker sections"><a href="./">Map</a><a href="learn.html">Learn more</a><a href="get-involved.html">Get involved</a></nav></div>
+  <p class="eyebrow">Field notes · sources &amp; method</p><h1>Show the work.<br>Then draw the line.</h1><p class="lede">How we computed the buffer numbers</p>
   <p class="sub">Computed 2026-10-10 from the City of Walla Walla's and Walla Walla County's own public GIS services. Nothing here is an official determination; see the disclaimer on the map.</p>
 
-  <h2>What the map shows</h2>
+  <div class="method-intro"><p class="eyebrow">Read this map in three parts</p><p><b>The band</b> comes from the City's mapped stream centerlines. <b>Your lot</b> comes from County parcel records. <b>The rule</b> comes from the draft ordinance. A map comparison helps you ask a better question; a site survey and the City determine the regulated line.</p><a href="#numbers">Go to the numbers and their sources ↓</a></div>
+
+  <h2>What the map shows</h2><p><b>The photographic background</b> is USDA / USGS aerial imagery from <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer">The National Map</a>. Image dates vary; these are not live photographs. Switch to Street map for a simpler background. The choice changes only the background: City and County GIS still supply the bands, boundaries and parcel results.</p>
   <ul>
     <li><b>Stream centerlines</b> and the <b>100-ft buffer band</b> are read live, every time the page loads, from the City of Walla Walla GIS Group's public map service <code>WW_Streams_Riparian_Buffer</code> (published 2026-10-06). The 100-ft band is the City's own polygon, named by the City "Visible Streams Buffer 100 Feet From Stream Centerline."</li>
     <li>The <b>35, 50, 75 and 150-ft comparison bands</b> are computed in your browser by offsetting the same City centerlines (Turf.js). They are for comparison only.</li>
@@ -63,7 +48,7 @@
   <p>These County-only reaches can be switched on in the Layers panel ("County-mapped reaches not in the City's layer"), and the result card says so when one lies within 150 ft of the point checked; the City's draft would not buffer them unless the City adds them.</p>
   <p>The short blue stubs on the map are real City segments: the one at Francis Ave / S Division St is StreamName "Unknown" (subtype 5, a spring, 167 ft); the stubs around Whitman College (Boyer Ave / Merriam St, Stanton St / University St) are College Creek (73 and 555 ft); Barber Creek and Butcher Creek appear as a dozen 40&ndash;400 ft pieces between Figueroa St and E Rees Ave where they surface between piped sections; Owen, Peter and Gose springs are subtype-5 spring runs. DNR adds a further set of unnamed intermittent lines (mostly along Hwy 12 and Myra Rd) and two perennial ditches (Bush St / Garrison St; Oxford St / University Dr) that neither the City nor the County maps as creeks.</p>
 
-  <h2>The numbers on the stats strip</h2>
+  <h2 id="numbers">The numbers on the stats strip</h2>
   <p>Computed offline on 2026-10-10 with GeoPandas/Shapely in Washington State Plane South (EPSG:2927, US survey feet). City limits: Walla Walla County GIS "City Limits" polygon (9,103.5 acres; the City's own line layer says 9,029 acres).</p>
   <table>
     <tr><th>Buffer width (from centerline)</th><th class="n">Acres inside city limits</th><th class="n">City parcels touching the band</th></tr>
@@ -116,6 +101,40 @@
     <li>City of Walla Walla <a href="https://fortress.wa.gov/ecy/ezshare/SEA/FinalSMPs/WallaWallaCounty/WallaWalla/WallaWallaSMPDec2023.pdf" rel="noopener">Shoreline Master Program (Dec 2023)</a>, Appendix A Table 6.5-1: 35-ft buffer on the Mill Creek flood channel; shoreline jurisdiction 200 ft.</li>
     <li>Cross-checks: USGS National Hydrography Dataset (HUC8 17070102) and WA DNR Forest Practices hydrography. Processing script, raw downloads and the full data inventory are in the project repository (<code>data/scripts/</code>, <code>research/03-gis-data-inventory.md</code>, <code>research/07-coverage-check.md</code>).</li>
   </ul>
+
+  <section class="privacy-section" id="what-if" aria-labelledby="whatIfTitle">
+    <p class="eyebrow">Optional comparison · not a forecast</p>
+    <h2 id="whatIfTitle">What if a 100-foot buffer applied here?</h2>
+    <p>The separate what-if switch helps residents outside city limits see the size of a wider band. It does not show an adopted County rule, establish a pending County proposal or predict that one will pass. The <a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/2026%20Periodic%20Update/D1%20WallaWallaCounty_ProjectCharter_V3.0.pdf">County’s 2026 periodic-update project charter, page 5</a>, includes a critical-areas update; it does not establish a blanket 100-foot width.</p>
+    <p><b>Today and proposed:</b> the <a href="https://ecode360.com/46538722">current City code, Table 6</a>, lists 35-foot buffers for most named creek reaches and 50 feet for the listed Yellowhawk reach, subject to exceptions. The City draft proposes 100 feet per side and a separate 15-foot building setback. Unincorporated land and College Place have their own applicable rules. The County’s working buffer GIS layer is a separate reference, not proof of an adopted rule.</p>
+    <p><b>How the preview is drawn:</b> on request, the browser reads the County’s live <a href="https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/Hydrologic_Features/FeatureServer/0">Hydrologic Features</a> and <a href="https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/City_Limits/FeatureServer/0">City Limits</a> data. It computes 100 feet on each side of mapped centerlines, clips away incorporated cities, and excludes named Mill Creek reaches. The dashed red overlay is an illustration; no 15-foot setback is added. The geometry stays in your browser.</p>
+    <p><b>Coverage:</b> this preview covers the valley rectangle from 118.52° W to 118.14° W and 45.96° N to 46.16° N, the same working area used for the map’s County context. It is not countywide or statewide. Geometry is generalized to roughly 2 meters by the service, as in the existing County context layers. The preview compares only the selected point, not the whole parcel. A blank area can reflect missing mapped waterways and does not establish that a property is unregulated. Other shoreline reaches, wetlands and site-specific exceptions are not evaluated.</p>
+    <p><b>What a wider rule could mean:</b> if adopted in your jurisdiction, a wider buffer could affect the room available for new structures, additions and subdivisions. Actual restrictions, existing-use protections and exceptions would depend on the adopted wording and a site determination. Centerlines do not locate the ordinary high-water mark, top of bank or channel migration zone used in regulatory measurements. Ask the responsible planning office for the rule and measurement that apply to your lot.</p>
+    <p>The regular property result and City statistics do not change when this overlay is on. The 35/50/75/100/150 buttons still control only the City band. A copied link retains an enabled scenario as <code>#whatif-100</code>, and the hypothetical label remains visible in the map key.</p>
+  </section>
+
+  <section class="privacy-section" id="privacy" aria-labelledby="privacyTitle">
+    <p class="eyebrow">Privacy &amp; civic purpose</p>
+    <h2 id="privacyTitle">Built by residents. For residents.</h2>
+    <p>CreekChecker is a resident-built, not-for-profit civic project. Our purpose is to inform Washington State residents and defend their sovereignty and private land ownership. We believe residents deserve a meaningful say before government limits how they can use their land.</p>
+    <p>We oppose government overreach. We show the proposal, the public data and the limits of what the map can tell you, so you can check the sources, form your own view and speak for yourself. Our position is advocacy; the map’s measurements and caveats stay tied to their sources.</p>
+    <h3>Our privacy promise</h3>
+    <p><strong>We will never sell your personal data. We don’t collect your address searches into a CreekChecker database.</strong> No account or email signup is required to use the map. We have not added advertising trackers or analytics scripts. The map runs in your browser.</p>
+    <h3>Optional contact information</h3>
+    <p>The <a href="get-involved.html#updates">updates form</a> is separate from the map. When it opens, we will collect your email address and, only if you choose, your first name, plus a record of your signup consent. We use those details for CreekChecker ordinance updates, hearing reminders and ways to participate. We do not attach your parcel, address searches or map coordinates to your signup, and we will never sell your personal data.</p>
+    <p>The signup identifies the mailing-list service and the organizer contact before it accepts submissions. You confirm your subscription through your email and can unsubscribe from the messages. The form does not send or save contact details while it is marked inactive. Loading the updates page does not load a mailing-list embed or tracking script.</p>
+    <p>A signup is not a petition signature or permission to publish your name. The petition is a draft and does not collect signatures. Any future signature form must explain its final request, recipient and treatment of names before someone signs.</p>
+    <h3>What happens when you use the map</h3>
+    <ul>
+      <li><strong>Finding your lot:</strong> your browser sends address or parcel searches and map locations directly to Walla Walla County’s ArcGIS service. If a parcel cannot be found, the address may be sent to OpenStreetMap’s Nominatim search service. Some ZIP lookups also use Nominatim.</li>
+      <li><strong>Loading the site:</strong> hosting, map, imagery, font and script providers receive normal connection information, such as your IP address, and may keep their own service logs. Map providers receive requests for the area you view. Their handling of those requests is governed by their own policies.</li>
+      <li><strong>On your device:</strong> the site remembers your disclaimer acknowledgement, first-visit completion, layer choices and aerial/street preference in browser storage. It does not save a search-history database. You can clear these preferences through your browser’s site-data controls.</li>
+      <li><strong>Location and sharing:</strong> “Find my location” requires your browser’s location permission. A selected point’s coordinates and map settings appear in the page URL and copied links; they can remain in browser history and be seen by anyone you share the link with.</li>
+      <li><strong>Emailing the Council:</strong> the button opens a draft in your email app. Nothing is sent automatically. If you send it, the City and your email provider receive the information you include.</li>
+    </ul>
+    <p>Our promise describes what this project does. It does not mean that using an online map makes no requests to outside services.</p>
+    <a class="btn" href="./">Back to the map</a>
+  </section>
 </main>
 </body>
 </html>
