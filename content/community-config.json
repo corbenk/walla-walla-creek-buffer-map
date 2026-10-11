@@ -1,8 +1,8 @@
 {
   "signupEnabled": false,
   "buttondownUsername": "",
-  "organizerName": "CreekChecker volunteer organizers",
-  "contactEmail": "",
+  "organizerName": "CreekChecker organizers (Corben, shrubn.com)",
+  "contactEmail": "corben@shrubn.com",
   "consentVersion": "creekchecker-updates-topic-2026-10-10-v2",
   "creditName": "shrubn.com",
   "creditUrl": "https://shrubn.com"
