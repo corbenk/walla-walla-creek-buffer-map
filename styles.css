@@ -484,3 +484,39 @@ section.chart h2 {font-size:29px;line-height:1.15;margin:0 0 10px;max-width:48ch
  .memo-highlights {padding:24px 0 0;border-left:0;border-top:1px solid var(--line-strong)}.memo-source-note {padding:20px}.memo-source-links {display:grid;gap:6px}
  .citizen-comment-action {display:block}.citizen-comment-action .btn {margin-top:16px;width:100%}
 }
+
+/* Site footer (all pages), credit slot, and the case-study page. 2026-10-10 public-readiness pass. */
+.community-footer nav a[aria-current="page"] {color:var(--ink);font-weight:600}
+#credit {display:block;margin-top:8px;font-size:13px;color:var(--muted)}#credit:empty {display:none}#credit a {display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.panel-foot .quiet {display:flex;flex-wrap:wrap;align-items:center;gap:0 14px;padding-top:6px;color:var(--muted);font-size:12px}
+.panel-foot .quiet nav {display:flex;gap:14px}.panel-foot .quiet nav a,.panel-foot .quiet #credit a {min-height:32px}
+.panel-foot .quiet #credit {margin:0;font-size:12px}
+.sources-note {font-size:14px;line-height:1.5;color:var(--muted);border-top:1px solid var(--line-strong);margin-top:32px;padding-top:18px}
+.how-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:8px}
+.how-figure {margin:0;border:1px solid var(--line-strong);border-radius:var(--r);overflow:hidden;background:var(--panel)}
+.how-shot {display:block;background:var(--paper)}.how-figure img {display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:top center}
+.how-figure figcaption {font-size:13px;line-height:1.4;padding:10px 12px;color:var(--muted);border-top:1px solid var(--line)}
+.how-steps {counter-reset:s;padding:0;margin:0;list-style:none}
+.how-steps li {position:relative;padding:14px 0 14px 44px;border-top:1px solid var(--line);margin:0}
+.how-steps li::before {counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:0;top:17px;font:600 13px var(--display);letter-spacing:.06em;color:var(--muted);font-variant-numeric:tabular-nums}
+.how-steps h3 {margin:0 0 4px;font-size:20px}.how-steps p {margin:0;font-size:16px;line-height:1.55}
+.how-credit {margin-top:26px;font-size:15px}.how-credit a {font-weight:600;display:inline-flex;align-items:center;min-height:44px}
+@media(max-width:720px) {.how-steps li {padding-left:36px}.how-grid {gap:12px}.panel-foot .quiet {display:flex;font-size:11px;padding-top:4px;gap:0 10px}.panel-foot .quiet nav {gap:10px}}
+@media print {.community-footer nav,.skip-link,.signup-card,.how-credit,#credit,.community-invitation .actions,.community-hero .actions {display:none!important}.community-footer {border-top:1pt solid #999;font-size:9pt}.how-figure img {aspect-ratio:auto}}
+
+/* Visual QA, public-readiness pass 2026-10-10 */
+.legend {width:272px}
+.maplibregl-ctrl-bottom-right {left:468px;right:312px;max-width:none}
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib {max-width:100%;margin:0 0 8px;text-align:left}
+.survey-scale {bottom:84px}
+.citizen-memo {border-radius:var(--r)}
+.method-page h1,.impact-page h1 {font-size:clamp(42px,5.5vw,64px);line-height:1.04;max-width:20ch}
+.document-page .community-wrap {max-width:1120px;margin:0 auto}
+.method-page .document-header,.impact-page .document-header {margin-bottom:0}
+.method-page main,.impact-page main {padding-top:36px}
+@media(max-width:720px) {
+  .maplibregl-ctrl-bottom-right {left:auto;right:0}.survey-scale {bottom:calc(var(--panel-height) + 30px)}
+  .legend {padding-right:104px;min-height:48px;display:flex;flex-direction:column;justify-content:center}
+  .legend .layers-btn {position:absolute;left:auto;right:6px;top:50%;transform:translateY(-50%);width:auto;padding:8px 12px;min-height:40px;gap:6px}
+  .method-page h1,.impact-page h1 {font-size:42px}
+}

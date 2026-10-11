@@ -1,21 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Check your creek. · CreekChecker</title>
-<meta name="description" content="Check your Walla Walla lot against the proposed creek buffer. Live City and County GIS. Unofficial, built by residents.">
-<meta property="og:title" content="Is the proposed creek buffer limiting your property?">
-<meta property="og:description" content="Check your creek. See the mapped band, read the draft, and tell the City Council.">
-<meta property="og:type" content="website"><meta property="og:url" content="https://creekchecker.com/">
-<link rel="canonical" href="https://creekchecker.com/">
-<meta name="theme-color" content="#eeeae1">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="styles.css?v=20261010k">
-<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Check your creek. · CreekChecker</title><meta name="description" content="Check your Walla Walla lot against the proposed creek buffer. Live City and County GIS. Unofficial, built by residents."><meta property="og:type" content="website"><meta property="og:site_name" content="CreekChecker"><meta property="og:locale" content="en_US"><meta property="og:title" content="Is the proposed creek buffer limiting your property?"><meta property="og:description" content="Check your creek. See the mapped band, read the draft, and tell the City Council."><meta property="og:url" content="https://creekchecker.com/"><meta property="og:image" content="https://creekchecker.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Map of Walla Walla creeks with the proposed 100-foot band and the question: Is the proposed 100-foot creek buffer limiting your property?"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Is the proposed creek buffer limiting your property?"><meta name="twitter:description" content="Check your creek. See the mapped band, read the draft, and tell the City Council."><meta name="twitter:image" content="https://creekchecker.com/og.png"><meta name="twitter:image:alt" content="Map of Walla Walla creeks with the proposed 100-foot band and the question: Is the proposed 100-foot creek buffer limiting your property?"><link rel="canonical" href="https://creekchecker.com/"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#eeeae1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css"><link rel="stylesheet" href="styles.css?v=20261010m">
 </head>
 <body class="map-page">
 <a class="skip-link" href="#q">Skip to property search</a>
@@ -49,7 +35,7 @@
     <!-- This stepper reports actual lookup completion. ZIP-only input never evaluates a lot. -->
     <section class="survey hidden" id="stepper" aria-label="Locating your property">
       <div class="survey-head"><h2>From the valley to your lot.</h2><button class="text-button" type="button" id="skipIntro">Skip</button></div>
-      <ol><li data-step="county"><span>Finding Walla Walla County</span><small class="cap"></small></li><li data-step="rules"><span>Checking which rules apply</span><small class="cap" role="status"></small></li><li data-step="zip"><span id="stepZip">Zooming to your ZIP</span><small class="cap"></small></li><li data-step="lot"><span>Locating your lot</span><small class="cap"></small></li><li data-step="measure"><span>Measuring to the nearest creek</span><small class="cap"></small></li></ol>
+      <ol aria-live="polite"><li data-step="county"><span>Finding Walla Walla County</span><small class="cap"></small></li><li data-step="rules"><span>Checking which rules apply</span><small class="cap"></small></li><li data-step="zip"><span id="stepZip">Zooming to your ZIP</span><small class="cap"></small></li><li data-step="lot"><span>Locating your lot</span><small class="cap"></small></li><li data-step="measure"><span>Measuring to the nearest creek</span><small class="cap"></small></li></ol>
     </section>
     <div class="widths" id="widths" role="group" aria-label="City buffer comparison width"><span class="lbl">City buffer width · feet</span></div>
     <p class="width-source"><b>City of Walla Walla only:</b> 100 ft is proposed. Other widths are comparisons. County widths do not change with these buttons. <a href="method.html">Sources &amp; method</a></p>
@@ -84,7 +70,7 @@
     <details class="data-details"><summary>About the data</summary><p class="footer" id="aboutData"></p><a class="btn" href="method.html">How we computed this</a></details>
     <details class="data-details"><summary>Read the disclaimer</summary><p class="footer" id="disclaimerFooter">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p></details>
   </div>
-  <footer class="panel-foot"><div class="actions"><a class="btn primary" id="councilAction" href="mailto:CityClerk@wallawallawa.gov">Email the Council</a><button class="btn" type="button" id="copyAction">Copy link</button></div><a class="community-footer-link next-step-footer" id="nextStepFooter" href="learn.html">Learn more &amp; get involved →</a><div class="quiet"><span>Built by residents. Not legal advice.</span><a href="method.html">About the data</a></div></footer>
+  <footer class="panel-foot"><div class="actions"><a class="btn primary" id="councilAction" href="mailto:CityClerk@wallawallawa.gov">Email the Council</a><button class="btn" type="button" id="copyAction">Copy link</button></div><a class="community-footer-link next-step-footer" id="nextStepFooter" href="learn.html">Learn more &amp; get involved →</a><div class="quiet"><span>Built by residents of Walla Walla. Unofficial. Not legal advice.</span><nav aria-label="More information"><a href="method.html">About the data</a><a href="how.html">How this was built</a></nav><span id="credit">Made with <span aria-label="love">♥</span> by <a href="https://shrubn.com" rel="noopener">shrubn.com</a></span></div></footer>
 </aside>
 <div class="legend" id="legend" aria-label="Map legend">
   <div class="key-title">Read the map</div>
@@ -110,6 +96,8 @@
 <article class="print-sheet"><div class="brand"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M17 3c-13 10 12 10-2 19s-3 10-3 12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 7h4M8 5v4M21 29h4M23 27v4" stroke="currentColor"/></svg><span>CreekChecker<small>Walla Walla · Washington</small></span></div><h1>Check your creek.</h1><p class="print-lede">Does Walla Walla’s proposed 100-foot creek buffer touch your lot?</p><p>Find your property at <b>creekchecker.com</b>. Read what the draft says and tell the City Council before the vote.</p><div class="print-facts"><div><b>17.9 mi</b>mapped creeks</div><div><b>477 ac</b>in the band</div><div><b>1,489</b>city parcels touched</div></div><p class="print-source">Our computation from City GIS centerlines and County parcels, Oct 10, 2026. The consultant’s broader network: 269 to 757 acres (Facet, July 1, 2026). Method: creekchecker.com/method.html.</p><p>Today: 35 ft, or 50 ft on Yellowhawk. Proposed: 100 ft plus a 15-ft building setback (Oct 9 draft, Table 6 and setback provisions).</p><p>On Sept 14, 2026, the Planning Commission voted 7-0 to send the draft back for science matching local conditions (draft Commission minutes).</p><div class="print-meeting"><h2>Public hearing · October 14</h2><p>Wednesday, October 14, 2026 · 6:30 pm<br>City Hall · 15 N 3rd Ave · Walla Walla</p><p>Vote scheduled October 28, 2026.<br>Written comments: CityClerk@wallawallawa.gov</p><p class="print-source">Source: City Council Oct 14 agenda, Item 6E; City CAO project page.</p></div><p class="print-disclaimer">This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla&#x27;s own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.</p></article>
 <noscript><div class="banner">JavaScript is needed for the live map. Read <a href="method.html">the method and sources</a>, or contact City Development Services at 509-524-4710.</div></noscript>
 <!-- Presentation adapter and separate opt-in scenario. app.js remains byte-for-byte unchanged. -->
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
 <script>/* PRESENTATION ADAPTER — intentionally outside app.js.
    Retains every query, geometry test, width, result and FAQ in the existing app.
    Observes rendered results; uses MapLibre's public API for camera/paint only.
@@ -290,7 +278,7 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('layersPanel').classList.contains('hidden'))$('layersClose')?.click();});
 })();
 </script>
-<script src="app.js?v=20261010k"></script>
+<script src="app.js?v=20261010m"></script>
 <script>/* Optional, hypothetical comparison. Never replaces the source application's
    jurisdiction, parcel result, County working band, width selector or statistics.
    Live geometry stays in this browser; no scenario data is re-hosted. */

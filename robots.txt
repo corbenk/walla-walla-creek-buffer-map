@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /dev-sample/
+
+Sitemap: https://creekchecker.com/sitemap.xml

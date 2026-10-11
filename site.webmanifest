@@ -1,0 +1,14 @@
+{
+  "name": "CreekChecker",
+  "short_name": "CreekChecker",
+  "description": "Check your Walla Walla lot against the proposed creek buffer. Unofficial, built by residents.",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#eeeae1",
+  "theme_color": "#eeeae1",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "favicon-32.png", "sizes": "32x32", "type": "image/png" }
+  ]
+}
