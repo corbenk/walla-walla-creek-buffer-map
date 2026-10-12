@@ -871,3 +871,44 @@ html,body {font-variant-numeric:normal}
 
 /* 2026-10-12 (Corben): hearing banner text on ONE line at tablet/desktop; the buttons wrap below it before the text breaks. */
 @media(min-width:721px){.hearing-banner .hb-text {flex:1 0 auto;min-width:auto}.hearing-banner .hb-when {white-space:nowrap}}
+
+/* 2026-10-12 (Corben): "Ten yardsticks" — large and punchy. Dark full-bleed band, huge type, tape-measure rule, quote cards, red punchline. */
+.yardsticks {background:#1c201d;color:#f3efe4;padding:clamp(56px,8vw,112px) 0;margin:0}
+.yardsticks .yd-inner {max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.yd-eyebrow {font:700 13px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:#ff8a7e;margin:0 0 14px}
+.yardsticks h2 {font:700 clamp(44px,7.2vw,96px)/.95 var(--display);letter-spacing:-.025em;margin:0;color:#fbf8f0;text-wrap:balance;max-width:16ch}
+.yardsticks h2 span {color:#ff6f61}
+.yd-lede {font:400 clamp(18px,1.7vw,22px)/1.45 var(--body);color:#d9d4c6;max-width:56ch;margin:22px 0 0}
+.yd-tape {height:30px;margin:36px 0 34px;border-radius:4px;background:
+  repeating-linear-gradient(90deg,#1c201d 0 2px,transparent 2px 60px) 0 0/100% 100%,
+  repeating-linear-gradient(90deg,#1c201d 0 1px,transparent 1px 12px) 0 0/100% 45% no-repeat,
+  #e8c547;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.yd-grid {list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.yd-card {background:#262b27;border:1px solid #3a413b;border-top:4px solid #ff6f61;border-radius:8px;padding:22px 22px 18px;display:flex;flex-direction:column}
+.yd-who {font:700 12px/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;color:#a9b3a6;margin:0}
+.yd-measure {font:700 clamp(34px,3.2vw,44px)/1 var(--display);letter-spacing:-.02em;color:#fbf8f0;margin:10px 0 12px}
+.yd-card blockquote {margin:0;font:400 16px/1.5 var(--body);color:#e6e1d4;flex:1}
+.yd-src {margin:14px 0 0;font-size:13px}
+.yd-src a {color:#ffb3aa;text-decoration-thickness:1px;text-underline-offset:3px}
+.yd-src a:hover {color:#fff}
+.yd-punch {margin-top:28px;background:#cc3e36;color:#fff;border-radius:10px;padding:clamp(28px,4vw,52px);display:grid;gap:6px;justify-items:start}
+.yd-punch-k {font:700 14px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;margin:0;color:#ffe3df}
+.yd-punch-big {font:700 clamp(48px,8vw,112px)/.92 var(--display);letter-spacing:-.03em;margin:4px 0 6px}
+.yd-punch-sub {font:600 clamp(18px,1.8vw,22px)/1.35 var(--body);margin:0 0 14px;max-width:44ch}
+.yd-punch-btn {display:inline-flex;align-items:center;min-height:52px;padding:12px 24px;border-radius:6px;background:#fff;color:#8f241e;font:700 17px/1 var(--body);text-decoration:none}
+.yd-punch-btn:hover {background:#ffe9e6}
+.yardsticks a:focus-visible {outline:3px solid #ffd166;outline-offset:3px}
+@media(max-width:720px){.yd-grid {grid-template-columns:1fr}.yd-card {padding:20px 18px 16px}.yd-tape {margin:28px 0 26px;height:24px}.yd-punch-btn {width:100%;justify-content:center}}
+/* yardsticks: beat the generic .screen p/li rules and run the band edge to edge */
+#yardsticks {max-width:none;width:100%;border-top:0;padding:clamp(56px,8vw,112px) 0}
+#yardsticks p,#yardsticks li {max-width:none}
+#yardsticks .yd-lede {font-size:clamp(18px,1.7vw,22px);line-height:1.45;max-width:56ch}
+#yardsticks .yd-eyebrow {font-size:13px}
+#yardsticks .yd-who {font-size:12px;line-height:1.2}
+#yardsticks .yd-measure {font-size:clamp(34px,3.2vw,44px);line-height:1}
+#yardsticks .yd-card blockquote {font-size:16px;line-height:1.5}
+#yardsticks .yd-src {font-size:13px}
+#yardsticks .yd-punch-k {font-size:14px}
+#yardsticks .yd-punch-big {font-size:clamp(48px,8vw,112px);line-height:.92}
+#yardsticks .yd-punch-sub {font-size:clamp(18px,1.8vw,22px);line-height:1.35}
+#yardsticks h2 {font-size:clamp(44px,7.2vw,96px);max-width:16ch}
