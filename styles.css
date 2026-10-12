@@ -1165,3 +1165,25 @@ html {overflow-x:clip}
 /* phones: shorter slide so the drawer never pokes past the screen edge */
 @keyframes bn-drawer-in-sm {from {opacity:0;transform:translateX(12px)} to {opacity:1;transform:none}}
 @media(max-width:720px){.hearing-banner,.latest-banner {animation-name:bn-drawer-in-sm}.hearing-banner.bn-leave,.latest-banner.bn-leave {transform:translateX(14px)}}
+
+/* 2026-10-12 (Corben): navigation — map stops painting offscreen; back-to-top button; phone swipe rows for long card stacks. */
+.map-col.map-offscreen .maplibregl-canvas-container,.map-col.map-offscreen canvas {visibility:hidden}
+.to-top {position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));z-index:60;width:52px;height:52px;border-radius:50%;border:0;background:var(--cta);color:var(--cta-ink);display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 6px 18px rgba(20,30,28,.28),0 1px 3px rgba(20,30,28,.2);opacity:0;transform:translateY(16px) scale(.92);pointer-events:none;transition:opacity .28s cubic-bezier(.22,1,.36,1),transform .38s cubic-bezier(.22,1,.36,1),background .15s}
+.to-top.show {opacity:1;transform:none;pointer-events:auto}
+.to-top:hover {background:var(--cta-hover)}
+.to-top:active {transform:scale(.94)}
+.to-top:focus-visible {outline:3px solid var(--focus);outline-offset:3px}
+@media print {.to-top {display:none}}
+@media (prefers-reduced-motion: reduce){.to-top {transition:opacity .01s}}
+.swipe-meta {display:none}
+@media(max-width:720px){
+  .swipe-row {display:grid!important;grid-auto-flow:column;grid-template-columns:none!important;grid-auto-columns:86%;gap:12px!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    margin-left:calc(-1 * var(--gutter,16px))!important;margin-right:calc(-1 * var(--gutter,16px))!important;padding:4px var(--gutter,16px) 10px!important;scroll-padding-left:var(--gutter,16px);scrollbar-width:none}
+  .swipe-row::-webkit-scrollbar {display:none}
+  .swipe-row>* {scroll-snap-align:start;min-width:0}
+  .swipe-meta {display:flex;align-items:center;gap:8px;margin:6px 0 0!important;font:600 13px/1.2 var(--body);color:var(--muted)}
+  .swipe-meta b {color:var(--ink)}
+  .swipe-hint::after {content:" →";}
+  #yardsticks .swipe-meta {color:#bfc7bc}#yardsticks .swipe-meta b {color:#fbf8f0}
+}
