@@ -672,3 +672,20 @@ figure.photo.tall img {aspect-ratio:4/3;object-fit:cover;object-position:center 
 .org-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
 .org-grid .tell-us {border-top:4px solid var(--creek)}.org-grid .tell-us .actions {margin:12px 0 10px}.org-grid .story-note {margin:0}
 @media(max-width:720px) {.contact-form {padding:20px 16px}.contact-form .grid-2 {grid-template-columns:1fr}.contact-section {margin-top:40px;padding-top:24px}}
+
+/* ---------- Cautionary tales + hero actions (2026-10-12, prompts/11): typographic cards, no photos. ---------- */
+.hero-else {margin:-6px 0 14px;font-size:15px}.hero-else a {font-weight:600;color:var(--amber-ink);text-decoration-thickness:1px}
+.hero-actions {display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}.hero-actions .btn {min-height:46px;padding:9px 16px}
+.landing .search-label {margin-top:4px}
+.cautionary .eyebrow {color:var(--band-edge)}
+.caution-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:28px}
+.caution-card {display:block;padding:24px 24px 20px;background:var(--panel);border:1px solid var(--line-strong);border-top:5px solid var(--band-edge);border-radius:var(--r-s);color:var(--ink);text-decoration:none}
+.caution-card .kicker {font:600 12px/1.4 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.caution-card h3 {font-size:27px;line-height:1.1;margin:0 0 12px;max-width:22ch}
+.caution-card p {font-size:16px;line-height:1.5;margin:0 0 10px}
+.caution-card .src {font-size:13px;color:var(--muted);margin:12px 0 0}
+.caution-card.more {border-top-color:var(--creek);background:var(--creek-soft)}.caution-card.more:hover h3 {text-decoration:underline;text-underline-offset:4px}.caution-card.more .src {color:var(--creek);font-weight:600}
+.caution-honest {margin:28px 0 0;padding:18px 22px;border-left:4px solid var(--sage-ink);background:var(--sage-soft);font-size:17px;max-width:70ch}
+.caution-foot {margin:16px 0 0;font-size:16px}.caution-foot a {display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.charts .charts-head {margin-top:0}.charts h2 {font-size:34px}
+@media(max-width:720px) {.caution-grid {grid-template-columns:1fr;gap:14px}.caution-card {padding:18px 16px 16px}.caution-card h3 {font-size:23px}.caution-card p {font-size:15px}.hero-actions .btn {flex:1 1 auto}}
