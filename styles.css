@@ -921,3 +921,39 @@ html,body {font-variant-numeric:normal}
 .cl-text {font-size:15px;line-height:1.4}
 .cl-link {font-size:14px;font-weight:600;color:var(--creek);text-decoration:underline;text-underline-offset:3px}
 @media(max-width:720px){.city-latest {padding:10px 12px;margin-bottom:14px}.cl-text {font-size:14px}}
+
+/* 2026-10-12 (Corben): "It doesn't add up." — ten sourced contradictions + why-Washington timeline + science note. Large, light, punchy. */
+#doesnt-add-up {max-width:none;width:100%;border-top:0;padding:clamp(56px,8vw,112px) 0;background:var(--paper)}
+#doesnt-add-up p,#doesnt-add-up li {max-width:none}
+.dau-inner {max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+#doesnt-add-up .dau-eyebrow {font:700 13px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--band-edge);margin:0 0 12px}
+#doesnt-add-up h2 {font:700 clamp(52px,9vw,124px)/.9 var(--display);letter-spacing:-.035em;margin:0;color:var(--ink);max-width:none}
+#doesnt-add-up .dau-lede {font-size:clamp(18px,1.7vw,22px);line-height:1.45;color:var(--muted);max-width:56ch;margin:20px 0 40px}
+.dau-grid {list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.dau-card {position:relative;background:var(--panel);border:1px solid var(--line-strong);border-radius:10px;padding:26px 26px 20px 26px;display:flex;flex-direction:column;gap:12px}
+.dau-n {font:700 clamp(40px,4vw,56px)/1 var(--display);letter-spacing:-.03em;color:transparent;-webkit-text-stroke:1.5px var(--band);margin:0}
+#doesnt-add-up .dau-card h3 {font:700 clamp(24px,2.3vw,30px)/1.08 var(--display);letter-spacing:-.015em;margin:0;color:var(--ink);text-wrap:balance}
+#doesnt-add-up .dau-says,#doesnt-add-up .dau-but {font-size:16px;line-height:1.5;margin:0;padding:12px 14px;border-radius:6px}
+#doesnt-add-up .dau-says {background:transparent;border:1px dashed var(--line-strong);color:var(--muted)}
+#doesnt-add-up .dau-but {background:color-mix(in srgb,var(--band) 12%,var(--panel));border-left:4px solid var(--band);color:var(--ink)}
+#doesnt-add-up .dau-says b,#doesnt-add-up .dau-but b {color:var(--ink)}
+#doesnt-add-up .dau-src {font-size:13px;margin:auto 0 0;color:var(--muted)}
+#doesnt-add-up .dau-src a {color:var(--creek)}
+.why-wa {margin-top:44px;background:#1c201d;color:#f3efe4;border-radius:12px;padding:clamp(28px,4vw,52px)}
+.why-wa .dau-eyebrow {color:#ff8a7e!important}
+#doesnt-add-up .why-wa h3 {font:700 clamp(32px,4.6vw,60px)/.98 var(--display);letter-spacing:-.025em;color:#fbf8f0;margin:0 0 28px;max-width:20ch}
+.why-line {list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;position:relative}
+.why-line li {border-top:3px solid #4a524b;padding-top:14px;position:relative}
+.why-line li::before {content:"";position:absolute;top:-8px;left:0;width:13px;height:13px;border-radius:50%;background:#e8c547}
+.why-line li.now {border-top-color:#ff6f61}.why-line li.now::before {background:#ff6f61}
+.why-line span {display:block;font:700 22px/1 var(--display);color:#e8c547;margin-bottom:8px}
+.why-line li.now span {color:#ff8a7e}
+#doesnt-add-up .why-line p {font-size:15px;line-height:1.45;color:#ddd8ca;margin:0}
+#doesnt-add-up .why-line p b {color:#fbf8f0}
+#doesnt-add-up .why-close {font:600 clamp(18px,1.8vw,22px)/1.4 var(--body);color:#fbf8f0;margin:28px 0 0;max-width:52ch}
+.sci-note {margin-top:18px;border:1px solid var(--line-strong);border-left:6px solid var(--creek);border-radius:10px;padding:24px 26px;background:var(--panel)}
+#doesnt-add-up .sci-note h3 {font:700 clamp(24px,2.6vw,32px)/1.1 var(--display);margin:0 0 10px;color:var(--ink)}
+#doesnt-add-up .sci-note p {font-size:17px;line-height:1.55;color:var(--ink);margin:0 0 10px;max-width:72ch}
+#doesnt-add-up a:focus-visible {outline:3px solid var(--focus);outline-offset:2px}
+@media(max-width:1000px){.why-line {grid-template-columns:repeat(3,minmax(0,1fr));row-gap:26px}}
+@media(max-width:720px){.dau-grid {grid-template-columns:1fr}.dau-card {padding:22px 18px 18px}.why-line {grid-template-columns:1fr;row-gap:22px}.why-wa {padding:26px 20px}}
