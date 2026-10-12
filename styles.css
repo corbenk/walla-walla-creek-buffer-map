@@ -1149,3 +1149,19 @@ html,body {font-variant-numeric:normal}
 .document-page .latest-banner,.community-wrap .latest-banner {width:auto;max-width:none;margin:0 0 40px}
 .document-page .hearing-banner:has(+ .latest-banner:not([hidden])),.community-wrap .hearing-banner:has(+ .latest-banner:not([hidden])) {margin-bottom:12px}
 @media(max-width:720px){.document-page .latest-banner,.community-wrap .latest-banner {margin:0 0 28px}}
+
+/* 2026-10-12 (Corben): × bubble on the right; banners slide in like drawers (first page of a visit) and slide out + fold away when closed. */
+html {overflow-x:clip}
+.bn-close {left:auto;right:-11px}
+@media(max-width:720px){.bn-close {left:auto;right:-8px}}
+@keyframes bn-drawer-in {from {opacity:0;transform:translateX(56px)} to {opacity:1;transform:none}}
+.hearing-banner,.latest-banner {animation:bn-drawer-in .62s cubic-bezier(.22,1,.36,1) both}
+.latest-banner {animation-delay:.14s}
+.hearing-banner.bn-static,.latest-banner.bn-static {animation:none}
+.hearing-banner {transition:margin-bottom .36s cubic-bezier(.4,0,.2,1)}
+.hearing-banner.bn-leave,.latest-banner.bn-leave {overflow:hidden;opacity:0;transform:translateX(64px);height:0!important;margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:0!important;border-color:transparent;
+  transition:transform .3s cubic-bezier(.55,0,.75,.2),opacity .26s ease-in,height .36s cubic-bezier(.4,0,.2,1) .14s,margin .36s cubic-bezier(.4,0,.2,1) .14s,padding .36s cubic-bezier(.4,0,.2,1) .14s,border-color .2s ease .14s}
+@media (prefers-reduced-motion: reduce){.hearing-banner,.latest-banner {animation:none!important;transition:none!important}}
+/* phones: shorter slide so the drawer never pokes past the screen edge */
+@keyframes bn-drawer-in-sm {from {opacity:0;transform:translateX(12px)} to {opacity:1;transform:none}}
+@media(max-width:720px){.hearing-banner,.latest-banner {animation-name:bn-drawer-in-sm}.hearing-banner.bn-leave,.latest-banner.bn-leave {transform:translateX(14px)}}
