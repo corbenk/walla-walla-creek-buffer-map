@@ -1,0 +1,667 @@
+{
+ "generated": "2026-10-12",
+ "note": "Open-license set processed by data/scripts/process_ww_photos.py; aerials by data/scripts/make_aerial_crops.py; owner set from img/ww/own/credits.json.",
+ "images": [
+  {
+   "file": "img/ww/own/county-sign-sunset-1600.jpg",
+   "small": "img/ww/own/county-sign-sunset-800.jpg",
+   "subject": "\u201cEntering Walla Walla County\u201d sign at sunset, fields and the valley beyond",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "\u201cEntering Walla Walla County\u201d sign at sunset, fields and the valley beyond",
+   "alt": "\u201cEntering Walla Walla County\u201d sign at sunset, fields and the valley beyond",
+   "source": "owner"
+  },
+  {
+   "file": "img/ww/own/creek-sunset-path-1600.jpg",
+   "small": "img/ww/own/creek-sunset-path-800.jpg",
+   "subject": "Sunset over the creek from the path, Walla Walla",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "Sunset over the creek from the path, Walla Walla",
+   "alt": "Sunset over the creek from the path, Walla Walla",
+   "source": "owner"
+  },
+  {
+   "file": "img/ww/own/mill-creek-channel-skate-1600.jpg",
+   "small": "img/ww/own/mill-creek-channel-skate-800.jpg",
+   "subject": "The concrete Mill Creek flood channel through town",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "The concrete Mill Creek flood channel through town",
+   "alt": "The concrete Mill Creek flood channel through town",
+   "source": "owner"
+  },
+  {
+   "file": "img/ww/own/creek-gravel-bar-hills-1600.jpg",
+   "small": "img/ww/own/creek-gravel-bar-hills-800.jpg",
+   "subject": "A creek, its gravel bar and cottonwoods below the hills",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "A creek, its gravel bar and cottonwoods below the hills",
+   "alt": "A creek, its gravel bar and cottonwoods below the hills",
+   "source": "owner"
+  },
+  {
+   "file": "img/ww/own/fishing-red-shirt-1600.jpg",
+   "small": "img/ww/own/fishing-red-shirt-800.jpg",
+   "subject": "Fishing a clear pool from the bank",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "Fishing a clear pool from the bank",
+   "alt": "Fishing a clear pool from the bank",
+   "source": "owner"
+  },
+  {
+   "file": "img/ww/own/valley-road-scooter-1600.jpg",
+   "small": "img/ww/own/valley-road-scooter-800.jpg",
+   "subject": "A valley road toward the Blue Mountains",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "A valley road toward the Blue Mountains",
+   "alt": "A valley road toward the Blue Mountains",
+   "source": "owner"
+  },
+  {
+   "file": "img/ww/own/morning-meadow-1600.jpg",
+   "small": "img/ww/own/morning-meadow-800.jpg",
+   "subject": "Morning sun over the trees and a meadow",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "Morning sun over the trees and a meadow",
+   "alt": "Morning sun over the trees and a meadow",
+   "source": "owner"
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Mill Creek's concrete flood-control channel beside N. 6th Avenue, downtown Walla Walla (2014)",
+   "author": "Joe Mabel",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Walla_Walla,_WA_-_channelized_creek_02.jpg",
+   "attribution": "Photo: Joe Mabel, CC BY-SA 3.0, via Wikimedia Commons",
+   "caption": "Mill Creek in its concrete flood channel beside N. 6th Avenue downtown. The channel is a federal flood-control project (U.S. Army Corps of Engineers, paved 1948), which is why the draft treats Mill Creek differently from the smaller creeks.",
+   "alt": "A curved concrete flood channel with a thin stream of water at the bottom, trees and a substation fence above the walls.",
+   "file": "img/ww/mill-creek-channel-6th-ave-1600.jpg",
+   "small": "img/ww/mill-creek-channel-6th-ave-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/mill-creek-channel-6th-ave.jpg",
+   "original_size": [
+    4288,
+    2848
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1063
+    ],
+    "bytes": 249655,
+    "quality": 66,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     531
+    ],
+    "bytes": 115132,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "dvids",
+   "subject": "Mill Creek Channel at high water, Walla Walla, 7 February 2020 (U.S. Army Corps of Engineers)",
+   "author": "Joseph Saxon, U.S. Army Corps of Engineers, Northwestern Division",
+   "license": "Public domain (U.S. federal government work)",
+   "license_url": "https://www.dvidshub.net/about/copyright",
+   "source_url": "https://www.dvidshub.net/image/6093616/mill-creek-channel",
+   "attribution": "Photo: Joseph Saxon, U.S. Army Corps of Engineers (public domain), via DVIDS",
+   "caption": "Mill Creek running high in the Corps-built flood channel, February 2020. Photo: Joseph Saxon, U.S. Army Corps of Engineers (public domain).",
+   "alt": "Brown floodwater racing through a creek channel past bare trees and an eroded gravel bank under a grey sky.",
+   "file": "img/ww/mill-creek-channel-high-water-2020-1600.jpg",
+   "small": "img/ww/mill-creek-channel-high-water-2020-800.jpg",
+   "raw": "data/raw/ww-photos/dvids/orig/6093616-mill-creek-channel-2000w.jpg",
+   "original_size": [
+    1999,
+    1333
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1067
+    ],
+    "bytes": 231827,
+    "quality": 66,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     533
+    ],
+    "bytes": 111468,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Lower Mill Creek near Old Highway 12, west of College Place, looking downstream (April 2026)",
+   "author": "Generalissima",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Mill_Creek_west_of_College_Place,_WA_4.jpg",
+   "attribution": "Photo: Generalissima, CC BY 4.0, via Wikimedia Commons",
+   "caption": "Mill Creek below town, near Old Highway 12 west of College Place, where it runs free of the concrete channel. This reach is outside the city limits.",
+   "alt": "A wide, shallow creek with a gravel bar and a fallen log, lined by leafy trees under a bluff.",
+   "file": "img/ww/mill-creek-lower-reach-1600.jpg",
+   "small": "img/ww/mill-creek-lower-reach-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/mill-creek-lower-reach.jpg",
+   "original_size": [
+    3456,
+    2304
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1067
+    ],
+    "bytes": 243147,
+    "quality": 54,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     533
+    ],
+    "bytes": 161652,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Bandstand in Pioneer Park, Walla Walla (2013)",
+   "author": "Robert Ashworth",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Band_stand_in_Pioneer_Park,_Walla_Walla,_WA._(10900216193).jpg",
+   "attribution": "Photo: Robert Ashworth, CC BY 2.0, via Wikimedia Commons",
+   "caption": "The bandstand in Pioneer Park. Garrison Creek runs through the park, a few blocks from the Home Avenue example.",
+   "alt": "A white octagonal bandstand with a copper roof under large old trees in a park.",
+   "file": "img/ww/pioneer-park-bandstand-1600.jpg",
+   "small": "img/ww/pioneer-park-bandstand-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/pioneer-park-bandstand.jpg",
+   "original_size": [
+    1536,
+    1024
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1067
+    ],
+    "bytes": 249163,
+    "quality": 66,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     533
+    ],
+    "bytes": 124600,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Lakum Duckum, the pond on College Creek at Whitman College (2009)",
+   "author": "PSB (Wikimedia Commons user)",
+   "license": "Public domain (released by the author)",
+   "license_url": "https://commons.wikimedia.org/wiki/Template:PD-self",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Whitman-college-artificial-pond-on-mill-creek.jpg",
+   "attribution": "Photo: PSB, public domain, via Wikimedia Commons",
+   "caption": "Lakum Duckum, the pond on College Creek at Whitman College. Small creeks like this one thread through the whole east side of town.",
+   "alt": "A still campus pond with lily pads, a small waterfall and willows reflected in the water.",
+   "file": "img/ww/whitman-college-pond-1600.jpg",
+   "small": "img/ww/whitman-college-pond-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/whitman-college-pond.jpg",
+   "original_size": [
+    2400,
+    1800
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1200
+    ],
+    "bytes": 247453,
+    "quality": 54,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     600
+    ],
+    "bytes": 166274,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Summer lawn and mature trees on the Whitman College campus (2004)",
+   "author": "Suzanne Shaw",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Whitman_College_Lawn.jpg",
+   "attribution": "Photo: Suzanne Shaw, CC BY 2.0, via Flickr / Wikimedia Commons",
+   "caption": "Old shade trees on the Whitman College campus.",
+   "alt": "A sunlit lawn with a wooden bench under tall, spreading trees.",
+   "file": "img/ww/whitman-college-lawn-1600.jpg",
+   "small": "img/ww/whitman-college-lawn-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/whitman-college-lawn.jpg",
+   "original_size": [
+    2592,
+    1944
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1200
+    ],
+    "bytes": 298474,
+    "quality": 54,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     600
+    ],
+    "bytes": 195771,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Wheat field and the Walla Walla water tower at dusk (June 2018)",
+   "author": "Jason W Lacey",
+   "license": "CC0 1.0",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Wheat_Field_in_Walla_Walla,_Washington,_2018.jpg",
+   "attribution": "Photo: Jason W Lacey, CC0, via Flickr / Wikimedia Commons",
+   "caption": "Wheat at the edge of town, with the Walla Walla water tower behind.",
+   "alt": "Golden wheat in the foreground, a round white water tower painted with the word Walla Walla, and a pink dusk sky.",
+   "file": "img/ww/wheat-field-2018-1600.jpg",
+   "small": "img/ww/wheat-field-2018-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/wheat-field-2018.jpg",
+   "original_size": [
+    4787,
+    3170
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1060
+    ],
+    "bytes": 231697,
+    "quality": 78,
+    "denoised": false
+   },
+   "w800": {
+    "size": [
+     800,
+     530
+    ],
+    "bytes": 80006,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Main Street, downtown Walla Walla, with the Dacres Hotel building (July 2021)",
+   "author": "Ken Lund",
+   "license": "CC BY-SA 2.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:(2021-07-02)_Main_Street,_Walla_Walla,_Washington.jpg",
+   "attribution": "Photo: Ken Lund, CC BY-SA 2.0, via Flickr / Wikimedia Commons",
+   "caption": "Main Street downtown.",
+   "alt": "A sunny downtown street with a three-storey historic hotel building, street trees and parked cars.",
+   "file": "img/ww/main-street-2021-1600.jpg",
+   "small": "img/ww/main-street-2021-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/main-street-2021.jpg",
+   "original_size": [
+    5184,
+    3888
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1200
+    ],
+    "bytes": 234358,
+    "quality": 66,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     600
+    ],
+    "bytes": 116548,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "East Main Street at South First Avenue, Walla Walla Downtown Historic District (September 2021)",
+   "author": "Jon Roanhaus",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Walla_Walla_Downtown_HD7_NRHP_100006868_Walla_Walla_County,_WA.jpg",
+   "attribution": "Photo: Jon Roanhaus, CC BY-SA 4.0, via Wikimedia Commons",
+   "caption": "Main Street at First Avenue, in the downtown historic district.",
+   "alt": "Brick storefronts at a downtown intersection under a wide sky streaked with high cloud.",
+   "file": "img/ww/main-and-first-2021-1600.jpg",
+   "small": "img/ww/main-and-first-2021-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/main-and-first-2021.jpg",
+   "original_size": [
+    2016,
+    1512
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1200
+    ],
+    "bytes": 233234,
+    "quality": 62,
+    "denoised": false
+   },
+   "w800": {
+    "size": [
+     800,
+     600
+    ],
+    "bytes": 98238,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "The Blue Mountains from the Walla Walla Valley (February 2011)",
+   "author": "Agne27",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Blue_Mountains_Walla_Walla.JPG",
+   "attribution": "Photo: Agne27, CC BY-SA 3.0, via Wikimedia Commons",
+   "caption": "The Blue Mountains from farmland in the Walla Walla Valley. Most of the valley's creeks begin up there.",
+   "alt": "A dark plowed field in the foreground and snow-covered mountains under a sky of broken cloud.",
+   "file": "img/ww/blue-mountains-valley-1600.jpg",
+   "small": "img/ww/blue-mountains-valley-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/blue-mountains-valley.jpg",
+   "original_size": [
+    2592,
+    1936
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1195
+    ],
+    "bytes": 237266,
+    "quality": 66,
+    "denoised": false
+   },
+   "w800": {
+    "size": [
+     800,
+     598
+    ],
+    "bytes": 92422,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "Kirkman House Museum, N. Colville Street, under mature street trees (2012)",
+   "author": "Phbludwig",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kirkman_House.JPG",
+   "attribution": "Photo: Phbludwig, CC BY-SA 3.0, via Wikimedia Commons",
+   "caption": "The Kirkman House Museum on North Colville Street, one of the older residential blocks in town. (A public museum, shown as a street scene; it is not an example of an affected lot.)",
+   "alt": "A two-storey brick Italianate house with white trim and a lawn, framed by large old trees.",
+   "file": "img/ww/kirkman-house-1600.jpg",
+   "small": "img/ww/kirkman-house-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/kirkman-house.jpg",
+   "original_size": [
+    4000,
+    3000
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1200
+    ],
+    "bytes": 245370,
+    "quality": 70,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     600
+    ],
+    "bytes": 129518,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "\"Scene on the Yellow Hawk Creek\", Walla Walla, 1906 postcard (Br\u00fcck & Sohn)",
+   "author": "Br\u00fcck & Sohn Kunstverlag, Meissen (1906 postcard)",
+   "license": "CC0 1.0 (publisher's archive release; also public domain by age)",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:08430-Walla_Walla-1906-Scene_on_the_Yellow_Hawk_Creek-Br\u00fcck_&_Sohn_Kunstverlag.jpg",
+   "attribution": "1906 postcard: Br\u00fcck & Sohn Kunstverlag, CC0, via Wikimedia Commons",
+   "caption": "Yellowhawk Creek on a 1906 postcard, already fitted with a small dam. The city's creeks have been worked, moved and built beside for well over a century.",
+   "alt": "A sepia 1906 postcard of a creek pouring over a low wooden dam between leafy trees.",
+   "file": "img/ww/yellowhawk-creek-1906-1600.jpg",
+   "small": "img/ww/yellowhawk-creek-1906-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/yellowhawk-creek-1906.jpg",
+   "original_size": [
+    1516,
+    1000
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1055
+    ],
+    "bytes": 247244,
+    "quality": 62,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     528
+    ],
+    "bytes": 150451,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "source": "wikimedia-commons",
+   "subject": "\"Scene on Mill Creek\", Walla Walla, 1906 postcard (Br\u00fcck & Sohn)",
+   "author": "Br\u00fcck & Sohn Kunstverlag, Meissen (1906 postcard)",
+   "license": "CC0 1.0 (publisher's archive release; also public domain by age)",
+   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "source_url": "https://commons.wikimedia.org/wiki/File:08431-Walla_Walla-1906-Scene_on_Mill_Creek_Walla_Walla_Wash.-Br\u00fcck_&_Sohn_Kunstverlag.jpg",
+   "attribution": "1906 postcard: Br\u00fcck & Sohn Kunstverlag, CC0, via Wikimedia Commons",
+   "caption": "Mill Creek on a 1906 postcard, four decades before it was paved into a flood channel.",
+   "alt": "A sepia 1906 postcard of a shallow, tree-lined creek with a gravel bed.",
+   "file": "img/ww/mill-creek-1906-1600.jpg",
+   "small": "img/ww/mill-creek-1906-800.jpg",
+   "raw": "data/raw/ww-photos/commons/orig/mill-creek-1906.jpg",
+   "original_size": [
+    1519,
+    1000
+   ],
+   "w1600": {
+    "size": [
+     1600,
+     1053
+    ],
+    "bytes": 248709,
+    "quality": 66,
+    "denoised": true
+   },
+   "w800": {
+    "size": [
+     800,
+     527
+    ],
+    "bytes": 143967,
+    "quality": 82,
+    "denoised": false
+   }
+  },
+  {
+   "file": "img/ww/aerial-garrison-pioneer-park-1600.jpg",
+   "small": "img/ww/aerial-garrison-pioneer-park-800.jpg",
+   "subject": "Garrison Creek where it passes Pioneer Park and Division Street, from the air",
+   "ground_m_per_px": 0.42,
+   "extent_m": [
+    672,
+    378
+   ],
+   "author": "USDA Farm Service Agency (NAIP), served by USGS The National Map",
+   "license": "Public domain (U.S. federal government work)",
+   "license_url": "https://www.usgs.gov/faqs/are-usgs-reports-publications-copyrighted",
+   "attribution": "USDA NAIP aerial imagery via USGS The National Map (public domain)",
+   "caption": "Garrison Creek where it passes Pioneer Park and Division Street, from the air. USDA NAIP aerial imagery via USGS The National Map (public domain).",
+   "alt": "Aerial photograph of garrison Creek where it passes Pioneer Park and Division Street, from the air",
+   "source": "usgs-naip",
+   "w1600": {
+    "size": [
+     1600,
+     900
+    ],
+    "bytes": 228723,
+    "quality": 82
+   },
+   "w800": {
+    "size": [
+     800,
+     450
+    ],
+    "bytes": 78226,
+    "quality": 82
+   },
+   "source_label": "USDA NAIP orthoimagery via USGS The National Map (public domain); neighborhood-scale crop, location generalized"
+  },
+  {
+   "file": "img/ww/aerial-home-ave-garrison-1600.jpg",
+   "small": "img/ww/aerial-home-ave-garrison-800.jpg",
+   "subject": "The Home Avenue neighborhood along Garrison Creek, from the air",
+   "ground_m_per_px": 0.42,
+   "extent_m": [
+    672,
+    378
+   ],
+   "author": "USDA Farm Service Agency (NAIP), served by USGS The National Map",
+   "license": "Public domain (U.S. federal government work)",
+   "license_url": "https://www.usgs.gov/faqs/are-usgs-reports-publications-copyrighted",
+   "attribution": "USDA NAIP aerial imagery via USGS The National Map (public domain)",
+   "caption": "The Home Avenue neighborhood along Garrison Creek, from the air. USDA NAIP aerial imagery via USGS The National Map (public domain).",
+   "alt": "Aerial photograph of the Home Avenue neighborhood along Garrison Creek, from the air",
+   "source": "usgs-naip",
+   "w1600": {
+    "size": [
+     1600,
+     900
+    ],
+    "bytes": 209867,
+    "quality": 82
+   },
+   "w800": {
+    "size": [
+     800,
+     450
+    ],
+    "bytes": 72761,
+    "quality": 82
+   },
+   "source_label": "USDA NAIP orthoimagery via USGS The National Map (public domain); neighborhood-scale crop, location generalized"
+  },
+  {
+   "file": "img/ww/aerial-yellowhawk-tietan-1600.jpg",
+   "small": "img/ww/aerial-yellowhawk-tietan-800.jpg",
+   "subject": "Yellowhawk Creek south of Tietan Street, from the air",
+   "ground_m_per_px": 0.42,
+   "extent_m": [
+    672,
+    378
+   ],
+   "author": "USDA Farm Service Agency (NAIP), served by USGS The National Map",
+   "license": "Public domain (U.S. federal government work)",
+   "license_url": "https://www.usgs.gov/faqs/are-usgs-reports-publications-copyrighted",
+   "attribution": "USDA NAIP aerial imagery via USGS The National Map (public domain)",
+   "caption": "Yellowhawk Creek south of Tietan Street, from the air. USDA NAIP aerial imagery via USGS The National Map (public domain).",
+   "alt": "Aerial photograph of yellowhawk Creek south of Tietan Street, from the air",
+   "source": "usgs-naip",
+   "w1600": {
+    "size": [
+     1600,
+     900
+    ],
+    "bytes": 217149,
+    "quality": 82
+   },
+   "w800": {
+    "size": [
+     800,
+     450
+    ],
+    "bytes": 75302,
+    "quality": 82
+   },
+   "source_label": "USDA NAIP orthoimagery via USGS The National Map (public domain); neighborhood-scale crop, location generalized"
+  }
+ ]
+}

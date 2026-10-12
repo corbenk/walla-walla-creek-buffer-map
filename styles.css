@@ -608,3 +608,40 @@ body.map-page.landing {height:auto;overflow:visible}
   .act h2 {font-size:24px}
 }
 @media print {.landing .site-head,.landing .screen,.landing .site-foot,.landing .map-col,.landing .progress,.landing .tip {display:none!important}}
+
+/* ---------- Photos (2026-10-12, design/tools/photo_placement.md): literal captions, 20% backdrops, 1600 files off phones. ---------- */
+figure.photo {margin:20px 0 28px;max-width:100%}
+figure.photo img {display:block;width:100%;height:auto;border-radius:var(--r-s);border:1px solid var(--line);background:var(--paper)}
+figure.photo figcaption {font-size:13px;line-height:1.4;color:var(--muted);margin-top:8px;max-width:70ch}
+figure.photo.wide img {aspect-ratio:3/1;object-fit:cover;object-position:center 45%}
+figure.photo.wide.top img {object-position:center 14%} /* portrait frames whose subject sits near the top (valley road) */
+figure.photo.tall img {aspect-ratio:4/3;object-fit:cover;object-position:center 35%}
+.community-hero.has-backdrop {position:relative;isolation:isolate;padding:32px 24px 40px;border-radius:var(--r);overflow:hidden}
+.hero-backdrop {position:absolute;inset:0;z-index:-1;overflow:hidden}
+.hero-backdrop img,.hero-backdrop video {width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:.2}
+.landing .hero {position:relative;grid-template-areas:"left map"}
+.landing .hero-media {grid-area:left;position:relative;z-index:0;overflow:hidden;pointer-events:none}
+.landing .hero-media img,.landing .hero-media video {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:.2}
+.landing .hero-video {z-index:1;background:transparent}.landing .hero-still:not([src]) {visibility:hidden} /* the fallback still has no src until the poster fails */.landing .hero-video.no-poster:not(.playing) {opacity:0} /* poster missing: the still underneath shows; a failed source keeps the poster */
+.landing .panel {grid-area:left;position:relative;z-index:1}
+.landing .map-col {grid-area:map}
+.story-grid .photo {margin:0 0 20px}
+.story-pair {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:40px}
+.story-pair .pair-item p {margin:0}
+.story-pair .photo {margin:0 0 14px}
+.organize .photo.wide {margin:8px 0 28px}
+.mill-thumb {margin:0 0 14px;max-width:420px}.mill-thumb img {display:block;width:100%;height:auto;border-radius:var(--r-s);border:1px solid var(--line)}.mill-thumb figcaption {font-size:12px;color:var(--muted);margin-top:4px}
+.photo-credits {border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
+.photo-credits h3 {font-size:22px;margin-bottom:6px}.photo-credits p {font-size:14px;color:var(--muted)}
+.photo-credits ul {padding-left:20px;margin:0}.photo-credits li {font-size:13px;line-height:1.45;margin:4px 0;max-width:80ch}
+@media(max-width:1000px) {.story-pair {grid-template-columns:1fr}}
+@media(max-width:720px) {
+  .landing .hero {grid-template-areas:none}
+  .landing .hero {isolation:isolate}
+  .landing .hero-media {grid-area:auto;position:absolute;top:0;left:0;right:0;height:560px;z-index:-1}
+  .landing .panel {grid-area:auto;position:static;z-index:auto}
+  .landing .map-col {grid-area:auto}
+  .community-hero.has-backdrop {padding:24px 16px 28px}
+  .story-pair {gap:24px;margin-top:32px}
+}
+@media print {.landing .hero-media,.hero-backdrop {display:none!important}}
