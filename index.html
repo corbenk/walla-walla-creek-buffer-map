@@ -11,10 +11,8 @@
 <main id="main">
 <!-- Screen 1: Walla Walla headline + one address field. The map (right / below) opens on Walla Walla with the band visible. -->
 <section class="hero" id="check" aria-label="Check your lot">
-<!-- Hero video slot (photo_placement.md + coordinator spec 2026-10-12): decorative 20% backdrop behind the headline column. Stack: own/creek-sunset-path still
-     (bottom) → <video poster=video/hero-poster.jpg> (top). landing.js attaches the sources (hero.webm + hero.mp4; hero-720.mp4 on viewports ≤ 720 px) and plays
-     only when prefers-reduced-motion is not set, effectiveType is not 2g/slow-2g and saveData is off; otherwise the poster shows, and if the poster 404s the still shows. -->
-<div class="hero-media" aria-hidden="true"><picture><source media="(max-width:720px)" data-srcset="img/ww/own/creek-sunset-path-800.jpg"><img data-src="img/ww/own/creek-sunset-path-800.jpg" data-srcset="img/ww/own/creek-sunset-path-800.jpg 800w, img/ww/own/creek-sunset-path-1600.jpg 1600w" sizes="(max-width:720px) 100vw, 470px" width="800" height="800" alt="" decoding="async" class="hero-still"></picture><video id="heroVideo" class="hero-video" poster="video/hero-poster.jpg" muted loop playsinline preload="metadata" data-src-webm="video/hero.webm" data-src-mp4="video/hero.mp4" data-src-mp4-phone="video/hero-720.mp4"></video></div>
+<!-- Hero backdrop: a decorative 20% still (video/hero-poster.jpg) behind the headline column. The hero video was removed 2026-10-12 (Corben). -->
+<div class="hero-media" aria-hidden="true"><img class="hero-still" src="video/hero-poster.jpg" width="1600" height="900" alt="" decoding="async"></div>
 <!-- Keep these application IDs: app.js owns data, results, limits, FAQ and layer behavior. -->
 <aside class="panel" id="panel" aria-label="Check your property">
   <button class="sheet-handle" id="sheetHandle" aria-label="Collapse panel to show more map" aria-expanded="true" aria-controls="panelBody" type="button" hidden></button>
@@ -689,30 +687,7 @@
     const j = result.querySelector('.juris'); if (j && j.nextSibling) result.insertBefore(f, j.nextSibling); else result.prepend(f);
   }
   new MutationObserver(millThumb).observe(result, { childList: true });
-  // Hero video (coordinator spec 2026-10-12): poster shows by default; if the poster 404s the own/creek-sunset-path still underneath shows.
-  // Sources are attached only when motion is allowed, the connection is not 2g / saveData, and the device is not a phone/touch screen.
-  const v = $('heroVideo');
-  if (v) {
-    const showStill = () => { v.parentNode.querySelectorAll('[data-src],[data-srcset]').forEach(el => { if (el.dataset.srcset) el.setAttribute('srcset', el.dataset.srcset); if (el.dataset.src) el.setAttribute('src', el.dataset.src); }); };
-    const poster = new Image(); poster.onerror = () => { v.removeAttribute('poster'); v.classList.add('no-poster'); showStill(); }; poster.src = v.getAttribute('poster');
-    const c = navigator.connection || {}; const slow = /^(slow-2g|2g)$/.test(c.effectiveType || '') || c.saveData === true;
-    const motion = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // 2026-10-12: phones keep the poster only. A looping translucent video under a gradient made iPhone Safari stall painting
-    // the rest of the page on scroll (blank areas). Larger screens play it, but only while the hero is on screen.
-    const phone = innerWidth <= 720 || matchMedia('(pointer: coarse)').matches;
-    if (motion && !slow && !phone) {
-      const add = (src, type) => { const s = document.createElement('source'); s.src = src; s.type = type; v.appendChild(s); };
-      add(v.dataset.srcWebm, 'video/webm');
-      add(v.dataset.srcMp4, 'video/mp4');
-      v.addEventListener('error', () => { v.classList.add('failed'); }, true);              // a source that 404s or cannot decode: the poster stays (the still only replaces a missing poster)
-      v.addEventListener('playing', () => { v.classList.add('playing'); }, { once: true });
-      v.autoplay = true; v.load(); const p = v.play(); if (p && p.catch) p.catch(() => {});
-      if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => {
-        if (en.isIntersecting) { const q = v.play(); if (q && q.catch) q.catch(() => {}); } else v.pause();
-      }, { threshold: 0 }).observe(v);
-    }
-    window.creekHeroVideo = v;
-  }
+  // 2026-10-12 (Corben): hero video removed; the hero shows a still (video/hero-poster.jpg) only.
   // Hero "Check your lot": focus the address field (it is right below on every width).
   const checkLot = $('checkLot'); if (checkLot) checkLot.addEventListener('click', () => { const q = $('q'); q.scrollIntoView({ block: 'center', behavior: 'auto' }); q.focus(); });
   window.creekLanding = { mailto, lotLine, body };
