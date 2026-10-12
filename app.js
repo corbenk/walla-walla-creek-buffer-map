@@ -118,7 +118,8 @@
     style: 'https://tiles.openfreemap.org/styles/liberty',
     center: HOMING ? WA_CENTER : [Number(params.get('lng')) || CENTER[0], Number(params.get('lat')) || CENTER[1]],
     zoom: HOMING ? WA_ZOOM : (Number(params.get('z')) || (DEFAULT_ZOOM - (RM || SHARED ? 0 : INTRO_ZOOM_OUT))),
-    attributionControl: true
+    attributionControl: true,
+    pixelRatio: Math.min(window.devicePixelRatio || 1, 2)   // 2026-10-12: cap at 2x; 3x iPhones otherwise hold ~2.25x the GPU memory (scroll stalls)
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
   map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false }), 'top-right');
@@ -693,7 +694,15 @@
   }
   function setParcelHit(parcel) { const s = map.getSource('parcel-hit'); if (s) s.setData(parcel ? turf.featureCollection([parcel]) : EMPTY); }
   const parcelLine = (pp) => 'Parcel <b>' + esc(pp.geo_id || '') + '</b>' + (pp.full_situs ? ' (' + esc(pp.full_situs) + ')' : '');
-  const assessorLink = (pp) => (pp.link ? '<a href="' + esc(pp.link) + '" target="_blank" rel="noopener">County Assessor record</a>. ' : '');
+  // The County layer's `link` field points at a retired server (http://174.127.153.107, times out). Build the record URL on the
+  // County's live Property Search host from prop_id, keeping the tax year the layer supplies (2026-10-12).
+  const ASSESSOR = 'https://propertysearch.co.walla-walla.wa.us/PropertyAccess/Property.aspx';
+  const assessorHref = (pp) => {
+    const raw = String(pp.link || ''), id = String(pp.prop_id || (raw.match(/[?&]prop_id=(\d+)/) || [])[1] || '');
+    const year = (raw.match(/[?&]year=(\d{4})/) || [])[1] || '2025';
+    return /^\d+$/.test(id) ? ASSESSOR + '?cid=0&year=' + year + '&prop_id=' + id : '';
+  };
+  const assessorLink = (pp) => { const h = assessorHref(pp); return h ? '<a href="' + esc(h) + '" target="_blank" rel="noopener">County Assessor record ↗</a>. ' : ''; };
   const lookingUp = (parcelResolved) => (!DEMO && !parcelResolved ? '<span class="muted lookup"><i class="dot"></i>Looking up the County parcel at this point…</span>' : '');
 
   function evaluate(lnglat, label, parcel, parcelResolved) {

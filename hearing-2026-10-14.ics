@@ -1,0 +1,59 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CreekChecker//Walla Walla CAO hearing//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:America/Los_Angeles
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0800
+TZOFFSETTO:-0700
+TZNAME:PDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0700
+TZOFFSETTO:-0800
+TZNAME:PST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:cao-hearing-20261014@creekchecker.com
+DTSTAMP:20261012T205210Z
+DTSTART;TZID=America/Los_Angeles:20261014T183000
+DTEND;TZID=America/Los_Angeles:20261014T210000
+SUMMARY:City Council public hearing: creek buffers (Item 6E)
+LOCATION:Walla Walla City Hall\, 15 N 3rd Ave\, Walla Walla\, WA (or join o
+ n Zoom)
+URL:https://us02web.zoom.us/j/84531798905
+DESCRIPTION:Public hearing on the City's Critical Areas Ordinance (proposed
+  100-ft creek buffer)\, agenda Item 6E. Testimony only that night\; the Co
+ uncil vote is scheduled Oct 28.\n\nJOIN ON ZOOM: https://us02web.zoom.us/j
+ /84531798905\nMeeting ID: 845 3179 8905\nBY PHONE: 253-215-8782\, then mee
+ ting ID 84531798905#\nTO SPEAK (3 minutes): raise your hand (phone: *9)\, 
+ wait to be recognized\, then unmute (phone: *6).\n\nIN PERSON: City Hall\,
+  15 N 3rd Ave\, Walla Walla.\nWATCH LIVE: https://www.wallawallawa.gov/gov
+ ernment/city-council\nWRITTEN COMMENT before the hearing: CityClerk@wallaw
+ allawa.gov (cc citycouncil@wallawallawa.gov)\nAGENDA: https://agendas.ci.w
+ alla-walla.wa.us/agenda_publish.cfm?id=&mt=ALL&get_month=10&get_year=2026&
+ dsp=ag&seq=4783\n\nItems 6C and 6D are heard first\, so 6E may start after
+  6:30. The end time is an estimate.\nCheck your lot: https://creekchecker.
+ com
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Tomorrow 6:30 pm: City Council creek-buffer hearing (Item 6E)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:City Council creek-buffer hearing at 6:30 pm. Zoom: https://us0
+ 2web.zoom.us/j/84531798905
+TRIGGER:-PT1H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
