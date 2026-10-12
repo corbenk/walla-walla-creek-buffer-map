@@ -3,11 +3,11 @@
   "buttondownUsername": "",
   "organizerName": "CreekChecker organizers",
   "contactEmail": "",
-  "consentVersion": "creekchecker-private-interest-2026-10-12-v1",
+  "consentVersion": "",
   "creditName": "shrubn.com",
   "creditUrl": "https://shrubn.com",
-  "signupMode": "private_log",
-  "signupEndpoint": "https://creekchecker-updates.fondsky64.chatgpt.site/signup",
-  "signupHostName": "OpenAI Sites (Cloudflare hosting)",
-  "signupHostPrivacyUrl": "https://openai.com/policies/privacy-policy/"
+  "signupMode": "none",
+  "signupEndpoint": "",
+  "signupHostName": "",
+  "signupHostPrivacyUrl": ""
 }

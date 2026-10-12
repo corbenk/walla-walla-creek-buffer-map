@@ -57,7 +57,7 @@
     <!-- app.js renders the exact content.limits text here. No legal text is duplicated. -->
     <section class="limits" id="limits" hidden aria-label="What the draft would limit"></section>
     <!-- Guide routing reads the existing result; it never determines a property classification. -->
-    <section class="result-next-step" id="resultNextStep" aria-labelledby="nextStepTitle" hidden><p class="eyebrow" id="nextStepContext"></p><h2 id="nextStepTitle">What can I do next?</h2><p id="nextStepSummary"></p><a class="btn" id="nextStepRead" href="next-steps.html">Read my next steps →</a><p class="next-step-choice">Read the guide now. No email needed.<br><a id="nextStepUpdates" href="next-steps.html#updates">Or choose relevant email updates</a></p></section>
+    <section class="result-next-step" id="resultNextStep" aria-labelledby="nextStepTitle" hidden><p class="eyebrow" id="nextStepContext"></p><h2 id="nextStepTitle">What can I do next?</h2><p id="nextStepSummary"></p><a class="btn" id="nextStepRead" href="next-steps.html">Read my next steps →</a><p class="next-step-choice">Read the guide now. No email needed.<br><a id="nextStepUpdates" href="get-involved.html#contact">Or get updates on this proposal</a></p></section>
     <!-- Everything else from the app folds behind "More tools": width pills, what-if, FAQ, stats strip, the four-point ask, data notes. -->
     <details class="more-tools" id="moreTools"><summary>More tools: compare widths, map layers, questions and answers</summary>
       <div class="widths" id="widths" role="group" aria-label="City buffer comparison width"><span class="lbl">City buffer width · feet</span></div>
@@ -577,7 +577,6 @@
     document.getElementById('nextStepContext').textContent=guide.label;
     document.getElementById('nextStepSummary').textContent=guide.card;
     const read=document.getElementById('nextStepRead');read.href=href;read.textContent=guide.cta;
-    document.getElementById('nextStepUpdates').href=href+'-updates';
     footer.href=href;footer.textContent='Understand my result & next steps →';
   }
   const observer=new MutationObserver(reflect);

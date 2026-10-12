@@ -689,3 +689,5 @@ figure.photo.tall img {aspect-ratio:4/3;object-fit:cover;object-position:center 
 .caution-foot {margin:16px 0 0;font-size:16px}.caution-foot a {display:inline-flex;align-items:center;min-height:44px;font-weight:600}
 .charts .charts-head {margin-top:0}.charts h2 {font-size:34px}
 @media(max-width:720px) {.caution-grid {grid-template-columns:1fr;gap:14px}.caution-card {padding:18px 16px 16px}.caution-card h3 {font-size:23px}.caution-card p {font-size:15px}.hero-actions .btn {flex:1 1 auto}}
+/* 2026-10-12: optional signup card removed; the next-steps guide is one readable column. */
+.next-steps-layout {display:block;max-width:760px}
