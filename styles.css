@@ -912,3 +912,12 @@ html,body {font-variant-numeric:normal}
 #yardsticks .yd-punch-big {font-size:clamp(48px,8vw,112px);line-height:.92}
 #yardsticks .yd-punch-sub {font-size:clamp(18px,1.8vw,22px);line-height:1.35}
 #yardsticks h2 {font-size:clamp(44px,7.2vw,96px);max-width:16ch}
+
+/* 2026-10-12 (Corben): "Latest from the City" — the Oct 9 hearing draft, featured at the top of the hero. */
+.city-latest {display:grid;gap:4px;margin:0 0 18px;padding:12px 16px 12px 14px;border:1px solid var(--line-strong);border-left:4px solid var(--cta);border-radius:8px;background:var(--panel);color:var(--ink);text-decoration:none;max-width:52ch;transition:border-color .15s,background .15s}
+.city-latest:hover {background:var(--creek-soft)}
+.city-latest:focus-visible {outline:3px solid var(--focus);outline-offset:2px}
+.cl-tag {font:700 12px/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--creek)}
+.cl-text {font-size:15px;line-height:1.4}
+.cl-link {font-size:14px;font-weight:600;color:var(--creek);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:720px){.city-latest {padding:10px 12px;margin-bottom:14px}.cl-text {font-size:14px}}
