@@ -842,7 +842,9 @@
       if (found) {
         const p = turf.pointOnFeature(found.parcel).geometry.coordinates;
         $('hint').textContent = 'Matched County parcel ' + (found.parcel.properties.full_situs || found.parcel.properties.geo_id) + (found.count > 1 ? ' (' + found.count + ' parcels matched; showing the closest match)' : '') + '. Not your lot? Tap it on the map.';
-        placeMarker(p); map.flyTo({ center: p, zoom: 17, curve: 1.4 }); evaluate(p, found.label, found.parcel, true); return;
+        placeMarker(p); map.flyTo({ center: p, zoom: 17, curve: 1.4 }); evaluate(p, found.label, found.parcel, true);
+        try { if (window.ccSend) { const ns0 = state.streams ? nearestStream(p, state.streams) : null; window.ccSend('lot', ns0 && ns0.name ? ns0.name : ''); } } catch (_) {} // 2026-10-12 public counter (research/12)
+        return;
       }
       const g = await geocodeFallback(q);
       if (!g) { $('hint').textContent = 'No County parcel matched that address. Try "123 S 2nd Ave" (number + street name), or tap your lot on the map.'; return; }

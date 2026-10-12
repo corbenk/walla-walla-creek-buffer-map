@@ -1187,3 +1187,33 @@ html {overflow-x:clip}
   .swipe-hint::after {content:" →";}
   #yardsticks .swipe-meta {color:#bfc7bc}#yardsticks .swipe-meta b {color:#fbf8f0}
 }
+
+/* 2026-10-12 (Corben): public activity counter — a slim third banner under the other two, same × bubble and drawer motion. */
+.cc-count {position:relative;display:block;width:min(var(--container),100% - 2 * var(--gutter));margin:-4px auto 14px;padding:8px 14px 8px 16px;box-sizing:border-box;background:var(--panel);border:1px solid var(--line-strong);border-left:4px solid #4f8a5b;border-radius:8px;
+  animation:bn-drawer-in .62s cubic-bezier(.22,1,.36,1) .28s both}
+.cc-count[hidden] {display:none!important}
+.cc-count.bn-static {animation:none}
+.document-page .cc-count,.community-wrap .cc-count {width:auto;margin:0 0 40px}
+.document-page .latest-banner:has(+ .cc-count:not([hidden])),.community-wrap .latest-banner:has(+ .cc-count:not([hidden])) {margin-bottom:12px}
+.cc-row {display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.cc-pill {display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:6px 4px;border:0;background:none;color:var(--ink);font:600 17px/1.25 var(--display);text-align:left;cursor:pointer}
+.cc-pill:focus-visible,.cc-plus:focus-visible {outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.cc-live {flex:none;width:10px;height:10px;border-radius:50%;background:#4f8a5b;box-shadow:0 0 0 0 rgba(79,138,91,.5);animation:cc-pulse 2.4s ease-out infinite}
+@keyframes cc-pulse {0% {box-shadow:0 0 0 0 rgba(79,138,91,.45)} 70% {box-shadow:0 0 0 8px rgba(79,138,91,0)} 100% {box-shadow:0 0 0 0 rgba(79,138,91,0)}}
+.cc-n {font-variant-numeric:tabular-nums;font-weight:700}
+.cc-caret::after {content:"▾";margin-left:2px;color:var(--muted);font-size:13px}
+.cc-pill[aria-expanded="true"] .cc-caret::after {content:"▴"}
+.cc-plus {margin-left:auto;min-height:44px;padding:9px 16px;border:1px solid #4f8a5b;border-radius:6px;background:#4f8a5b;color:#fff;font:600 14px/1.2 var(--body);cursor:pointer}
+.cc-plus:hover {background:#3f744a}
+.cc-plus[disabled] {background:var(--panel);color:var(--ink);border-color:var(--line-strong);cursor:default}
+.cc-more {margin:6px 0 4px;padding:10px 12px;border-top:1px solid var(--line);font-size:15px;line-height:1.4}
+.cc-more p,.cc-saved,.cc-cal {margin:0 0 6px}
+.cc-note {color:var(--muted);font-size:13px}
+.cc-saved:empty {display:none}
+.cc-saved {font-weight:600;color:#3f744a}
+.cc-count.bn-leave {overflow:hidden;opacity:0;transform:translateX(64px);height:0!important;margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:0!important;border-color:transparent;
+  transition:transform .3s cubic-bezier(.55,0,.75,.2),opacity .26s ease-in,height .36s cubic-bezier(.4,0,.2,1) .14s,margin .36s cubic-bezier(.4,0,.2,1) .14s,padding .36s cubic-bezier(.4,0,.2,1) .14s,border-color .2s ease .14s}
+@media(max-width:720px){.cc-count {margin:-2px auto 16px;padding:8px 12px;animation-name:bn-drawer-in-sm}.document-page .cc-count,.community-wrap .cc-count {margin:0 0 28px}.cc-pill {font-size:16px}.cc-plus {margin-left:0;width:100%}.cc-count.bn-leave {transform:translateX(14px)}}
+@media (prefers-reduced-motion: reduce){.cc-count {animation:none!important;transition:none!important}.cc-live {animation:none}}
+@media print {.cc-count {display:none!important}}
+@media(max-width:720px){.cc-plus {width:auto;margin-left:auto;padding:8px 12px;font-size:13px;min-height:40px}.cc-row {gap:4px 8px}.cc-pill {padding:4px 2px}}
