@@ -1,0 +1,200 @@
+﻿UNOFFICIAL PLAIN-TEXT CAPTURE FOR SEARCHING. THE CITY WEB PAGE IS THE OFFICIAL VERSION.
+Page: Critical Areas Ordinance, City of Walla Walla Development Services
+Official page: https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance
+Captured 2026-10-10 by CreekChecker, an unofficial resident-built site. The live page may have changed since.
+====================================================================================================
+
+The City of Walla Walla is updating its Critical Areas Ordinance (CAO), found in Chapter 21.04 of the City’s Municipal Code. The CAO is a set of rules that are designed to protect environmentally sensitive ecosystems, public health, safety, and natural resources in compliance with the state's Growth Management Act (GMA).
+
+View the draft 2026 Critical Areas Code Amendments Table (PDF, 648 KB)
+
+The updated ordinance had a public hearing before the Planning Commission on Sept. 14, 2026, and was presented during the Walla Walla City Council work session on Sept 21. It will next have a public hearing at the City Council regular meeting on Oct. 14, and go before the Council for adoption on Oct. 28. All hearings/meetings take place in the City Council Chambers in City Hall, 15 N. 3rd Ave., Walla Walla.
+
+Questions? Please contact the Development Services Department at 509.524.4710 or permits@wallawallawa.gov.
+
+Riparian Management Zones
+
+Walla Walla is in a dryland ecosystem. Within dryland ecosystems, WDFW’s new science calls for cities to set a site‑specific Riparian Management Zone (RMZ) area with a 100-foot minimum width of existing riparian vegetation, whichever is greater. This distance is generally needed to remove most pollutants and protect water quality.
+
+The following map shows where this 100‑foot RMZ should be applied. Overall, following this new BAS will significantly increase buffer width requirements for both fish‑bearing and non‑fish‑bearing streams in Walla Walla.
+
+Disclaimer: This map is for educational purposes only.  Approximate buffer locations are shown. Actual stream buffers must be measured from the ordinary high-water mark (OHWM). Critical areas are regulated under WWMC 21.04, and any proposed development proposals may require a critical areas report.
+
+The riparian ecosystem has two main parts: the riparian zone and the zone of influence. The riparian zone is the area that stretches from the edge of a stream or river up toward the higher land. This zone includes places where plants and soil are affected, at least sometimes, by water either on the surface or underground. Beyond that is the “zone of influence.” This is the area where natural processes, like plant growth and soil changes, still have a strong effect on the stream.
+
+Frequently Asked Questions
+
+Click on the questions below to expand the answers.
+
+Disclaimer: This FAQ is provided for general information purposes only. It does not replace or override the official requirements set forth in the City of Walla Walla Municipal Code, specifically Section 21.04 – Critical Areas. For precise regulations, standards, and authoritative guidance, refer directly to Walla Walla Municipal Code 21.04 or contact City planning staff.
+
+What is the Critical Areas Ordinance?
+
+As required by Washington State law, the City has a Critical Areas Ordinance (CAO) that contains regulations for the following types of critical areas:
+
+geologically hazardous areas — e.g., steep slopes, landslide/erosion hazards
+critical aquifer recharge areas — areas important for maintaining clean drinking water
+wetlands — areas saturated with water, permanently or seasonally
+fish and wildlife habitat conservation areas — e.g., water bodies, forested areas, wildlife habitat, etc.
+
+These regulations are codified in Walla Walla Municipal Code (WWMC) Chapter 21.04, Critical Areas. State law also recognizes frequently flooded areas as a type of critical area, which are regulated in a separate code chapter, 21.10, Floodplain Management.
+
+What is the purpose of these regulations?
+
+The City’s critical areas ordinance designates and classifies ecologically sensitive and hazardous areas and aims to protect these areas and their functions and values, while also allowing for reasonable use of private property.
+
+Why is the city updating the Critical Areas Ordinance?
+
+This update is required under the Washington State Growth Management Act (GMA), which says cities must regularly review and improve their rules for protecting critical environmental areas and public safety.  The CAO update is happening alongside the update to the City’s Comprehensive Plan 2046, which guides growth and environmental policies for the next 20 years. The CAO update must use best available science (BAS) and give special consideration to conservation and protection of anadromous fisheries (salmon).
+
+What updates are proposed to the City’s Critical Areas Ordinance?
+Simplified where Feasible
+Remove Shoreline Master Plan regulations from the CAO
+Minor edits to improve clarity and consistency
+Washington Administrative Code (WAC) Alignment
+Definition updates
+New code references to the WAC
+Added Flexibility
+Fencing as allowed activities
+Clarified reasonable use review process
+Retained wetland and stream buffer averaging
+Updated functionally disconnected buffer provisions for clarity and practical application
+When do these changes take effect?
+
+The project is scheduled to go before the Walla Walla City Council for consideration in October 2026. The updated ordinance will go into effect on Dec. 31, 2026.
+
+Stream Regulations — What's Changing?
+What types of streams are regulated?
+
+All streams, fish bearing and non-fish bearing (which includes perennial and seasonal water bodies) are regulated under the city's CAO, except for Mill Creek. Mill Creek is considered a “water of the state” and is regulated under the City’s Shoreline Master Program.
+
+What’s changing for streams?
+
+The primary change for streams is related to their riparian buffer width. Walla Walla is in a dryland ecosystem. Within dryland ecosystems, Washington Department of Fish & Wildlife’s new science calls for cities to set a site‑specific Riparian Management Zone (RMZ) area with a 100-foot minimum width of existing riparian vegetation, whichever is greater. This distance is generally needed to remove most pollutants and protect water quality.
+
+ River	Minimum Riparian Buffer Width (Per Side)	 Other Measures Recommended For Protection
+ Mill Creek	Not Applicable 	 Not Applicable
+ 
+
+Creeks:
+
+Yellowhawk, Russell, Reser, Caldwell, Stone, Garrison, Bryant, Titus, and others within city limits/UGA including intermittent open channels between piped sections.	 100 feet	 No additional surface discharges of untreated runoff; restore degraded parts of the buffer; maintain connections to other habitat areas.
+
+ 
+
+What are stream buffers, and why are they changing?
+
+Stream buffers, or riparian management zones, are protected areas along streams that provide critical environmental functions, including pollution removal, bank stability, shade for cooling water temperatures, and habitat for fish. The City is updating buffer requirements to better align with Washington Department of Fish and Wildlife (WDFW) recommendations and best available science (BAS) as required by the Washington state Growth Management Act.
+
+How are the new buffer widths determined?
+
+According to BAS, the first 100 feet from a stream is the minimum distance for effective pollution removal.  As a result, the proposed baseline buffer width is 100 feet for all stream types as determined by the Washington Department of Fish and Wildlife (WDFW) publications of two volumes of new scientific guidance regarding riparian ecosystems. This is BAS that helps cities meet state requirements when writing environmental regulations.
+
+Volume 1 (Science Synthesis and Management Implications) explains how riparian areas and watersheds affect ecological functions and fish habitats.  
+Volume 2 (Management Recommendations) provides advice for protecting and restoring healthy riparian ecosystems, which are important for clean water, salmon, and climate‑resilient watersheds.
+Can stream buffer widths be modified?
+
+Yes, in some cases stream buffer widths may be modified. The following tools may be applied to adjust buffer widths, depending on site‑specific conditions and code requirements:
+
+Disconnected buffers are situations where areas are functionally and effectively disconnected from the stream or critical area by impervious surfaces or other substantially developed surfaces of sufficient width, such that buffer values and functions are not provided. The diagram below illustrates how these modifications may be applied and what factors the City considers when evaluating buffer changes.
+
+Buffer Averaging may be allowed on a case-by-case basis and generally involves:
+Buffer functions must remain fully effective.
+The total buffer area must stay the same, even if parts are widened or narrowed.
+The narrowest section must be at least 75% of the standard required width.
+Slopes next to the stream must be stable and no steeper than 30%.
+
+ 
+
+Reasonable use situations occur if the application of the City’s CAO would deny all reasonable economic use of a property; a property owner may apply for a “reasonable use exception.” This is a permit review process that evaluates:
+Whether mitigation sequencing has been followed and documented;
+There is no feasible on-site alternative to the proposed activities;
+That the proposed activities will result in minimal alteration of existing conditions;
+That the proposed activities will not jeopardize the continued existence of endangered, threatened, sensitive, or monitored species;
+That the proposed activities will not cause significant degradation of ground or surface water quality;
+There will be no damage to nearby property and no threat to health or safety; and
+The inability to derive reasonable economic use of the property is not the result of actions by the applicant (e.g., land segregation, division or creation of undevelopable lots).
+Stream Regulations — What can I do on my property?
+How do stream buffers apply to existing development?
+
+Existing legally established nonconforming uses or structures may continue, subject to the provisions in WWMC Chapter 20.212, Nonconforming Situations.
+
+What activities are allowed in stream buffers?
+
+The activities and uses listed below are allowed in critical areas and do not require approval or submission of a critical area report. Please note that this is a generalized, not exhaustive list.
+
+Restoration of streams previously piped or channeled into a new or relocated streambed.
+Special circumstances for road, trail, bridge, and right-of-way crossings.
+Special circumstances for passive outdoor recreational or educational activities.
+Special circumstances for utility lines and facilities.
+Special circumstances for stormwater facilities.
+Special circumstances for stream bank stabilization.
+New public flood protection measures and expansion of existing measures.
+In-stream structures, such as, but not limited to, high flow bypasses, dams, and weirs
+Special circumstances clearing and grading.
+Special circumstances repairs to existing on-site sewage systems.
+What happens if the regulations don’t allow for new development on my property?
+
+If the application of the City’s CAO would deny all reasonable use of a property, a property owner may apply for a reasonable use exception. This is a permit review process that requires a critical area report and mitigation plan.
+
+The director will determine whether to grant an exception request based on the following reasonable use exception review criteria:
+
+The application of this chapter would deny all reasonable use of the property;
+No other reasonable use of the property has less impact on the critical area and the applicant demonstrates that other permitted uses in the areas that would impact the critical area and buffer less are not technically feasible;
+The proposed impact to the critical area is the minimum necessary to allow for reasonable use of the property. The director may require the applicant to provide a neighborhood analysis that evaluates the surrounding conditions to verify that the applicant’s request is consistent with the minimum necessary reasonable use criteria;
+The inability of the applicant to derive reasonable use of the property is not the result of actions by the applicant after the effective date of this chapter or its predecessor; and
+The proposal will result in no net loss of critical area functions and values consistent with the best available science, through on-site or off-site mitigation measures.
+What else should I know about developing near streams?
+
+Buildings and other structures are required to be set back 15 feet from the edge of critical areas buffers. The following are allowed within the building setback area:
+
+Landscaping vegetation
+Uncovered decks
+Building overhangs (if they don’t extend more than 24 inches into setback area)
+Less impervious surfaces (e.g., driveways, walkways, patios, etc.)
+Stormwater runoff — i.e., bio-retention systems like rain gardens and similar.
+
+The boundary at the outer edge of a critical area or buffer is required to be staked, flagged, and fenced before and during any site clearing and construction. The critical areas ordinance also requires that it be identified with signs or markers to clearly indicate the location of the critical area.
+
+Mitigation
+What is mitigation?
+
+Mitigation means avoiding, minimizing, or compensating for adverse critical‑area impacts. Mitigation, in order of preference, includes:
+
+Avoiding the impact altogether by not taking an action or part of an action;
+Minimizing impacts by limiting the degree or magnitude of the action, using appropriate technology, or taking affirmative steps such as redesign, relocation, or timing adjustments;
+Rectifying impacts to wetlands, critical aquifer recharge areas, and fish and wildlife habitat conservation areas by repairing, rehabilitating, or restoring the affected environment to pre‑project conditions;
+Minimizing or eliminating hazards by restoring or stabilizing the hazard area through engineered or other methods;
+Reducing or eliminating the impact or hazard over time through preservation and maintenance operations during the life of the action;
+Compensating for impacts to wetlands, critical aquifer recharge areas, and habitats or critical areas by replacing, enhancing, or providing substitute resources or environments; and
+Monitoring the hazard or other required mitigation and taking remedial action when necessary.
+
+Mitigation for individual actions may include a combination of these measures.
+
+What does mitigation involve?
+
+When development could impact streams or their surrounding buffer zones, the process of mitigation sequencing is used to avoid harm to the extent possible:
+
+Avoiding harm — Finding ways to build that don't harm critical areas such as streams
+Minimizing impacts — Limiting the degree of impacts
+Fixing damage — Repairing, rehabilitating, or restoring any environmental harm that does occur
+Reducing or eliminating impact over time — Utilizing preservation and maintenance
+üoperations over the life of an action
+Replacing what's lost — Replace or create new critical areas to make up for any that are impacted
+Ongoing care — Maintaining and monitoring restored areas over time
+What steps do I take to locate a stream on my property?
+What is required if I want to propose new development and there is a critical area on the property?
+
+The CAO requires a field investigation by a qualified professional to determine the actual location of the ordinary high-water mark (OHWM) of the stream. The state’s mapping tool shows where streams and Riparian Management Zones are located.  A property owner typically needs to hire a biologist to complete the analysis and prepare a report.
+
+Professional Requirements: Critical area reports must be prepared by qualified professionals with appropriate credentials and experience in biological sciences, geotechnical engineering, environmental science, or related fields.
+
+ADDRESS
+
+15 North 3rd Avenue,
+Walla Walla, WA 99362
+509-527-4423
+
+Phone Directory ADA/Title VI Notices
+SITE NAVIGATION
+Services Government Our City I Want To... Contact
