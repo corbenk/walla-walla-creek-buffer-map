@@ -15,24 +15,30 @@
   .toolbar{max-width:8.5in;margin:16px auto 0;padding:0 8px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:14px;color:var(--muted)}
   .toolbar a{color:var(--creek)}
   .toolbar button{font:600 15px "Source Sans 3",Arial,sans-serif;min-height:44px;padding:8px 18px;border:1px solid var(--ink);border-radius:5px;background:#e9e1cc;color:var(--ink);cursor:pointer}
-  .sheet{width:8.5in;height:11in;margin:12px auto 24px;background:var(--paper);padding:.6in .65in .55in;display:flex;flex-direction:column;border:1px solid var(--line)}
-  h1{font:700 84px/.98 "Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
+  .sheet{width:8.5in;height:11in;margin:12px auto 24px;background:var(--paper);padding:.55in .65in .5in;display:flex;flex-direction:column;border:1px solid var(--line);overflow:hidden}
+  .sheet>*{flex-shrink:0}
+  h1{font:700 80px/.98 "Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
   h1 em{font-style:normal;color:var(--band)}
-  .band{height:12px;background:var(--band);opacity:.55;margin:18px 0 18px}
-  .strip{margin:0 0 20px}.strip img{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;object-position:center 55%;border:1px solid var(--line)}.strip figcaption{font-size:7pt;color:var(--muted);margin-top:3px}
-  .check{display:grid;grid-template-columns:1fr 3in;gap:.4in;align-items:center}
+  .band{height:10px;background:var(--band);opacity:.55;margin:14px 0 16px}
+  .strip{margin:0 0 .26in}.strip img{display:block;width:100%;height:auto;aspect-ratio:4.4/1;object-fit:cover;object-position:center 24%;border:1px solid var(--line)}.strip figcaption{font-size:7pt;color:var(--muted);margin-top:3px}
+  .check{display:grid;grid-template-columns:1fr 2.35in;gap:.4in;align-items:center;margin-bottom:.3in}
   .check .url{font:700 52px/1 "Barlow Semi Condensed",Arial,sans-serif;letter-spacing:-.01em;margin:0 0 10px}
   .check .how{font-size:22px;margin:0 0 6px}
-  .check .sub{font-size:16px;color:var(--muted);margin:0}
-  .qr{display:block;width:3in;height:3in;border:1px solid var(--line);padding:6px;background:#fff}
-  .hearing{margin-top:auto;border:3px solid var(--ink);padding:18px 22px}
-  .hearing b{display:block;font:700 38px/1.05 "Barlow Semi Condensed",Arial,sans-serif;margin-bottom:6px}
-  .hearing p{margin:0;font-size:22px}
-  .hearing small{display:block;margin-top:10px;font-size:16px;color:var(--muted)}
-  .foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;font-size:12px;color:var(--muted)}
+  .check .sub{font-size:17px;line-height:1.4;color:var(--muted);margin:0;max-width:4.3in;text-wrap:pretty}
+  .qr{display:block;width:2.35in;height:2.35in;border:1px solid var(--line);border-radius:4px;padding:8px;background:#fff}
+  .hearing{margin-top:auto;display:grid;grid-template-columns:1.2in 1fr;border:2.5px solid var(--ink);border-radius:5px;overflow:hidden}
+  .stamp{background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 6px;text-align:center}
+  .stamp span{font:700 17px/1 "Barlow Semi Condensed",Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase}
+  .stamp strong{font:700 76px/.85 "Barlow Semi Condensed",Arial,sans-serif}
+  .stamp .time{font-size:15px;letter-spacing:.06em;margin-top:2px}
+  .details{padding:16px 22px 16px}
+  .hearing b{display:block;font:700 33px/1.05 "Barlow Semi Condensed",Arial,sans-serif;margin-bottom:6px;text-wrap:balance}
+  .hearing p{margin:0;font-size:19px;line-height:1.3}
+  .hearing small{display:block;margin-top:11px;padding-top:10px;border-top:1px solid var(--line);font-size:14.5px;line-height:1.4;color:var(--muted)}
+  .foot{display:flex;justify-content:space-between;gap:12px;margin-top:.16in;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
   @page{size:letter;margin:0}
   @media print{html,body{background:#fff}.toolbar{display:none}.sheet{margin:0;border:0;break-after:page}}
-  @media(max-width:9in){.sheet{width:auto;height:auto;min-height:0;padding:24px 16px}h1{font-size:46px}.check{grid-template-columns:1fr}.check .url{font-size:34px}.qr{width:200px;height:200px}.hearing b{font-size:28px}}
+  @media screen and (max-width:9in){.sheet{width:auto;height:auto;min-height:0;padding:24px 16px}h1{font-size:46px}.check{grid-template-columns:1fr}.check .url{font-size:34px}.qr{width:200px;height:200px}.hearing{grid-template-columns:84px 1fr}.stamp .time{font-size:11px;letter-spacing:0;white-space:nowrap}.stamp strong{font-size:48px}.hearing b{font-size:26px}.hearing p{font-size:17px}.foot{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -51,9 +57,12 @@
     <img class="qr" src="qr.png" alt="QR code for https://creekchecker.com/" width="600" height="600">
   </div>
   <div class="hearing">
+    <div class="stamp" aria-hidden="true"><span>Oct</span><strong>14</strong><span class="time">Wed 6:30 pm</span></div>
+    <div class="details">
     <b>Hearing Wed Oct 14, 6:30 pm, City Hall</b><!-- F-041 -->
     <p>15 N 3rd Ave, Walla Walla · City Council public hearing, Item 6E · vote scheduled Oct 28</p><!-- F-041, F-042 -->
     <small>Walla Walla's proposed Critical Areas Ordinance would widen creek buffers from 35 feet today (50 on Yellowhawk) to 100 feet, plus a 15-foot building setback. About 1,490 city lots are touched; 1,200 are homes.</small><!-- F-020, F-019, F-023, F-034, F-090 -->
+    </div>
   </div>
   <div class="foot"><span>Built by residents of Walla Walla. Unofficial. Not legal advice.</span><span>Written comments: CityClerk@wallawallawa.gov</span></div><!-- F-041 -->
 </article>
