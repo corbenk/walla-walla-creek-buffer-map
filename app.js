@@ -18,7 +18,7 @@
   const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); // reduced motion: no animation, instant states
   const SHARED = !!(params.get('lat') && params.get('lng'));
   const RMX = RM || params.get('rm') === '1';                 // reduced motion for the entry sequence (rm=1 is a test hook)
-  const HOMING = !SHARED && !DEMO && lsGet('ww_homed') !== '1'; // first-visit entry sequence: start on Washington State, home in on the lot
+  const HOMING = !SHARED && !DEMO && params.get('intro') === 'wa'; // 2026-10-12 landing hook: the page opens on Walla Walla; the Washington-State opening is an optional flourish (?intro=wa). runHoming() still runs for ZIP searches (see the submit handler)
   const WA_CENTER = [-120.6, 47.4], WA_ZOOM = 6;
   const COUNTY_BBOX = [-119.047, 45.982, -117.966, 46.618];
   // Walla Walla County ZIP areas (bbox from the County parcel layer's situs_zip extents, 99362 trimmed to the city area; 2026-10-10)
@@ -310,6 +310,7 @@
     ind.classList.add('show'); if (!RM && !ind.classList.contains('ready')) { void ind.offsetWidth; ind.classList.add('ready'); }
   }
   function syncPadding() { // camera padding so eases/flights center in the map area not covered by the panel (phone: bottom sheet; desktop: left card)
+    if (window.creekLayout && window.creekLayout.padding) { map.setPadding(window.creekLayout.padding()); return; } // 2026-10-12 landing hook: the landing layout keeps the panel beside the map, so it owns the padding
     const panel = $('panel'); const phone = innerWidth <= 720;
     map.setPadding(phone ? { top: 0, right: 0, bottom: Math.min(panel.offsetHeight, Math.round(innerHeight * 0.62)), left: 0 } : { top: 0, right: 0, bottom: 0, left: Math.min(panel.offsetWidth + 32, Math.round(innerWidth * 0.5)) });
   }
@@ -823,7 +824,7 @@
   // ---------- Events ----------
   $('searchForm').addEventListener('submit', async (e) => {
     e.preventDefault(); const q = $('q').value.trim(); if (!q) return; const btn = $('go');
-    if (!homing.done) { btn.disabled = true; try { await runHoming(q); } catch (err) { console.warn('homing failed', err); finishHoming(); } finally { btn.disabled = false; } return; }
+    if (!homing.done || homing.pending || /^\d{5}$/.test(q)) { /* 2026-10-12 landing hook: a ZIP search takes the county → ZIP sequence (non-county ZIPs stop there); addresses go straight to the lot */ btn.disabled = true; try { await runHoming(q); } catch (err) { console.warn('homing failed', err); finishHoming(); } finally { btn.disabled = false; } return; }
     btn.disabled = true; btn.textContent = '…'; $('hint').textContent = 'Looking up the County parcel…';
     busy(true); skeleton(true);
     try {
@@ -919,6 +920,7 @@
   // ---------- Disclaimer modal → intro ----------
   function closeModal() { const m = $('modal'); if (RM) m.classList.add('hidden'); else { m.classList.add('closing'); setTimeout(() => m.classList.add('hidden'), 320); } runIntro(); }
   if (lsGet('ww_cao_ack') === '1') { $('modal').classList.add('hidden'); runIntro(); }
+  else if (html.classList.contains('no-gate')) runIntro(); // 2026-10-12 landing hook: the disclaimer is a non-blocking notice on the landing page, so the band shows at once; "Got it" still records the acknowledgement
   $('agree').onclick = () => { lsSet('ww_cao_ack', '1'); closeModal(); };
 
   loadData();

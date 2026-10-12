@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-10.4",
+  "version": "2026-10-12.5",
   "status": "DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
   "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
@@ -151,7 +151,7 @@
         "basis": "draft"
       },
       {
-        "text": "Subdividing counts only the land outside the band toward lot size and density.",
+        "text": "Subdividing must lay lots out around the band and setback, and state lot-split, ADU and middle-housing laws exclude lots inside critical-area buffers.",
         "basis": "draft"
       },
       {

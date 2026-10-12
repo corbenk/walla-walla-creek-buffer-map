@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Window sign · Is YOUR lot in the 100-ft creek buffer? · CreekChecker</title>
+<meta name="description" content="Printable letter-size window sign for Walla Walla neighbors: check your lot at creekchecker.com; City Council hearing Wed Oct 14, 6:30 pm, City Hall.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+  :root{--ink:#242622;--muted:#62695c;--line:#a9ad9d;--creek:#2c6577;--band:#cc3e36;--paper:#fff}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#eeeae1;color:var(--ink);font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;line-height:1.3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .toolbar{max-width:8.5in;margin:16px auto 0;padding:0 8px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:14px;color:var(--muted)}
+  .toolbar a{color:var(--creek)}
+  .toolbar button{font:600 15px "Source Sans 3",Arial,sans-serif;min-height:44px;padding:8px 18px;border:1px solid var(--ink);border-radius:5px;background:#e9e1cc;color:var(--ink);cursor:pointer}
+  .sheet{width:8.5in;height:11in;margin:12px auto 24px;background:var(--paper);padding:.6in .65in .55in;display:flex;flex-direction:column;border:1px solid var(--line)}
+  h1{font:700 92px/.98 "Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
+  h1 em{font-style:normal;color:var(--band)}
+  .band{height:14px;background:var(--band);opacity:.55;margin:22px 0 26px}
+  .check{display:grid;grid-template-columns:1fr 3in;gap:.4in;align-items:center}
+  .check .url{font:700 52px/1 "Barlow Semi Condensed",Arial,sans-serif;letter-spacing:-.01em;margin:0 0 10px}
+  .check .how{font-size:22px;margin:0 0 6px}
+  .check .sub{font-size:16px;color:var(--muted);margin:0}
+  .qr{display:block;width:3in;height:3in;border:1px solid var(--line);padding:6px;background:#fff}
+  .hearing{margin-top:auto;border:3px solid var(--ink);padding:18px 22px}
+  .hearing b{display:block;font:700 38px/1.05 "Barlow Semi Condensed",Arial,sans-serif;margin-bottom:6px}
+  .hearing p{margin:0;font-size:22px}
+  .hearing small{display:block;margin-top:10px;font-size:16px;color:var(--muted)}
+  .foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;font-size:12px;color:var(--muted)}
+  @page{size:letter;margin:0}
+  @media print{html,body{background:#fff}.toolbar{display:none}.sheet{margin:0;border:0;break-after:page}}
+  @media(max-width:9in){.sheet{width:auto;height:auto;min-height:0;padding:24px 16px}h1{font-size:46px}.check{grid-template-columns:1fr}.check .url{font-size:34px}.qr{width:200px;height:200px}.hearing b{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="toolbar"><span>Letter size, one page. Tape it in a window facing the street. <a href="../">Back to creekchecker.com</a></span><button type="button" onclick="window.print()">Print</button></div>
+<article class="sheet" aria-label="Window sign">
+  <h1>Is <em>YOUR</em> lot in the 100-ft creek buffer?</h1><!-- F-001, F-019 -->
+  <div class="band" aria-hidden="true"></div>
+  <div class="check">
+    <div>
+      <p class="how">Check it in 30 seconds:</p>
+      <p class="url">creekchecker.com</p>
+      <p class="sub">Type your Walla Walla address. See the proposed band on your lot. Then tell the City Council in one sentence.</p>
+    </div>
+    <img class="qr" src="qr.png" alt="QR code for https://creekchecker.com/" width="600" height="600">
+  </div>
+  <div class="hearing">
+    <b>Hearing Wed Oct 14, 6:30 pm, City Hall</b><!-- F-041 -->
+    <p>15 N 3rd Ave, Walla Walla · City Council public hearing, Item 6E · vote scheduled Oct 28</p><!-- F-041, F-042 -->
+    <small>Walla Walla's proposed Critical Areas Ordinance would widen creek buffers from 35 feet today (50 on Yellowhawk) to 100 feet, plus a 15-foot building setback. About 1,490 city lots are touched; 1,200 are homes.</small><!-- F-020, F-019, F-023, F-034, F-090 -->
+  </div>
+  <div class="foot"><span>Built by residents of Walla Walla. Unofficial. Not legal advice.</span><span>Written comments: CityClerk@wallawallawa.gov</span></div><!-- F-041 -->
+</article>
+</body>
+</html>
