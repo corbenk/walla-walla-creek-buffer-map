@@ -15,7 +15,7 @@
   var last = null;
 
   function countUp(el, n) {
-    if (reduce) { el.textContent = fmt(n); return; }
+    if (reduce || root.dataset.compact === 'true') { el.textContent = fmt(n); return; }
     var t0 = performance.now();
     (function step(t) { var p = Math.min(1, (t - t0) / 700); el.textContent = fmt(Math.round(n * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(step); })(t0);
   }
@@ -26,17 +26,22 @@
     if (c) $('ccCreekName').textContent = c;
     row('ccCreekRow', 'ccCreek', n || 0, SHOW.creek);
   }
+  function renderPledge(d) {
+    // The home-page attendance control lives in the hearing disclosure, independently of a dismissed count.
+    var b = $('ccPledgeBtn');
+    if (!pledgeOpen) b.hidden = true;
+    else if (ls('cc_pledged') === '1') { b.disabled = true; b.textContent = pledgeText(d && d.pledge || 1); }
+  }
+  renderPledge(null); // saved attendance and expiry still apply if totals cannot be loaded
   function render(d) {
     last = d;
+    renderPledge(d);
     if (!d || typeof d.lot !== 'number' || d.lot < SHOW.lot || ls('cc_count_closed') === '1') { root.hidden = true; return; }
     root.hidden = false;
     countUp($('ccLots'), d.lot);
     row('ccEmailRow', 'ccEmail', d.email, SHOW.email);
     row('ccPledgeRow', 'ccPledge', pledgeOpen ? d.pledge : -1, SHOW.pledge);
     creekRow();
-    var b = $('ccPledgeBtn');
-    if (!pledgeOpen) b.hidden = true;
-    else if (ls('cc_pledged') === '1') { b.disabled = true; b.textContent = pledgeText(d.pledge || 1); }
   }
   function post(m, creek) {
     return fetch(API + '/add', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain' },
@@ -59,17 +64,18 @@
     $('ccMore').hidden = open;
   });
   $('ccClose').addEventListener('click', function () { ls('cc_count_closed', '1');
+    if (root.dataset.compact === 'true') { root.hidden = true; var q = $('q'); if (q) q.focus({ preventScroll: true }); return; }
     if (reduce) { root.hidden = true; return; }
     root.style.height = root.offsetHeight + 'px'; void root.offsetHeight; root.classList.add('bn-leave');
     setTimeout(function () { root.hidden = true; root.classList.remove('bn-leave'); root.style.height = ''; }, 520); });
   $('ccPledgeBtn').addEventListener('click', function () {
     var b = this; if (ls('cc_pledged') === '1') return;
-    b.disabled = true;
+    b.disabled = true; $('ccSaved').textContent = '';
     post('pledge').then(function (res) {
       if (res && res.ok) {
         ls('cc_pledged', '1'); b.textContent = pledgeText(res.n);
         $('ccSaved').textContent = 'Saved. Make it a plan:'; $('ccCal').hidden = false;
-      } else { b.disabled = false; }
+      } else { b.disabled = false; $('ccSaved').textContent = 'Couldn’t save that. Please try again.'; }
     });
   });
   document.addEventListener('click', function (e) {

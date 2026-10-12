@@ -1217,3 +1217,98 @@ html {overflow-x:clip}
 @media (prefers-reduced-motion: reduce){.cc-count {animation:none!important;transition:none!important}.cc-live {animation:none}}
 @media print {.cc-count {display:none!important}}
 @media(max-width:720px){.cc-plus {width:auto;margin-left:auto;padding:8px 12px;font-size:13px;min-height:40px}.cc-row {gap:4px 8px}.cc-pill {padding:4px 2px}}
+
+/* BEGIN COMPOSED HERO — generated from design/tools/hero.css, 2026-10-12 */
+/* A compact civic notice, an editorial source line, and one clear property check. */
+.composed-hero .civic-hearing {
+  display:block;width:min(var(--container),100% - 2 * var(--gutter));
+  margin:12px auto 0;padding:0;border:1px solid var(--line-strong);
+  border-left:3px solid var(--creek);border-radius:6px;background:var(--creek-soft);
+  box-shadow:none;animation:none;transition:none;
+}
+.civic-hearing details>summary {
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  min-height:54px;padding:10px 16px;list-style:none;cursor:pointer;
+  color:var(--ink);font-size:15px;line-height:1.3;
+}
+.civic-hearing summary::-webkit-details-marker {display:none}
+.hearing-summary-text {display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px}
+.hearing-summary-text strong {font-weight:700}
+.hearing-summary-action {display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--creek);white-space:nowrap}
+.hearing-summary-action>span {display:inline-block;font-size:19px;transition:transform .16s ease}
+.civic-hearing details[open] .hearing-summary-action>span {transform:rotate(180deg)}
+.civic-hearing details[open]>summary {border-bottom:1px solid var(--line-strong)}
+.hearing-content {padding:18px 16px 8px;max-width:760px}
+.hearing-location {font-size:16px;line-height:1.45;margin:0 0 14px}
+.civic-hearing .hb-actions {display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.civic-hearing .hb-actions .btn {display:inline-flex;align-items:center;justify-content:center;min-height:44px;width:auto;padding:10px 14px;background:var(--panel);color:var(--ink);border:1px solid var(--line-strong);font-size:14px}
+.civic-hearing .hb-actions .hb-tel {white-space:normal;overflow-wrap:anywhere}
+.hearing-note {font-size:13px;line-height:1.45;color:var(--muted);margin:12px 0 16px}
+.hearing-attend {padding-top:14px;border-top:1px solid var(--line-strong)}
+.civic-hearing .cc-plus {min-height:44px;margin:0 0 10px;padding:10px 16px;width:auto;background:var(--panel);color:var(--ink);border-color:var(--creek);font-size:14px}
+.civic-hearing .cc-plus:hover {background:var(--paper)}
+.civic-hearing .cc-plus[disabled] {opacity:1;color:var(--muted);border-color:var(--line-strong);cursor:default}
+.civic-hearing .cc-cal a {display:inline-flex;align-items:center;min-height:44px}
+.notice-dismiss {display:inline-flex;align-items:center;min-height:44px;padding:8px 0;background:none;border:0;border-radius:3px;color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.composed-hero .panel {padding-top:22px;padding-bottom:32px}
+.composed-hero .entry-intro {margin-top:0}
+.composed-hero .draft-note {
+  position:static;display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:4px;width:auto;max-width:none;margin:0 0 16px;padding:0;
+  border:0;border-radius:0;background:none;box-shadow:none;animation:none;transition:none;
+}
+.draft-note>a {display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:44px;width:fit-content;max-width:100%;color:var(--ink);font-size:14px;line-height:1.35;text-decoration:none}
+.draft-note>a>span:last-child {text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:4px}
+.draft-note>a:hover>span:last-child {text-decoration-color:var(--ink)}
+.draft-date {flex:none;display:inline-block;padding:4px 6px;border-radius:2px;background:var(--band-edge);color:var(--panel);font-size:10px;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:.07em}
+.draft-dismiss {display:grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:0;border-radius:4px;background:none;color:var(--muted);font-size:19px;line-height:1}
+.draft-dismiss:hover {color:var(--ink);background:var(--panel)}
+.composed-hero .entry-title {font-size:clamp(38px,3.7vw,50px);line-height:1.04;letter-spacing:-.025em;max-width:17ch;margin:0 0 16px;text-wrap:balance}
+.composed-hero .entry-sub {font-size:17px;line-height:1.45;color:var(--muted);margin:0 0 24px;max-width:40ch}
+.composed-hero .search-label {font-size:14px;font-weight:700;margin:0 0 8px}
+.composed-hero .search {gap:8px;margin-top:0}
+.composed-hero .search input {min-height:52px;border-color:var(--line-strong);border-radius:5px;background:var(--panel);font-size:16px;padding:12px}
+.composed-hero .search input:focus {border-color:var(--creek)}
+.composed-hero .search button {min-height:52px;min-width:94px;border-radius:5px;font-size:15px;box-shadow:0 1px 2px rgba(36,38,34,.08)}
+.composed-hero .hint {font-size:13px;line-height:1.4;margin-top:8px}
+.composed-hero .activity-slot {min-height:44px;margin-top:12px}
+.composed-hero .activity-note {width:auto;max-width:none;margin:0;padding:0;background:none;border:0;border-radius:0;animation:none;box-shadow:none}
+.activity-note .cc-pill {display:flex;gap:8px;align-items:center;min-height:44px;padding:8px 0;font:400 14px/1.35 var(--body);width:auto;max-width:100%;flex-wrap:wrap}
+.activity-note .cc-live {width:6px;height:6px;background:var(--sage-ink);animation:none;box-shadow:none}
+.activity-detail {font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.activity-detail::before {content:"·";display:inline-block;margin-right:8px;text-decoration:none}
+.activity-note .cc-more {margin:0;padding:12px 0 0;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.activity-note .cc-more p {margin-bottom:8px}
+.activity-links {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.activity-links a {display:inline-flex;align-items:center;min-height:44px;font-size:13px}
+.composed-hero .search-trust {font-size:13px;line-height:1.4;color:var(--muted);margin:0 0 16px}
+.search-trust>span {margin:0 5px}
+.composed-hero .more-tools {border-top:1px solid var(--line-strong);margin-top:20px}
+.composed-hero .more-tools>summary {font-size:14px}
+.composed-hero .hero-else {order:14;font-size:14px;margin-top:12px}
+.composed-hero .hero-else a {display:inline-flex;align-items:center;min-height:44px}
+.composed-hero .map-col {margin-top:22px;border:1px solid var(--line-strong);border-right:0;border-radius:8px 0 0 8px;height:calc(100dvh - 186px);min-height:520px}
+@media(min-width:1281px) {.composed-hero .map-col {border-right:1px solid var(--line-strong);border-radius:8px}}
+@media(max-width:1000px) and (min-width:721px) {.composed-hero .entry-title {font-size:36px}.composed-hero .panel {padding-right:20px}}
+@media(max-width:720px) {
+  .composed-hero .civic-hearing {margin-top:12px}
+  .civic-hearing details>summary {min-height:60px;padding:9px 12px;gap:12px}
+  .hearing-summary-text {display:grid;gap:2px;font-size:14px}
+  .hearing-summary-text strong {font-size:15px}
+  .hearing-summary-action {font-size:13px}
+  .hearing-content {padding:14px 12px 4px}
+  .civic-hearing .hb-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .civic-hearing .hb-actions .btn {padding:10px 8px;text-align:center}
+  .composed-hero .entry-intro {margin-top:12px;order:1}
+  .composed-hero .draft-note {margin-bottom:12px}
+  .composed-hero .entry-title {font-size:clamp(32px,8.8vw,38px);line-height:1.06;max-width:none;margin-bottom:14px}
+  .composed-hero .entry-sub {font-size:16px;line-height:1.4;margin-bottom:20px}
+  .composed-hero .search-label {margin-bottom:8px}
+  .composed-hero .search input,.composed-hero .search button {min-height:50px}
+  .composed-hero .activity-slot {order:5;margin-top:6px}
+  .composed-hero .search-trust {order:5;margin-top:0;margin-bottom:0}
+  .composed-hero .map-col {order:6;margin:20px 0 0;border-radius:0;border-left:0;border-right:0;height:46dvh;min-height:300px}
+  .composed-hero .more-tools {margin-top:20px}
+}
+@media(prefers-reduced-motion:reduce) {.hearing-summary-action>span {transition:none}}
+@media print {.composed-hero .draft-note,.composed-hero .activity-slot,.composed-hero .search-trust {display:none!important}}
+/* END COMPOSED HERO */
