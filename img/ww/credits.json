@@ -662,6 +662,20 @@
     "quality": 82
    },
    "source_label": "USDA NAIP orthoimagery via USGS The National Map (public domain); neighborhood-scale crop, location generalized"
+  },
+  {
+   "file": "img/ww/own/fishing-dog-gravel-bar-1600.jpg",
+   "small": "img/ww/own/fishing-dog-gravel-bar-800.jpg",
+   "subject": "Fishing a clear pool from the bank",
+   "author": "Corben (shrubn.com)",
+   "license": "Owner-supplied (Corben), used with permission",
+   "license_url": "",
+   "source_url": "",
+   "attribution": "Photo: shrubn.com",
+   "caption": "Casting from a gravel bar, a dog in the shallows.",
+   "alt": "A person fishing from a gravel bar on a clear creek, a white dog standing in the shallows",
+   "source": "owner",
+   "id": "own-fishing-dog-gravel-bar"
   }
  ]
 }
