@@ -1122,3 +1122,6 @@ html,body {font-variant-numeric:normal}
 /* hero fixes: keep the "elsewhere" link right after the hint on phones (panel uses flex order there); keep "Read it" inline */
 .landing .hero-else {order:5}
 .landing .city-latest .cl-link {margin-left:0}
+/* 2026-10-12: support line in every footer */
+.support-line {margin:0 0 8px;font-size:13px;color:var(--muted)}
+.support-line a {color:var(--creek);font-weight:600}
