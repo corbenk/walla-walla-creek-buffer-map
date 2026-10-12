@@ -868,3 +868,6 @@ html,body {font-variant-numeric:normal}
 
 /* 2026-10-12: compact hearing banner on phones (address box back up ~50 px): calendar + Zoom only; Google Calendar and Call in stay in "How to join". */
 @media(max-width:720px){.hb-actions .hb-gcal,.hb-actions .hb-tel {display:none}}
+
+/* 2026-10-12 (Corben): hearing banner text on ONE line at tablet/desktop; the buttons wrap below it before the text breaks. */
+@media(min-width:721px){.hearing-banner .hb-text {flex:1 0 auto;min-width:auto}.hearing-banner .hb-when {white-space:nowrap}}
