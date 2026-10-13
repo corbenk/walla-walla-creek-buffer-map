@@ -79,7 +79,7 @@
     });
   });
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest && e.target.closest('a[href^="mailto:CityClerk@"]');
+    var a = e.target && e.target.closest && e.target.closest('a[href^="mailto:CityClerk@"], a[data-cc-email]');
     if (a) window.ccSend('email');
   }, true);
 
