@@ -438,15 +438,34 @@
     }
   }
   // County reaches inside the city with no City centerline within 50 ft (vertex test): what residents will report as "missing".
+  // 2026-10-15 performance hook (same result): the old loop measured every county vertex against every whole city line and froze the
+  // page ~10 s after load (taps waited). City lines are now cut into short chunks with padded boxes; only chunks whose box holds the
+  // vertex are measured (0.0005° is >38 m east-west and >55 m north-south here, far more than 50 ft), and the loop yields every ~25 ms.
   function computeCountyGaps(inRuns) {
-    if (!state.streams) return; const gaps = [];
-    for (const run of inRuns) { let cur = [];
-      for (const c of run.coords) { const ns = nearestStream(turf.point(c)); const far = !ns || ns.dist * FT_PER_M > 50;
-        if (far) cur.push(c); else { if (cur.length > 1) gaps.push(turf.lineString(cur, { name: run.name, label: run.label })); cur = []; } }
-      if (cur.length > 1) gaps.push(turf.lineString(cur, { name: run.name, label: run.label })); }
-    state.countyGaps = turf.featureCollection(gaps.filter(g => turf.length(g, { units: 'feet' }) >= 150));
-    if (styleReady) addLayers();
-    if (state.lastPoint) evaluate(state.lastPoint, state.lastLabel, state.lastParcel, true);
+    if (!state.streams) return; const token = computeCountyGaps.token = (computeCountyGaps.token || 0) + 1;
+    const PAD = 0.0005, CH = 24, chunks = [];
+    for (const f of state.streams.features) { const g = f.geometry; if (!g) continue;
+      const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+      for (const coords of lines) { if (coords.length < 2) continue;
+        for (let i = 0; i < coords.length - 1; i += CH) { const part = coords.slice(i, i + CH + 1);
+          let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+          for (const c of part) { if (c[0] < x0) x0 = c[0]; if (c[0] > x1) x1 = c[0]; if (c[1] < y0) y0 = c[1]; if (c[1] > y1) y1 = c[1]; }
+          chunks.push({ line: turf.lineString(part), b: [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD] }); } } }
+    const near = c => { let pt = null;
+      for (const k of chunks) { if (c[0] < k.b[0] || c[0] > k.b[2] || c[1] < k.b[1] || c[1] > k.b[3]) continue;
+        pt = pt || turf.point(c); if (turf.nearestPointOnLine(k.line, pt, { units: 'meters' }).properties.dist * FT_PER_M <= 50) return true; }
+      return false; };
+    const gaps = []; let r = 0, v = 0, cur = [];
+    (function step() { if (token !== computeCountyGaps.token) return; const t0 = performance.now();
+      while (r < inRuns.length) { const run = inRuns[r];
+        while (v < run.coords.length) { const c = run.coords[v++];
+          if (!near(c)) cur.push(c); else { if (cur.length > 1) gaps.push(turf.lineString(cur, { name: run.name, label: run.label })); cur = []; }
+          if (performance.now() - t0 > 25) { setTimeout(step, 0); return; } }
+        if (cur.length > 1) gaps.push(turf.lineString(cur, { name: run.name, label: run.label })); cur = []; v = 0; r++; }
+      state.countyGaps = turf.featureCollection(gaps.filter(g => turf.length(g, { units: 'feet' }) >= 150));
+      if (styleReady) addLayers();
+      if (state.lastPoint) evaluate(state.lastPoint, state.lastLabel, state.lastParcel, true);
+    })();
   }
   async function loadCountyLine() {
     if (state.loading.county_line) return state.loading.county_line;
