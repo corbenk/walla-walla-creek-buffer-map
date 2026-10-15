@@ -28,7 +28,8 @@
                  '99329': { name: 'Waitsburg', bbox: [-118.49, 46.01, -117.99, 46.20] }, '99323': { name: 'Burbank', bbox: [-119.03, 46.00, -118.75, 46.30] } };
   const COUNTY_LINE = 'https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/Administrative_Boundaries/FeatureServer/0'; // County Boundary polygon (4 KB generalized)
   const homing = { active: false, pending: false, skip: false, done: !HOMING };
-  const DEFAULT_ZOOM = 12.6, INTRO_ZOOM_OUT = 0.9;  // intro eases from a slightly wider citywide view into the default view
+  const DEFAULT_ZOOM = 12.6, INTRO_ZOOM_OUT = document.documentElement.classList.contains('landing') ? 0 : 0.9;  // intro eases from a slightly wider citywide view into the default view
+  // 2026-10-15 performance hook: no load-time zoom on the landing page. The 1.6 s ease fetched every tile at a second zoom and moved the map under the reader.
   const BAND = { fill: '#d4891c', line: '#a86a10', fillOpacity: 0.35, lineOpacity: 0.8 }; // amber band
   const INK = '#15202b', CREEK = '#1d6fb8', TEAL = '#1F6F8B', SAGE = '#7a8f7f', MILLBLUE = '#17385c', ZONE = '#8c6bb1', FLOOD = '#3b8ea5';
   const html = document.documentElement;
@@ -58,6 +59,9 @@
                   content: null, stats: null, marker: null, lastPoint: null, lastLabel: null, lastParcel: null,
                   cityLimits: null, uga: null, unin: null, countyBuf: null, countyStreams: null, countyOut: null, mill: null, millBand: null,
                   zoning: null, dnr: null, flood: null, countyGaps: null, countyLine: null, layers: {}, loading: {} };
+  // 2026-10-15 performance hook: until loadData has the full City layers (and turf), a lookup waits in evaluate(), shows the creek loader,
+  // then runs unchanged with the latest arguments. Released when loadData settles (see the last line).
+  const pend = { done: false, args: null, queued: false }; pend.ready = new Promise(res => { pend.release = () => { pend.done = true; res(); }; });
 
   // ---------- Helpers ----------
   const $ = (id) => document.getElementById(id);
@@ -69,7 +73,7 @@
   async function getJSON(url, opts) { const r = await fetch(url, opts || { cache: 'no-cache' }); if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); }
   async function arcgis(layerUrl, extra) {
     const url = layerUrl + '/query?' + qs(Object.assign({ where: '1=1', outFields: '*', f: 'geojson', outSR: 4326, returnGeometry: true }, extra || {}));
-    const r = await fetch(url); if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + layerUrl);
+    const r = await (window.ccLoad ? window.ccLoad.fetch(url) : fetch(url)); if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + layerUrl); // 2026-10-15 performance hook: ccLoad (home-loader.js) schedules the start, first view first; same URL, same response
     const j = await r.json(); if (j && j.error) throw new Error('ArcGIS error ' + JSON.stringify(j.error));
     j.features = (j.features || []).filter(f => f.geometry); return j;
   }
@@ -131,6 +135,11 @@
   function addLayers() {
     const shown = intro.layersShown; const T = { duration: RM ? 0 : 350 }; // before the intro reveal, layers start transparent and fade in
     const below = (id) => (map.getLayer(id) ? id : undefined);
+    // 2026-10-15 performance hook: until the full City layers arrive, draw the light first-view copy (state.draw; drawing only, lot checks
+    // never read it), then swap the full data into the same sources in place: no second fade, no double band.
+    const D = state.draw || {}, cityFC = state.city || D.city, strFC = state.streams || D.streams, drawn = state.drawn || (state.drawn = new Set());
+    [['city', state.city], ['buf100', state.buffers[100]], ['streams', state.streams]].forEach(([id, full]) => { const s = map.getSource(id); if (s && full && drawn.has(id)) { drawn.delete(id); s.setData(full); } });
+    const mark = (id, full) => { if (full) drawn.delete(id); else drawn.add(id); };
     // --- County context beneath everything: unincorporated shading, UGA, College Place, County buffer, County streams, zoning, flood
     if (state.countyLine && !map.getSource('county')) {
       map.addSource('county', { type: 'geojson', data: state.countyLine });
@@ -183,14 +192,14 @@
       map.addLayer({ id: 'cp-label', type: 'symbol', source: 'cp', minzoom: 11, layout: { visibility: vis('cp'), 'symbol-placement': 'line', 'text-field': 'City of College Place (own code)', 'text-size': 10.5, 'text-font': FONT }, paint: { 'text-color': '#5d6974', 'text-halo-color': '#fff', 'text-halo-width': 1.2 } });
     }
     // --- City of Walla Walla layers
-    if (state.city && !map.getSource('city')) {
-      map.addSource('city', { type: 'geojson', data: state.city, attribution: DEMO ? '' : 'City limit: City of Walla Walla GIS' });
+    if (cityFC && !map.getSource('city')) {
+      map.addSource('city', { type: 'geojson', data: cityFC, attribution: DEMO ? '' : 'City limit: City of Walla Walla GIS' }); mark('city', state.city);
       map.addLayer({ id: 'city-line', type: 'line', source: 'city', layout: { visibility: vis('ww') }, paint: { 'line-color': INK, 'line-width': 2.8, 'line-dasharray': [3, 1.6], 'line-opacity': shown ? 1 : 0, 'line-opacity-transition': T } });
     }
     WIDTHS.forEach(w => {
-      const fc = state.buffers[w]; if (!fc || map.getSource('buf' + w)) return;
+      const fc = state.buffers[w] || (w === 100 ? D.buf : null); if (!fc || map.getSource('buf' + w)) return;
       const on = shown && w === state.w; // bands are always "visible"; the selected one is opaque, the others transparent (cross-fade on toggle)
-      map.addSource('buf' + w, { type: 'geojson', data: fc, attribution: (!DEMO && w === 100) ? '100-ft buffer: City of Walla Walla GIS (2026-10-06)' : '' });
+      map.addSource('buf' + w, { type: 'geojson', data: fc, attribution: (!DEMO && w === 100) ? '100-ft buffer: City of Walla Walla GIS (2026-10-06)' : '' }); if (w === 100) mark('buf100', state.buffers[100]);
       map.addLayer({ id: 'buf' + w + '-fill', type: 'fill', source: 'buf' + w, layout: { visibility: vis('b100') }, paint: { 'fill-color': BAND.fill, 'fill-opacity': on ? BAND.fillOpacity : 0, 'fill-opacity-transition': T } });
       map.addLayer({ id: 'buf' + w + '-line', type: 'line', source: 'buf' + w, layout: { visibility: vis('b100') }, paint: { 'line-color': BAND.line, 'line-width': 1.2, 'line-opacity': on ? BAND.lineOpacity : 0, 'line-opacity-transition': T } });
     });
@@ -202,8 +211,8 @@
       map.addLayer({ id: 'mill-line', type: 'line', source: 'mill', layout: { visibility: vis('mill') }, paint: { 'line-color': MILLBLUE, 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.4, 16, 3.2], 'line-dasharray': [0.4, 1.8] } });
       map.addLayer({ id: 'mill-label', type: 'symbol', source: 'mill', minzoom: 12, layout: { visibility: vis('mill'), 'symbol-placement': 'line', 'text-field': 'Mill Creek (Shoreline Master Program)', 'text-size': 11, 'text-font': FONT }, paint: { 'text-color': MILLBLUE, 'text-halo-color': '#fff', 'text-halo-width': 1.2 } });
     }
-    if (state.streams && !map.getSource('streams')) {
-      map.addSource('streams', { type: 'geojson', data: state.streams, attribution: DEMO ? 'DEMO data' : 'Streams: City of Walla Walla GIS (2026-10-06)' });
+    if (strFC && !map.getSource('streams')) {
+      map.addSource('streams', { type: 'geojson', data: strFC, attribution: DEMO ? 'DEMO data' : 'Streams: City of Walla Walla GIS (2026-10-06)' }); mark('streams', state.streams);
       map.addLayer({ id: 'streams-line', type: 'line', source: 'streams', layout: { visibility: vis('cstr') }, paint: { 'line-color': CREEK, 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.2, 16, 3.5], 'line-opacity': shown ? 1 : 0, 'line-opacity-transition': T } });
       map.addLayer({ id: 'streams-label', type: 'symbol', source: 'streams', minzoom: 13,
         layout: { visibility: vis('cstr'), 'symbol-placement': 'line', 'text-field': ['coalesce', ['get', 'name'], ''], 'text-size': 11, 'text-font': FONT },
@@ -226,7 +235,7 @@
     ['parcel-hit-fill', 'parcel-hit-casing', 'parcel-hit-line'].forEach(id => { if (map.getLayer(id)) map.moveLayer(id); });
     if (!shown) setTimeout(revealLayers, 60); // let the transparent state paint once, then fade in (no-op until the disclaimer closes)
   }
-  map.on('style.load', () => { styleReady = true; addLayers(); });
+  map.on('style.load', () => { styleReady = true; setTimeout(addLayers, 0); }); // 2026-10-15 performance hook: add the overlays in their own task, not inside MapLibre's style-load task
 
   function setWidth(w) {
     if (!state.buffers[w]) { state.wantW = w; return; }
@@ -299,7 +308,7 @@
     if (intro.modalClosed) return; intro.modalClosed = true;
     html.classList.remove('pre-intro'); html.classList.add('intro-go');
     if (HOMING) { html.classList.add('homing'); $('q').focus(); }
-    else if (!RM && !SHARED && !params.get('z')) { const go = () => map.easeTo({ zoom: DEFAULT_ZOOM, duration: 1600, easing: t => 1 - Math.pow(1 - t, 3) }); if (map.loaded()) go(); else map.once('load', go); }
+    else if (!RM && !SHARED && !params.get('z') && INTRO_ZOOM_OUT) { const go = () => map.easeTo({ zoom: DEFAULT_ZOOM, duration: 1600, easing: t => 1 - Math.pow(1 - t, 3) }); if (map.loaded()) go(); else map.once('load', go); }
     revealLayers(); afterIntroQ.splice(0).forEach(fn => fn());
   }
   const afterIntro = (fn) => intro.modalClosed ? fn() : afterIntroQ.push(fn);
@@ -342,7 +351,9 @@
   // ---------- Data ----------
   async function loadData() {
     const tries = []; busy(true);
-    const slow = setTimeout(() => { if (!DEMO) banner('The City’s map service is slow right now. Still loading the live stream layers…'); }, 8000);
+    let slow = 0, landed = false; const armSlow = () => { if (!landed) slow = setTimeout(() => { if (!DEMO) banner('The City’s map service is slow right now. Still loading the live stream layers…'); }, 8000); };
+    if (window.ccLoad && !DEMO) window.ccLoad.started.then(armSlow); else armSlow(); // 2026-10-15 performance hook: the 8 s "slow" clock starts when the City layers are actually requested
+    if (window.ccLoad && !DEMO) window.ccLoad.preview.then(p => { if (p && !state.streams) { state.draw = p; if (styleReady) addLayers(); } }); // 2026-10-15 performance hook: light first-view copy (drawing only)
     tries.push(getJSON(DATA + 'stats.json').then(d => state.stats = d).catch(() => null));
     tries.push(getJSON('content/restrictions.json').then(d => state.content = d).catch(() => null));
     if (DEMO) {
@@ -361,7 +372,8 @@
         .then(fc => { fc.features.forEach(f => { f.properties = f.properties || {}; f.properties.name = f.properties.NAME; }); state.city = fc; buildCityRings(); })
         .catch(e => console.warn('City limit layer failed', e)));
     }
-    await Promise.all(tries); clearTimeout(slow); busy(false);
+    await Promise.all(tries); landed = true; clearTimeout(slow); busy(false);
+    if (window.ccLoad) await window.ccLoad.turf().catch(() => {}); // 2026-10-15 performance hook: turf.js loads after the first view; already in for live data (ccLoad.fetch waits for it), awaited here for ?demo=1
 
     if (DEMO && state.streams && !Object.keys(state.buffers).length) { // demo: compute buffers client-side from sample centerlines
       WIDTHS.forEach(w => { try { state.buffers[w] = turf.buffer(state.streams, w * 0.3048, { units: 'meters' }); state.bufferSource[w] = 'DEMO data'; } catch {} }); }
@@ -378,7 +390,8 @@
     $('legendW').textContent = state.w; $('legendSrc').textContent = state.bufferSource[state.w] || '';
     if (styleReady) addLayers();
     renderStatic(); buildLayersPanel();
-    if (!DEMO && state.streams) computeComparisonBuffers();
+    if (!DEMO && state.streams) { // 2026-10-15 performance hook: comparison widths on demand (More tools opened, or a shared ?w=), not at load
+      const mt = $('moreTools'); if (state.wantW || !mt || mt.open) computeComparisonBuffers(); else mt.addEventListener('toggle', () => { if (mt.open) computeComparisonBuffers(); }); }
     if (!DEMO) { loadBoundaries(); LAYERS.filter(l => l.load && layerOn(l.key)).forEach(l => { if (!state.loading[l.load]) LOADERS[l.load](); }); }
     if (params.get('lat') && params.get('lng')) { const p = [Number(params.get('lng')), Number(params.get('lat'))]; placeMarker(p); evaluate(p, 'Shared location', null); fetchParcelAt(p); }
   }
@@ -409,33 +422,46 @@
         arcgis(COUNTY_BUFFER, Object.assign({ outFields: 'name,buff_dist' }, GEN)).catch(e => { console.warn('County buffer layer failed', e); return null; }),
         arcgis(COUNTY_STREAMS, Object.assign({ outFields: 'name,length_mi,source' }, GEN)).catch(e => { console.warn('County streams layer failed', e); return null; })]);
       if (buf) { buf.features.forEach(f => { f.properties.name = (f.properties.name || '').trim(); f.properties.label = titleCase(f.properties.name); }); state.countyBuf = buf; }
-      if (str) { str.features.forEach(f => { f.properties.name = (f.properties.name || '').trim(); f.properties.label = titleCase(f.properties.name) || 'Unnamed'; }); state.countyStreams = str; splitCountyStreams(str); }
+      if (str) { str.features.forEach(f => { f.properties.name = (f.properties.name || '').trim(); f.properties.label = titleCase(f.properties.name) || 'Unnamed'; }); state.countyStreams = str; await splitCountyStreams(str); } // 2026-10-15 performance hook: await the time-sliced split
       if (styleReady) addLayers(); setLoading('county', false);
       if (state.lastPoint) evaluate(state.lastPoint, state.lastLabel, state.lastParcel, true);
     })();
     return state.loading.county;
   }
   // County streams: runs of vertices outside the city -> "County-mapped streams"; Mill Creek runs inside the city -> SMP layer + 35-ft band.
+  // 2026-10-15 performance hook (same output): each vertex gets one city test (it got two; inCity also skips rings whose box excludes it),
+  // and the loop yields every ~25 ms instead of holding the page ~0.4 s at 4x CPU. Same runs in the same order, same Mill Creek band.
   function splitCountyStreams(fc) {
     const out = [], millRuns = [], inRuns = [];
-    const runsOf = (coords, want) => { const runs = []; let run = [];
-      for (const c of coords) { const ok = state.cityRings ? inCity(turf.point(c)) : false; if (ok === want) run.push(c); else { if (run.length > 1) runs.push(run); run = []; } }
+    const runsOf = (coords, flags, want) => { const runs = []; let run = [];
+      for (let i = 0; i < coords.length; i++) { const c = coords[i]; if (flags[i] === want) run.push(c); else { if (run.length > 1) runs.push(run); run = []; } }
       if (run.length > 1) runs.push(run); return runs; };
+    const jobs = [];
     for (const f of fc.features) {
       const g = f.geometry; const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
       const isMill = MILL_NAMES.includes(f.properties.name);
-      for (const coords of lines) {
-        runsOf(coords, false).forEach(r => out.push(turf.lineString(r, { name: f.properties.name, label: f.properties.label })));
-        if (isMill) runsOf(coords, true).forEach(r => millRuns.push(r));
-        else runsOf(coords, true).forEach(r => inRuns.push({ coords: r, name: f.properties.name, label: f.properties.label }));
+      for (const coords of lines) jobs.push({ f, coords, isMill });
+    }
+    let j = 0, k = 0, flags = null;
+    return new Promise(resolve => { (function step() { const t0 = performance.now();
+      while (j < jobs.length) { const { f, coords, isMill } = jobs[j];
+        if (!flags) { flags = new Array(coords.length); k = 0; }
+        while (k < coords.length) { flags[k] = state.cityRings ? inCity(turf.point(coords[k])) : false; k++; if (performance.now() - t0 > 25) { setTimeout(step, 0); return; } }
+        runsOf(coords, flags, false).forEach(r => out.push(turf.lineString(r, { name: f.properties.name, label: f.properties.label })));
+        if (isMill) runsOf(coords, flags, true).forEach(r => millRuns.push(r));
+        else runsOf(coords, flags, true).forEach(r => inRuns.push({ coords: r, name: f.properties.name, label: f.properties.label }));
+        flags = null; j++;
       }
-    }
-    state.countyOut = turf.featureCollection(out);
-    setTimeout(() => computeCountyGaps(inRuns), 0);
-    if (millRuns.length) {
-      state.mill = turf.featureCollection(millRuns.map(r => turf.lineString(r, { name: 'Mill Creek', label: 'Mill Creek (SMP)' })));
-      try { state.millBand = turf.featureCollection([turf.buffer(turf.multiLineString(millRuns), MILL_FT * 0.3048, { units: 'meters' })]); } catch (e) { console.warn('Mill Creek band failed', e); }
-    }
+      setTimeout(() => { // the Mill Creek band gets its own task, and the caller's addLayers another
+        state.countyOut = turf.featureCollection(out);
+        setTimeout(() => computeCountyGaps(inRuns), 0);
+        if (millRuns.length) {
+          state.mill = turf.featureCollection(millRuns.map(r => turf.lineString(r, { name: 'Mill Creek', label: 'Mill Creek (SMP)' })));
+          try { state.millBand = turf.featureCollection([turf.buffer(turf.multiLineString(millRuns), MILL_FT * 0.3048, { units: 'meters' })]); } catch (e) { console.warn('Mill Creek band failed', e); }
+        }
+        setTimeout(resolve, 0);
+      }, 0);
+    })(); });
   }
   // County reaches inside the city with no City centerline within 50 ft (vertex test): what residents will report as "missing".
   // 2026-10-15 performance hook (same result): the old loop measured every county vertex against every whole city line and froze the
@@ -506,14 +532,23 @@
     return turf.multiLineString(parts);
   }
   // 35/50/75/150-ft comparison bands: turf.buffer on the City's 61 centerline segments, dissolved. Runs after first paint.
+  // 2026-10-15 performance hook (same polygons): runs once, on demand; a requested width first; each width in a worker when the page
+  // offers one (window.ccLoad.buffer: the same turf build and the same turf.buffer calls on the same input), else on the main thread as before.
   function computeComparisonBuffers() {
+    if (computeComparisonBuffers.on) return; computeComparisonBuffers.on = true;
     const todo = WIDTHS.filter(w => w !== 100 && !state.buffers[w]);
-    const step = () => {
+    if (state.wantW && todo.indexOf(state.wantW) > 0) todo.unshift(todo.splice(todo.indexOf(state.wantW), 1)[0]);
+    const offThread = (w) => (window.ccLoad && window.ccLoad.buffer ? window.ccLoad.buffer(allStreamLines(), state.streams, w * 0.3048).catch(() => null) : Promise.resolve(null));
+    const step = async () => {
       const w = todo.shift(); if (w == null) return;
+      const got = await offThread(w);
       try {
         let fc;
-        try { const b = turf.buffer(allStreamLines(), w * 0.3048, { units: 'meters' }); fc = turf.featureCollection([b]); }
-        catch (e) { console.warn('dissolved buffer ' + w + ' ft failed; using per-segment polygons', e); fc = turf.buffer(state.streams, w * 0.3048, { units: 'meters' }); }
+        if (got && got.fc) { if (got.err) console.warn('dissolved buffer ' + w + ' ft failed; using per-segment polygons', got.err); fc = got.fc; }
+        else {
+          try { const b = turf.buffer(allStreamLines(), w * 0.3048, { units: 'meters' }); fc = turf.featureCollection([b]); }
+          catch (e) { console.warn('dissolved buffer ' + w + ' ft failed; using per-segment polygons', e); fc = turf.buffer(state.streams, w * 0.3048, { units: 'meters' }); }
+        }
         fc.features.forEach(f => { f.properties = { buffer_ft: w, source: COMPUTED_LABEL }; });
         state.buffers[w] = fc; state.bufferSource[w] = 'comparison width, ' + COMPUTED_LABEL;
         const b = document.querySelector('#widths button[data-w="' + w + '"]'); if (b) b.disabled = false;
@@ -639,7 +674,7 @@
       const g = f.geometry; if (!g) continue;
       if (g.type === 'Polygon' || g.type === 'MultiPolygon') { rings.push({ poly: f, direct: true }); continue; }
       const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
-      for (const c of lines) { if (c.length >= 4 && c[0][0] === c[c.length - 1][0] && c[0][1] === c[c.length - 1][1]) { try { rings.push({ poly: turf.polygon([c]) }); } catch {} } }
+      for (const c of lines) { if (c.length >= 4 && c[0][0] === c[c.length - 1][0] && c[0][1] === c[c.length - 1][1]) { try { rings.push({ poly: turf.polygon([c]), bb: turf.bbox(turf.lineString(c)) }); } catch {} } } // 2026-10-15 performance hook: ring box for inCity's prefilter
     }
     state.cityRings = rings.length ? rings : null;
   }
@@ -647,7 +682,8 @@
     if (!state.cityRings) return null;
     const direct = state.cityRings.filter(r => r.direct);
     if (direct.length) return direct.some(r => pip(pt, r.poly));
-    let n = 0; for (const r of state.cityRings) if (pip(pt, r.poly)) n++;
+    const x = pt.geometry.coordinates[0], y = pt.geometry.coordinates[1]; // 2026-10-15 performance hook: a point outside a ring's box cannot be in or on that ring (same answer, far fewer tests)
+    let n = 0; for (const r of state.cityRings) { if (r.bb && (x < r.bb[0] || x > r.bb[2] || y < r.bb[1] || y > r.bb[3])) continue; if (pip(pt, r.poly)) n++; }
     return n % 2 === 1;
   }
   function jurisdiction(pt) { // code: ww | cp | othercity | uga | county | null (boundaries not loaded)
@@ -725,6 +761,13 @@
   const lookingUp = (parcelResolved) => (!DEMO && !parcelResolved ? '<span class="muted lookup"><i class="dot"></i>Looking up the County parcel at this point…</span>' : '');
 
   function evaluate(lnglat, label, parcel, parcelResolved) {
+    if (!pend.done) { // 2026-10-15 performance hook (see pend)
+      state.lastPoint = lnglat; state.lastLabel = label; state.lastParcel = parcel || null; pend.args = [lnglat, label, parcel, parcelResolved];
+      if (window.ccLoad) window.ccLoad.phase2('lookup');
+      const rp = $('result'); skeleton(false); rp.className = 'result pending'; rp.innerHTML = (window.ccLoad && window.ccLoad.waitHTML) || '<p class="detail">Loading the City’s creek layers…</p>';
+      if (!pend.queued) { pend.queued = true; pend.ready.then(() => { const a = pend.args; pend.args = null; pend.queued = false; if (a && state.lastPoint === a[0]) evaluate(a[0], a[1], a[2], a[3]); }); }
+      return;
+    }
     state.lastPoint = lnglat; state.lastLabel = label; state.lastParcel = parcel || null; setParcelHit(state.lastParcel);
     const pt = turf.point(lnglat); const w = state.w; const r = $('result'); skeleton(false); r.classList.remove('hidden'); const key = lnglat.join(',');
     const pp = parcel ? parcel.properties || {} : {};
@@ -862,7 +905,7 @@
         const p = turf.pointOnFeature(found.parcel).geometry.coordinates;
         $('hint').textContent = 'Matched County parcel ' + (found.parcel.properties.full_situs || found.parcel.properties.geo_id) + (found.count > 1 ? ' (' + found.count + ' parcels matched; showing the closest match)' : '') + '. Not your lot? Tap it on the map.';
         placeMarker(p); map.flyTo({ center: p, zoom: 17, curve: 1.4 }); evaluate(p, found.label, found.parcel, true);
-        try { if (window.ccSend) { const ns0 = state.streams ? nearestStream(p, state.streams) : null; window.ccSend('lot', ns0 && ns0.name ? ns0.name : ''); } } catch (_) {} // 2026-10-12 public counter (research/12)
+        pend.ready.then(() => { try { if (window.ccSend) { const ns0 = state.streams ? nearestStream(p, state.streams) : null; window.ccSend('lot', ns0 && ns0.name ? ns0.name : ''); } } catch (_) {} }); // 2026-10-12 public counter (research/12); 2026-10-15 performance hook: after the City streams are in, so the creek name is kept
         return;
       }
       const g = await geocodeFallback(q);
@@ -953,5 +996,5 @@
   else if (html.classList.contains('no-gate')) runIntro(); // 2026-10-12 landing hook: the disclaimer is a non-blocking notice on the landing page, so the band shows at once; "Got it" still records the acknowledgement
   $('agree').onclick = () => { lsSet('ww_cao_ack', '1'); closeModal(); };
 
-  loadData();
+  loadData().finally(() => Promise.resolve(window.ccLoad && window.ccLoad.turf().catch(() => {})).then(pend.release)); // 2026-10-15 performance hook: release waiting lookups (see pend)
 })();

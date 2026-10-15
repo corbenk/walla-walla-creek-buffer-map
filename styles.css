@@ -1309,7 +1309,20 @@ html {overflow-x:clip}
   .composed-hero .map-col {order:6;margin:20px 0 0;border-radius:0;border-left:0;border-right:0;height:46dvh;min-height:300px}
   .composed-hero .more-tools {margin-top:20px}
 }
-@media(prefers-reduced-motion:reduce) {.hearing-summary-action>span {transition:none}}
+/* 2026-10-15 performance & load polish: creek loader in the map and in waiting lot checks; app.js's duplicate "Loading live City…" notice
+   stays quiet (slow/error notices still show); the activity count fades in instead of popping; "Elsewhere in Washington?" follows the
+   trust line on phones (it had no order, so it jumped above the headline). */
+.composed-hero #banner.cc-quiet,.cc-defer .composed-hero .progress {display:none}
+.composed-hero .creek-loader .cl-text {font-size:inherit;line-height:inherit}
+.composed-hero #skel .creek-loader {display:flex;margin:0 0 12px}
+.composed-hero .result.pending {padding-top:14px;padding-bottom:14px}
+.composed-hero .activity-note:not([hidden]) {animation:cc-hero-fade .35s ease-out both}
+@keyframes cc-hero-fade {from {opacity:0}to {opacity:1}}
+@media(max-width:720px) {.composed-hero .search-elsewhere {order:5}}
+/* The long story below the hero is laid out and painted when it nears the screen, not on first paint or on the web-font swap. */
+.composed-hero main>section.screen {content-visibility:auto;contain-intrinsic-size:auto 1100px}
+@media print {.composed-hero main>section.screen {content-visibility:visible}}
+@media(prefers-reduced-motion:reduce) {.hearing-summary-action>span {transition:none}.composed-hero .activity-note:not([hidden]) {animation:none}}
 @media print {.composed-hero .draft-note,.composed-hero .activity-slot,.composed-hero .search-trust {display:none!important}}
 /* END COMPOSED HERO */
 
@@ -1643,4 +1656,14 @@ html {overflow-x:clip}   /* belt and braces: nothing may open a sideways scroll 
 .view-switch a[aria-current="page"] {background:var(--creek);color:#fff}
 .document-header + .view-switch {margin:-20px 0 22px}
 @media(max-width:720px) {.view-switch {margin:10px 16px 0}.document-header + .view-switch {margin:-12px 0 18px}.view-switch a {padding:6px 14px;font-size:14px}}
+/* 2026-10-15: creek loader — a short stretch of creek with water flowing through it (sections/creek-loader.html) */
+.creek-loader {display:inline-flex;align-items:center;gap:10px;color:var(--muted);font:600 14px/1.2 var(--body)}
+.creek-loader svg {width:76px;height:18px;overflow:visible;flex:none}
+.creek-loader .cl-bank {fill:none;stroke:var(--creek-soft);stroke-width:7;stroke-linecap:round}
+.creek-loader .cl-flow {fill:none;stroke:var(--creek);stroke-width:3;stroke-linecap:round;stroke-dasharray:12 12;animation:cl-flow .9s linear infinite}
+@keyframes cl-flow {to {stroke-dashoffset:-24}}
+.creek-loader.cl-over {position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 32px);white-space:nowrap;padding:10px 16px;background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);pointer-events:none;transition:opacity .25s ease}
+.creek-loader.cl-done {opacity:0}
+.creek-loader[hidden] {display:none}
+@media(prefers-reduced-motion:reduce) {.creek-loader .cl-flow {animation:none;stroke-dasharray:none}.creek-loader.cl-over {transition:none}}
 /* END SITE PAGES */

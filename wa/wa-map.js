@@ -6,7 +6,13 @@
    No activity counter and no other endpoint is called.
    PERFORMANCE (2026-10-15): all geometry runs in short tasks. Distances and shares use planar math in
    local metres with bbox prefilters; the what-if band is buffered cell by cell (turf) with a time budget
-   per task (TASK_MS) and yields between tasks, so the main thread is never blocked for long. */
+   per task (TASK_MS) and yields between tasks, so the main thread is never blocked for long.
+   LOADING (2026-10-15): this file is deferred and runs before maplibre-gl.js (also deferred), so the form works first; the map
+   starts when MapLibre arrives. The OpenFreeMap style and its TileJSON were fetched by an inline script in <head> (window.wmBoot);
+   buildStyle() drops the Natural Earth relief raster (over 1 MB of PNG at the statewide view), inlines the TileJSON and puts the
+   imagery in the style from the start, so there is one style load and no street-to-aerial switch. @turf/turf (band drawing only)
+   is never loaded with the page: it is fetched when someone starts a lookup (focus in the form, the tap-to-zoom step, or a lookup
+   itself), and buildBand waits for it. The creek loader (#wmLoader) covers the map until its first 'idle' and during each lookup. */
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
@@ -58,8 +64,46 @@
   const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const EMPTY = { type: 'FeatureCollection', features: [] };
   const fc = (features) => ({ type: 'FeatureCollection', features: features });
-  function status(msg, kind) { const el = $('wmStatus'); if (!el) return; el.textContent = msg || ''; el.className = 'wm-status' + (kind ? ' is-' + kind : ''); }
-  async function getJSON(url, ms) { // one quiet retry: these public services occasionally drop a request
+  function status(msg, kind) { const el = $('wmStatus'); if (!el) return; el.textContent = msg || ''; el.className = 'wm-status' + (kind ? ' is-' + kind : '');
+    const box = $('wmMsg'); if (box) box.classList.toggle('has-status', !!msg); } // the status takes the hint's slot (no layout shift)
+
+  // ---------- Loading: lazy turf, early connections, the creek loader ----------
+  const TURF_SRC = 'https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js';
+  let turfP = null;
+  function loadTurf() { // resolves to window.turf, or null if it could not load (the band note says so; the shares are still computed)
+    if (window.turf) return Promise.resolve(window.turf);
+    if (!turfP) turfP = new Promise((res) => { const sc = document.createElement('script'); sc.src = TURF_SRC; sc.async = true;
+      sc.onload = () => res(window.turf || null); sc.onerror = () => { turfP = null; sc.remove(); res(null); }; document.head.appendChild(sc); });
+    return turfP;
+  }
+  let hostsWarm = false;
+  function warmHosts() { // someone is starting a lookup (focus in the form, tap-to-zoom, or submit): open the services' connections, fetch turf
+    loadTurf(); if (hostsWarm) return; hostsWarm = true;
+    ['https://services.arcgis.com', 'https://gis.dnr.wa.gov', 'https://geodataservices.wdfw.wa.gov', 'https://data.wsdot.wa.gov'].concat(ESRI_KEY ? ['https://geocode-api.arcgis.com'] : [])
+      .forEach((h) => { const l = document.createElement('link'); l.rel = 'preconnect'; l.href = h; l.crossOrigin = 'anonymous'; document.head.appendChild(l); });
+  }
+  const LD = { map: true, text: '', t: 0 };
+  function loaderSync() { // shown while the map is first loading or a lookup is running; fades out (CSS) when neither
+    const el = $('wmLoader'); if (!el) return;
+    const text = LD.text || (LD.map ? 'Loading the map…' : ''); clearTimeout(LD.t);
+    if (text) { const t = el.querySelector('.cl-text'); if (t && t.textContent !== text) t.textContent = text; el.hidden = false; el.classList.remove('cl-done'); return; }
+    if (el.hidden) return; el.classList.add('cl-done');
+    LD.t = setTimeout(() => { el.hidden = true; el.setAttribute('aria-hidden', 'true'); el.removeAttribute('role'); el.removeAttribute('aria-live'); }, RMQ.matches ? 0 : 260); // later lookups are announced by #wmStatus
+  }
+  function mapLoaded() { if (LD.map) { LD.map = false; loaderSync(); } }
+  function lookupLoader(my, text) { if (my !== S.seq) return; LD.text = text || '';
+    if (text) { const el = $('wmLoader'); if (el) el.setAttribute('aria-hidden', 'true'); } // #wmStatus already announces each lookup step
+    loaderSync(); }
+  function beginLookup(my, text) { warmHosts(); lookupLoader(my, text); }
+  const RESP = new Map(); // 2026-10-15: in memory, this page view only: the same public-layer query (a lot checked again) is not sent twice
+  function getJSON(url, ms) {
+    const keep = url.indexOf(SVC.geocode) !== 0; // geocoder results are shown, never kept
+    if (keep && RESP.has(url)) return RESP.get(url);
+    const p = getJSONRetry(url, ms);
+    if (keep) { RESP.set(url, p); p.catch(() => RESP.delete(url)); if (RESP.size > 60) RESP.delete(RESP.keys().next().value); }
+    return p;
+  }
+  async function getJSONRetry(url, ms) { // one quiet retry: these public services occasionally drop a request
     try { return await getJSONOnce(url, ms); } catch (e) { await new Promise((r) => setTimeout(r, 700)); return getJSONOnce(url, ms); }
   }
   async function getJSONOnce(url, ms) {
@@ -254,7 +298,7 @@
     const text = $('wmQ').value.trim(), county = $('wmCounty').value;
     $('wmPicks').innerHTML = '';
     if (!text) { status('Type a street address, or tap your lot on the map.', 'warn'); $('wmQ').focus(); return; }
-    const my = ++S.seq; setBusy(true);
+    const my = ++S.seq; setBusy(true); beginLookup(my, ESRI_KEY ? 'Finding your address…' : 'Searching parcel addresses…');
     try {
       if (ESRI_KEY) {
         status('Looking up the address…');
@@ -268,7 +312,7 @@
         if (!county) { status('We could not place that address. Pick your county and try again; we will search its parcel addresses.', 'warn'); $('wmCounty').focus(); return; }
       }
       if (!county) { status('Pick your county first. We search that county’s parcel addresses.', 'warn'); $('wmCounty').focus(); return; }
-      status('Searching ' + county + ' County parcel addresses…');
+      status('Searching ' + county + ' County parcel addresses…'); lookupLoader(my, 'Searching parcel addresses…');
       let list;
       try { list = await situsSearch(text, county); }
       catch (e) {
@@ -280,7 +324,7 @@
       if (!list.length) { status('No parcel in ' + county + ' County has that address on file. Some parcels have no address in the statewide data. Try fewer words, or tap your lot on the map.', 'warn'); return; }
       if (list.length === 1) { S.geocoded = 'parcel'; await runLot(list[0], null, my); return; }
       S.picks = list; renderPicks(list, county);
-    } finally { if (my === S.seq) setBusy(false); }
+    } finally { if (my === S.seq) { setBusy(false); lookupLoader(my, ''); } }
   }
   function renderPicks(list, county) {
     status(list.length + ' parcels match in ' + county + ' County. Pick yours below.');
@@ -292,9 +336,15 @@
   function setBusy(b) { const g = $('wmGo'); if (g) { g.disabled = b; g.setAttribute('aria-busy', String(b)); } }
 
   // ---------- Lot → everything ----------
+  async function tapLookup(pt) { // a tap on the map, the locate button or a ?lat=&lng= link
+    const my = ++S.seq; beginLookup(my, 'Finding your lot…');
+    try { await lookupPoint(pt, my); } finally { lookupLoader(my, ''); }
+  }
+  async function pickLookup(f) { const my = ++S.seq; S.geocoded = 'parcel'; beginLookup(my, 'Reading the creeks…');
+    try { await runLot(f, null, my); } finally { lookupLoader(my, ''); } }
   async function lookupPoint(pt, my) {
     my = my || ++S.seq;
-    status('Finding the tax parcel at that spot…'); placePoint(pt);
+    status('Finding the tax parcel at that spot…'); lookupLoader(my, 'Finding your lot…'); placePoint(pt);
     const base = Object.assign(ptParams(pt), { outFields: PARCEL_FIELDS, geometryPrecision: 7 });
     let lot = null;
     try {
@@ -320,13 +370,13 @@
     { const c = L.inner; if (c && c[0] >= -118.52 && c[0] <= -118.14 && c[1] >= 45.96 && c[1] <= 46.16) {
       status('This lot is in the Walla Walla area. Opening the detailed Walla Walla map for it…');
       location.assign('/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&w=100'); return; } }
-    S.lot = lot; S.geo = L; S.pt = pt || L.inner; S.dnr = null; S.rmz = null; S.bands = {}; S.juris = null; S.dist = null; S.sd = null;
+    S.lot = lot; S.geo = L; S.pt = pt || L.inner; S.nearLL = null; S.dnr = null; S.rmz = null; S.bands = {}; S.juris = null; S.dist = null; S.sd = null;
     const b = L.bbox, dLng = SEARCH_M / L.P.kx, dLat = SEARCH_M / L.P.ky;
     S.env = [b[0] - dLng, b[1] - dLat, b[2] + dLng, b[3] + dLat];
     $('wmPicks').innerHTML = '';
     renderShell(lot);
     S.userMoved = false; drawLot(); fitLot();
-    status('Lot found. Reading streams, the WDFW estimate and who sets the rules…');
+    status('Lot found. Reading streams, the WDFW estimate and who sets the rules…'); lookupLoader(my, 'Reading the creeks…');
     await pause(); if (my !== S.seq) return;
     const jP = jurisdiction(L.inner, lot).then((j) => { if (my !== S.seq) return; S.juris = j; renderJuris(); return j; })
       .catch((e) => { console.warn('jurisdiction', e); if (my === S.seq) { S.juris = { error: true }; renderJuris(); } });
@@ -385,12 +435,13 @@
     const dS = lotDistance(L, SG, isStream), dAny = lotDistance(L, SG, null);
     S.dist = { stream: dS, any: dAny };
     if (dS.k >= 0 && dS.d > 0 && dS.d <= 450) { const o = dS.k * 4, c = L.P.f(L.inner), ax = SG.A[o], ay = SG.A[o + 1], dx = SG.A[o + 2] - ax, dy = SG.A[o + 3] - ay, ll = dx * dx + dy * dy;
-      let t = ll ? ((c[0] - ax) * dx + (c[1] - ay) * dy) / ll : 0; t = Math.max(0, Math.min(1, t)); fitWith(L.P.inv(ax + t * dx, ay + t * dy)); }
+      let t = ll ? ((c[0] - ax) * dx + (c[1] - ay) * dy) / ll : 0; t = Math.max(0, Math.min(1, t)); S.nearLL = L.P.inv(ax + t * dx, ay + t * dy); fitWith(S.nearLL); }
     await pause(); if (my !== S.seq) return;
     S.sd = await sampleDistances(L, SG, isStream, my); if (my !== S.seq || !S.sd) return;
     S.bandLines = lines.filter((l) => isStream(l.f)).map((l) => l.c);
     renderStreams(); renderBandShare();
-    buildBand(S.w, my);
+    if (!S.bands[S.w]) lookupLoader(my, 'Drawing the what-if band…');
+    await buildBand(S.w, my); // 2026-10-15: awaited, so "Done … the what-if band are on the map" is true when it shows (turf now loads lazily)
   }
 
   async function analyseRmz(j, my) {
@@ -443,7 +494,10 @@
   }
   async function buildBand(w, my) {
     if (S.bands[w]) { drawBand(); return; }
-    if (!window.turf || !S.bandLines) { const n = $('wmBandNote'); if (n && !window.turf) n.textContent = 'The band drawing library did not load; the share above is still computed.'; return; }
+    if (!S.bandLines) return;
+    if (!window.turf) { await loadTurf(); if (my !== S.seq) return; } // turf is fetched when a lookup starts; usually here already
+    if (S.bands[w]) { if (w === S.w) drawBand(); return; }
+    if (!window.turf) { const n = $('wmBandNote'); if (n) n.textContent = 'The band drawing library did not load; the share above is still computed.'; return; }
     const job = ++S.bandJob, m = w * FT, P = S.geo.P, env = S.env;
     const lines = S.bandLines.map((c) => ({ c: c, b: bboxOfCoords(c) }));
     const spanX = (env[2] - env[0]) * P.kx, spanY = (env[3] - env[1]) * P.ky;
@@ -616,69 +670,129 @@
     street: { band: '#cc3e36', bandO: 0.30, edge: '#982b25', rmz: '#6f9f5f', rmzO: 0.26, rmzE: '#3f6b33', lot: '#1d2420', env: '#62695c', casing: 'rgba(255,255,255,.9)' }
   };
   const TYPE_COLOR = ['match', ['get', 't'], 'S', '#0d4fa8', 'F', '#1f78e0', 'N', '#2aa6c4', 'U', '#7a8ea8', '#9a9a9a'];
+  const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty', PLANET_URL = 'https://tiles.openfreemap.org/planet';
+  const AERIAL_SRC = () => ({ type: 'raster', tiles: ['https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 16,
+    attribution: 'Imagery: USDA / <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer" target="_blank" rel="noopener">USGS The National Map</a> (dates vary)' });
+  const AERIAL_LAYER = () => ({ id: 'wm-aerial', type: 'raster', source: 'wm-aerial', layout: { visibility: S.basemap === 'aerial' ? 'visible' : 'none' }, paint: { 'raster-fade-duration': RMQ.matches ? 0 : 180 } });
+  const ORIG_VIS = {}; // basemap layer id -> its visibility in the published style (restored for the street map)
+  const AERIAL_BG = '#5a5c4c'; // aerial mode: behind the imagery while it loads, an imagery-like tone (the light street background made the pale lot outline vanish and flashed light-dark)
+  const vis = (l) => (l.layout || {}).visibility || 'visible';
+  function baseLists(layers) { // base fills/lines/rasters under the imagery (invisible in aerial mode), and the POI symbol layers
+    const idx = layers.findIndex((l) => l.id === 'wm-aerial');
+    S.baseBelow = layers.slice(0, idx < 0 ? 0 : idx).filter((l) => l.type !== 'background' && l.type !== 'fill-extrusion' && l.type !== 'symbol').map((l) => [l.id, ORIG_VIS[l.id] || vis(l)]);
+    S.poiIds = layers.filter((l) => l['source-layer'] === 'poi').map((l) => l.id);
+  }
+  // The OpenFreeMap "liberty" style (fetched by the inline script in <head>), edited before the map starts so there is one style load
+  // and nothing switches on screen. Returns the style URL instead if the prefetch failed (MapLibre then loads it, with the raster fallback).
+  async function buildStyle() {
+    const boot = window.wmBoot || {};
+    let st = null; try { st = await boot.style; } catch (_) { st = null; }
+    if (!st) try { st = await getJSONOnce(STYLE_URL, 15000); } catch (_) { st = null; } // the early fetch failed or is missing: one direct try
+    if (!st || typeof st !== 'object' || !Array.isArray(st.layers) || !st.sources || typeof st.sources !== 'object') return STYLE_URL;
+    // 1. No Natural Earth shaded relief (or any other basemap raster): over 1 MB of PNG at the statewide view, and hidden under the imagery anyway
+    const drop = Object.keys(st.sources).filter((id) => st.sources[id] && st.sources[id].type === 'raster');
+    drop.forEach((id) => { delete st.sources[id]; });
+    const layers = st.layers.filter((l) => !(l && l.source && drop.indexOf(l.source) >= 0));
+    // 2. Inline the vector TileJSON fetched in parallel: one round trip fewer before the first tile
+    const om = st.sources.openmaptiles;
+    if (om && om.url === PLANET_URL && boot.planet) { let tj = null; try { tj = await boot.planet; } catch (_) { tj = null; }
+      if (tj && Array.isArray(tj.tiles) && tj.tiles.length) { const v = { type: 'vector', tiles: tj.tiles };
+        ['minzoom', 'maxzoom', 'bounds', 'attribution', 'scheme'].forEach((k) => { if (tj[k] != null) v[k] = tj[k]; }); st.sources.openmaptiles = v; } }
+    // 3. The imagery goes under the first label layer, and its source first, so its tiles are requested before the vector tiles
+    st.sources = Object.assign({ 'wm-aerial': AERIAL_SRC() }, st.sources);
+    const fsym = layers.findIndex((l) => l.type === 'symbol'); layers.splice(fsym < 0 ? layers.length : fsym, 0, AERIAL_LAYER());
+    // 4. Pitch is off, so 3D extrusions (always hidden here) are left out. Aerial mode also hides the base under the imagery and the POIs
+    const keep = layers.filter((l) => l.type !== 'fill-extrusion');
+    keep.forEach((l) => { ORIG_VIS[l.id] = vis(l); });
+    baseLists(keep);
+    const bg = keep.find((l) => l.type === 'background');
+    if (bg) { S.bgId = bg.id; S.bgStreet = (bg.paint || {})['background-color'] || '#f8f4f0'; if (S.basemap === 'aerial') bg.paint = Object.assign({}, bg.paint, { 'background-color': AERIAL_BG }); }
+    if (S.basemap === 'aerial') { const hide = {}; S.baseBelow.forEach(([id]) => { hide[id] = 1; }); S.poiIds.forEach((id) => { hide[id] = 1; });
+      keep.forEach((l) => { if (hide[l.id]) l.layout = Object.assign({}, l.layout, { visibility: 'none' }); }); }
+    // 5. The overlay sources (empty until a lookup) and layers are part of the style, so nothing is added one by one after it loads
+    hasGlyphs = !!st.glyphs;
+    OVERLAY_SRC.forEach(([id, attribution]) => { st.sources[id] = { type: 'geojson', data: EMPTY, attribution: attribution() }; });
+    st.layers = keep.concat(overlaySpecs());
+    S.builtStyle = true; S.builtBase = S.basemap;
+    return st;
+  }
+  const OVERLAY_SRC = [['wm-env', () => ''], ['wm-rmz', () => 'Estimated riparian management zones: Washington Department of Fish and Wildlife'], ['wm-band', () => ''], ['wm-band-edge', () => ''],
+    ['wm-streams', () => 'Watercourses: WA DNR Forest Practices Division'], ['wm-lot', () => 'Parcels: WaTech, Washington State Counties'], ['wm-pt', () => (ESRI_KEY ? 'Address search: Powered by Esri' : '')]];
   function initMap() {
-    const box = $('wmMap'); if (!box) return;
-    if (!window.maplibregl) { mapNote('The map library could not load. You can still search an address; the results appear without the map.'); return; }
-    const stacked = innerWidth < 900;
+    const box = $('wmMap'); if (!box || map || S.mapStarted) return; S.mapStarted = true;
+    if (!window.maplibregl) { mapNote('The map library could not load. You can still search an address; the results appear without the map.'); mapLoaded(); return; }
+    setTimeout(mapLoaded, 45000); // never leave the loader spinning if the map stalls
+    // The map starts in its own task after a frame: not stacked onto MapLibre's script evaluation, and the page's layout is clean by then
+    buildStyle().catch((e) => { console.warn('style', e); S.builtStyle = false; return STYLE_URL; })
+      .then((style) => requestAnimationFrame(() => setTimeout(() => createMap(box, style), 0)));
+  }
+  function createMap(box, style) {
+    const stacked = innerWidth < 900, start = S.startView || { center: WA_CENTER, zoom: WA_ZOOM };
     try {
-      map = new maplibregl.Map({ container: box, style: 'https://tiles.openfreemap.org/styles/liberty', center: WA_CENTER, zoom: WA_ZOOM, minZoom: 4,
+      map = new maplibregl.Map({ container: box, style: style, center: start.center, zoom: start.zoom, minZoom: 4, validateStyle: false, // a fixed, known style: skip ~50 ms of spec checks
         attributionControl: { compact: true }, pixelRatio: Math.min(window.devicePixelRatio || 1, 2), cooperativeGestures: stacked, dragRotate: false, pitchWithRotate: false, touchPitch: false, fadeDuration: RMQ.matches ? 0 : 300 });
-    } catch (e) { console.warn('map', e); map = null; mapNote('This browser could not start the map (WebGL). You can still search an address; the results appear without the map.'); return; }
+    } catch (e) { console.warn('map', e); map = null; mapNote('This browser could not start the map (WebGL). You can still search an address; the results appear without the map.'); mapLoaded(); return; }
     if (map.touchZoomRotate) map.touchZoomRotate.disableRotation();
     map.on('movestart', (e) => { if (e && e.originalEvent) S.userMoved = true; });
     const attrib = box.querySelector('.maplibregl-ctrl-attrib'); let attribUsed = false;
     if (attrib) attrib.addEventListener('click', () => { attribUsed = true; }, true);
-    const collapse = () => { if (!attribUsed && attrib) { attrib.removeAttribute('open'); attrib.classList.remove('maplibregl-compact-show'); } };
+    const collapse = () => { if (!attribUsed && attrib && (attrib.hasAttribute('open') || attrib.classList.contains('maplibregl-compact-show'))) { attrib.removeAttribute('open'); attrib.classList.remove('maplibregl-compact-show'); } };
     map.on('styledata', collapse); map.on('sourcedata', collapse); collapse();
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-    try { const geo = new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false, fitBoundsOptions: { maxZoom: 17 } });
-      map.addControl(geo, 'top-right'); geo.on('geolocate', (e) => { if (e && e.coords) lookupPoint([e.coords.longitude, e.coords.latitude]); }); } catch (_) {}
+    setTimeout(() => { // controls in their own short task, after the map itself
+      if (!map) return; map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+      try { const geo = new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false, fitBoundsOptions: { maxZoom: 17 } });
+        map.addControl(geo, 'top-right'); geo.on('geolocate', (e) => { if (e && e.coords) tapLookup([e.coords.longitude, e.coords.latitude]); }); } catch (_) {} }, 0);
     const raster = { version: 8, sources: { osm: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '&copy; OpenStreetMap contributors' } }, layers: [{ id: 'osm', type: 'raster', source: 'osm' }] };
     let fellBack = false;
     map.on('error', (e) => { const m = String((e && e.error && (e.error.message || e.error)) || '');
-      if (!fellBack && !styleReady && /style|openfreemap/i.test(m)) { fellBack = true; try { map.setStyle(raster); } catch (_) {} }
+      if (!fellBack && !styleReady && /style|openfreemap/i.test(m)) { fellBack = true; S.builtStyle = false; try { map.setStyle(raster); } catch (_) {} }
       if (e && e.sourceId === 'wm-aerial' && S.basemap === 'aerial') { setBasemap('street', false); mapNote('Aerial imagery could not load; the street map is shown.'); } });
-    map.on('style.load', () => { styleReady = true; hasGlyphs = !!(map.getStyle() || {}).glyphs; addAerial(); ensureLayers(); map.once('idle', () => setTimeout(warmUp, 60)); });
+    map.on('style.load', () => { styleReady = true;
+      if (!S.builtStyle) { const st = map.getStyle() || {}; hasGlyphs = !!st.glyphs; addAerial(st.layers || []); } // a style that did not come from buildStyle (fallbacks)
+      else if (S.builtBase !== S.basemap) { applyBase(); paintLayers(); } // the basemap was switched while the map was starting
+      ensureLayers();
+      if (S.geo) { fitLot(true); if (S.nearLL) fitWith(S.nearLL, true); } // a lookup got there before the map was ready
+      map.once('idle', () => { mapLoaded(); idleTask(warmUp, 400); }); });
     map.on('click', (e) => {
-      if (map.getZoom() < 14) { map.easeTo({ center: e.lngLat, zoom: 16.5, duration: RMQ.matches ? 0 : 600 }); status('Zoomed in. Now tap inside your lot.'); return; }
-      lookupPoint([e.lngLat.lng, e.lngLat.lat]);
+      if (map.getZoom() < 14) { warmHosts(); map.easeTo({ center: e.lngLat, zoom: 16.5, duration: RMQ.matches || map.getZoom() < 10 ? 0 : 600 }); status('Zoomed in. Now tap inside your lot.'); return; }
+      tapLookup([e.lngLat.lng, e.lngLat.lat]);
     });
   }
+  const idleTask = (fn, wait) => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1500 }) : fn()), wait || 0);
   function mapNote(msg) { const n = $('wmMapNote'); if (n) { n.textContent = msg; n.hidden = !msg; } }
-  function addAerial() {
-    if (!map.getSource('wm-aerial')) map.addSource('wm-aerial', { type: 'raster', tiles: ['https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 16,
-      attribution: 'Imagery: USDA / <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer" target="_blank" rel="noopener">USGS The National Map</a> (dates vary)' });
-    const layers = (map.getStyle() || {}).layers || [];
-    const firstSymbol = layers.find((l) => l.type === 'symbol');
-    if (!map.getLayer('wm-aerial')) map.addLayer({ id: 'wm-aerial', type: 'raster', source: 'wm-aerial', layout: { visibility: S.basemap === 'aerial' ? 'visible' : 'none' }, paint: { 'raster-fade-duration': RMQ.matches ? 0 : 180 } }, firstSymbol ? firstSymbol.id : undefined);
-    // Pitch is off, so 3D extrusions add nothing but a cold shader compile on the first zoom-in: hide them for good.
-    layers.forEach((l) => { if (l.type === 'fill-extrusion') map.setLayoutProperty(l.id, 'visibility', 'none'); });
-    // Base fills and lines under the opaque imagery are invisible in aerial mode: skip drawing them (restored for the street map).
-    const idx = layers.findIndex((l) => l.id === 'wm-aerial');
-    S.baseBelow = layers.slice(0, idx < 0 ? 0 : idx).filter((l) => l.type !== 'background' && l.type !== 'fill-extrusion' && l.type !== 'symbol').map((l) => [l.id, (l.layout || {}).visibility || 'visible']);
+  function addAerial(layers) { // for a style that came without the imagery (the raster fallback); otherwise only records the layer lists
+    if (!map.getSource('wm-aerial')) map.addSource('wm-aerial', AERIAL_SRC());
+    if (!map.getLayer('wm-aerial')) { const fsym = layers.find((l) => l.type === 'symbol'); map.addLayer(AERIAL_LAYER(), fsym ? fsym.id : undefined); layers = (map.getStyle() || {}).layers || []; }
+    layers.forEach((l) => { if (l.type === 'fill-extrusion' && vis(l) !== 'none') map.setLayoutProperty(l.id, 'visibility', 'none'); });
+    baseLists(layers); // 2026-10-15: was computed from a list taken before wm-aerial was added, so it was always empty and the base drew under the imagery
     applyBase();
   }
   function applyBase() {
     if (!map || !styleReady) return; const aerial = S.basemap === 'aerial';
-    if (map.getLayer('wm-aerial')) map.setLayoutProperty('wm-aerial', 'visibility', aerial ? 'visible' : 'none');
-    (S.baseBelow || []).forEach(([id, v]) => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', aerial ? 'none' : v); });
-    ((map.getStyle() || {}).layers || []).forEach((l) => { if (l['source-layer'] === 'poi') map.setLayoutProperty(l.id, 'visibility', aerial ? 'none' : 'visible'); });
+    const setVis = (id, v) => { if (map.getLayer(id) && map.getLayoutProperty(id, 'visibility') !== v) map.setLayoutProperty(id, 'visibility', v); };
+    setVis('wm-aerial', aerial ? 'visible' : 'none');
+    (S.baseBelow || []).forEach(([id, v]) => setVis(id, aerial ? 'none' : v));
+    (S.poiIds || []).forEach((id) => setVis(id, aerial ? 'none' : (ORIG_VIS[id] || 'visible')));
+    if (S.bgId && map.getLayer(S.bgId)) try { map.setPaintProperty(S.bgId, 'background-color', aerial ? AERIAL_BG : S.bgStreet); } catch (_) {}
   }
-  // Cold-start WebGL: MapLibre compiles a shader program the first time each overlay layer draws, and that link step blocks
-  // the main thread. Draw sub-pixel stand-ins (hidden behind the basemap switch) one source per idle frame after load,
-  // so the compiles happen before anyone searches. Skipped or cleared the moment a lookup starts.
+  // Cold-start WebGL: MapLibre compiles a shader program the first time each kind of overlay layer draws, and that blocks the main thread.
+  // After the first 'idle', copies of the overlay layers are drawn from a temporary source at 0.4% opacity (invisible), one per idle moment,
+  // then removed; the compiled programs stay cached for the first lookup. Stops the moment a lookup starts. (2026-10-15: the old stand-ins
+  // used the real sources at full opacity under the basemap switch and could show if the map was panned during warm-up.)
   function warmUp() {
-    if (!map || S.warmed || S.seq > 0) return; S.warmed = true;
-    const c = map.unproject([24, 22]), d = 2e-6;
-    const ln = (props) => ({ type: 'Feature', properties: props, geometry: { type: 'LineString', coordinates: [[c.lng, c.lat], [c.lng + d, c.lat]] } });
-    const pg = { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[c.lng, c.lat], [c.lng + d, c.lat], [c.lng + d, c.lat + d], [c.lng, c.lat]]] } };
-    const set = (id, data) => { const s = map.getSource(id); if (s) s.setData(data); };
-    const steps = [() => set('wm-streams', fc([ln({ t: 'F', k: 'stream', n: '' }), ln({ t: 'N', k: 'ditch', n: '' })])),
-      () => { set('wm-band', fc([pg])); set('wm-band-edge', fc([ln({})])); }, () => set('wm-rmz', fc([pg])),
-      () => { set('wm-lot', fc([pg])); set('wm-env', fc([ln({})])); set('wm-pt', fc([{ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [c.lng, c.lat] } }])); }];
+    if (!map || S.warmed || S.seq > 0 || !styleReady) return; S.warmed = true;
+    const c = map.getCenter(), d = 0.01, A = [c.lng, c.lat], B = [c.lng + d, c.lat], C = [c.lng + d, c.lat + d];
+    const data = fc([{ type: 'Feature', properties: { t: 'F', k: 'stream', n: '' }, geometry: { type: 'LineString', coordinates: [A, B] } },
+      { type: 'Feature', properties: { t: 'N', k: 'ditch', n: '' }, geometry: { type: 'LineString', coordinates: [B, C] } },
+      { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[A, B, C, A]] } }, { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: A } }]);
+    const GHOST = { line: ['line-opacity'], fill: ['fill-opacity'], circle: ['circle-opacity', 'circle-stroke-opacity'] };
+    const ghosts = overlaySpecs().filter((l) => GHOST[l.type]).map((l, i) => { const g = JSON.parse(JSON.stringify(l)); g.id = 'wm-warm-' + i; g.source = 'wm-warm';
+      GHOST[l.type].forEach((p) => { g.paint[p] = 0.004; }); return g; });
+    const done = () => { try { ghosts.forEach((g) => { if (map.getLayer(g.id)) map.removeLayer(g.id); }); if (map.getSource('wm-warm')) map.removeSource('wm-warm'); } catch (_) {} };
+    try { map.addSource('wm-warm', { type: 'geojson', data: data }); } catch (_) { return; }
     let i = 0;
-    const clear = () => { if (S.seq > 0) return; ['wm-streams', 'wm-band', 'wm-band-edge', 'wm-rmz', 'wm-lot', 'wm-env', 'wm-pt'].forEach((id) => set(id, EMPTY)); };
-    const next = () => { if (S.seq > 0) return; if (i >= steps.length) { clear(); return; } try { steps[i++](); } catch (_) {} map.once('idle', () => setTimeout(next, 40)); };
+    const next = () => { if (!map || S.seq > 0 || i >= ghosts.length) { done(); return; }
+      try { map.addLayer(ghosts[i++]); } catch (_) {} map.once('idle', () => idleTask(next, 30)); };
     next();
   }
   function setBasemap(choice, save) {
@@ -688,30 +802,36 @@
     if (!map || !styleReady) return;
     applyBase(); paintLayers();
   }
-  function src(id, data, attribution) { if (!map.getSource(id)) map.addSource(id, { type: 'geojson', data: data || EMPTY, attribution: attribution || '' }); else map.getSource(id).setData(data || EMPTY); }
+  function src(id, data, attribution) { if (!map.getSource(id)) map.addSource(id, { type: 'geojson', data: data || EMPTY, attribution: attribution || '' });
+    else if (data && data.features && data.features.length) map.getSource(id).setData(data); } // at style load: only the sources a lookup has already filled
   function ensureLayers() {
     if (!map || !styleReady) return;
     src('wm-env', envFeature()); src('wm-rmz', rmzData(), 'Estimated riparian management zones: Washington Department of Fish and Wildlife');
     src('wm-band', bandData('fill')); src('wm-band-edge', bandData('line'));
     src('wm-streams', streamData(), 'Watercourses: WA DNR Forest Practices Division'); src('wm-lot', S.lot ? fc([S.lot]) : EMPTY, 'Parcels: WaTech, Washington State Counties');
     src('wm-pt', S.pt ? fc([{ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: S.pt } }]) : EMPTY, ESRI_KEY ? 'Address search: Powered by Esri' : '');
-    const add = (l) => { if (!map.getLayer(l.id)) map.addLayer(l); };
-    add({ id: 'wm-env-line', type: 'line', source: 'wm-env', paint: { 'line-width': 1.2, 'line-dasharray': [3, 3], 'line-opacity': 0.8 } });
-    add({ id: 'wm-rmz-fill', type: 'fill', source: 'wm-rmz', paint: {} });
-    add({ id: 'wm-rmz-line', type: 'line', source: 'wm-rmz', paint: { 'line-width': 1, 'line-dasharray': [2, 2] } });
-    add({ id: 'wm-band-fill', type: 'fill', source: 'wm-band', paint: { 'fill-antialias': false } });
-    add({ id: 'wm-band-line', type: 'line', source: 'wm-band-edge', layout: { 'line-join': 'round' }, paint: { 'line-width': 1.6 } });
-    add({ id: 'wm-streams-casing', type: 'line', source: 'wm-streams', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-width': ['match', ['get', 't'], 'S', 6, 'F', 5, 4], 'line-opacity': 0.7 } });
-    add({ id: 'wm-streams-line', type: 'line', source: 'wm-streams', filter: ['==', ['get', 'k'], 'stream'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': TYPE_COLOR, 'line-width': ['match', ['get', 't'], 'S', 3.6, 'F', 2.8, 2.2] } });
-    add({ id: 'wm-ditch-line', type: 'line', source: 'wm-streams', filter: ['!=', ['get', 'k'], 'stream'], paint: { 'line-color': TYPE_COLOR, 'line-width': 1.8, 'line-dasharray': [2, 1.5] } });
-    add({ id: 'wm-lot-casing', type: 'line', source: 'wm-lot', paint: { 'line-color': '#111511', 'line-width': 5, 'line-opacity': 0.55 } });
-    add({ id: 'wm-lot-fill', type: 'fill', source: 'wm-lot', paint: { 'fill-opacity': 0.14 } });
-    add({ id: 'wm-lot-line', type: 'line', source: 'wm-lot', paint: { 'line-width': 2.6 } });
-    add({ id: 'wm-pt', type: 'circle', source: 'wm-pt', paint: { 'circle-radius': 5, 'circle-color': '#ffffff', 'circle-stroke-color': '#111511', 'circle-stroke-width': 2 } });
-    if (hasGlyphs) add({ id: 'wm-streams-label', type: 'symbol', source: 'wm-streams', filter: ['all', ['==', ['get', 'k'], 'stream'], ['!=', ['get', 'n'], '']], minzoom: 13,
+    overlaySpecs().forEach((l) => { if (!map.getLayer(l.id)) map.addLayer(l); });
+    if (!S.builtStyle) paintLayers();
+  }
+  function overlaySpecs() { // the overlay layers, painted for the current basemap (also cloned by warmUp)
+    const c = PAINT[S.basemap] || PAINT.street;
+    const out = [
+      { id: 'wm-env-line', type: 'line', source: 'wm-env', paint: { 'line-width': 1.2, 'line-dasharray': [3, 3], 'line-opacity': 0.8, 'line-color': c.env } },
+      { id: 'wm-rmz-fill', type: 'fill', source: 'wm-rmz', paint: { 'fill-color': c.rmz, 'fill-opacity': c.rmzO } },
+      { id: 'wm-rmz-line', type: 'line', source: 'wm-rmz', paint: { 'line-width': 1, 'line-dasharray': [2, 2], 'line-color': c.rmzE } },
+      { id: 'wm-band-fill', type: 'fill', source: 'wm-band', paint: { 'fill-antialias': false, 'fill-color': c.band, 'fill-opacity': c.bandO } },
+      { id: 'wm-band-line', type: 'line', source: 'wm-band-edge', layout: { 'line-join': 'round' }, paint: { 'line-width': 1.6, 'line-color': c.edge } },
+      { id: 'wm-streams-casing', type: 'line', source: 'wm-streams', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-width': ['match', ['get', 't'], 'S', 6, 'F', 5, 4], 'line-opacity': 0.7, 'line-color': c.casing } },
+      { id: 'wm-streams-line', type: 'line', source: 'wm-streams', filter: ['==', ['get', 'k'], 'stream'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': TYPE_COLOR, 'line-width': ['match', ['get', 't'], 'S', 3.6, 'F', 2.8, 2.2] } },
+      { id: 'wm-ditch-line', type: 'line', source: 'wm-streams', filter: ['!=', ['get', 'k'], 'stream'], paint: { 'line-color': TYPE_COLOR, 'line-width': 1.8, 'line-dasharray': [2, 1.5] } },
+      { id: 'wm-lot-casing', type: 'line', source: 'wm-lot', paint: { 'line-color': '#111511', 'line-width': 5, 'line-opacity': 0.55 } },
+      { id: 'wm-lot-fill', type: 'fill', source: 'wm-lot', paint: { 'fill-opacity': 0.14, 'fill-color': c.lot } },
+      { id: 'wm-lot-line', type: 'line', source: 'wm-lot', paint: { 'line-width': 2.6, 'line-color': c.lot } },
+      { id: 'wm-pt', type: 'circle', source: 'wm-pt', paint: { 'circle-radius': 5, 'circle-color': '#ffffff', 'circle-stroke-color': '#111511', 'circle-stroke-width': 2 } }];
+    if (hasGlyphs) out.push({ id: 'wm-streams-label', type: 'symbol', source: 'wm-streams', filter: ['all', ['==', ['get', 'k'], 'stream'], ['!=', ['get', 'n'], '']], minzoom: 13,
       layout: { 'symbol-placement': 'line', 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Regular'], 'text-size': 12, 'text-letter-spacing': 0.04 },
       paint: { 'text-color': '#0d3f80', 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 } });
-    paintLayers();
+    return out;
   }
   function paintLayers() {
     if (!map || !styleReady || !map.getLayer('wm-band-fill')) return; const c = PAINT[S.basemap] || PAINT.street;
@@ -730,36 +850,43 @@
   function drawStreams() { if (map && styleReady && map.getSource('wm-streams')) map.getSource('wm-streams').setData(streamData()); }
   function drawRmz() { if (map && styleReady && map.getSource('wm-rmz')) map.getSource('wm-rmz').setData(rmzData()); }
   function drawBand() { if (!map || !styleReady || !map.getSource('wm-band')) return; map.getSource('wm-band').setData(bandData('fill')); map.getSource('wm-band-edge').setData(bandData('line')); }
-  function fitLot() {
+  function fitLot(instant) {
     if (!map || !S.geo) return; const b = S.geo.bbox;
     const pad = Math.min(60, Math.round(Math.min(map.getContainer().clientWidth, map.getContainer().clientHeight) / 5));
     const lng = 220 / S.geo.P.kx, lat = 220 / S.geo.P.ky; // show ~220 m around the lot so nearby streams are in view
-    try { map.fitBounds([[b[0] - lng, b[1] - lat], [b[2] + lng, b[3] + lat]], { padding: pad, maxZoom: 18, duration: RMQ.matches ? 0 : 900 }); } catch (_) {}
+    // 2026-10-15: from a far-out view, jump: a long fly-in asks for tiles at every zoom on the way (megabytes on a phone) and shows blank tiles meanwhile
+    const jump = instant || RMQ.matches || map.getZoom() < 12;
+    try { map.fitBounds([[b[0] - lng, b[1] - lat], [b[2] + lng, b[3] + lat]], { padding: pad, maxZoom: 18, duration: jump ? 0 : 900 }); } catch (_) {}
   }
-  function fitWith(ll) { // keep the lot in view and add the nearest stream, unless the person already moved the map
+  function fitWith(ll, instant) { // keep the lot in view and add the nearest stream, unless the person already moved the map
     if (!map || !S.geo || S.userMoved) return; const b = map.getBounds();
     if (b.contains(ll)) return; const lb = S.geo.bbox, m = 60 / S.geo.P.kx, n = 60 / S.geo.P.ky;
     const pad = Math.min(50, Math.round(Math.min(map.getContainer().clientWidth, map.getContainer().clientHeight) / 6));
-    try { map.fitBounds([[Math.min(lb[0], ll[0]) - m, Math.min(lb[1], ll[1]) - n], [Math.max(lb[2], ll[0]) + m, Math.max(lb[3], ll[1]) + n]], { padding: pad, maxZoom: 18, duration: RMQ.matches ? 0 : 700 }); } catch (_) {}
+    try { map.fitBounds([[Math.min(lb[0], ll[0]) - m, Math.min(lb[1], ll[1]) - n], [Math.max(lb[2], ll[0]) + m, Math.max(lb[3], ll[1]) + n]], { padding: pad, maxZoom: 18, duration: instant || RMQ.matches ? 0 : 700 }); } catch (_) {}
   }
   function scrollToMap() { const c = $('wmMapCol'); if (c && innerWidth < 900) c.scrollIntoView({ block: 'center', behavior: RMQ.matches ? 'auto' : 'smooth' }); }
 
   // ---------- Page wiring ----------
   function init() {
     const form = $('wmForm'); if (form) form.addEventListener('submit', onSubmit);
-    $('wmPicks').addEventListener('click', (e) => { const b = e.target.closest('[data-pick]'); if (!b) return; const f = S.picks[Number(b.dataset.pick)]; if (!f) return;
-      const my = ++S.seq; S.geocoded = 'parcel'; runLot(f, null, my); });
+    $('wmPicks').addEventListener('click', (e) => { const b = e.target.closest('[data-pick]'); if (!b) return; const f = S.picks[Number(b.dataset.pick)]; if (!f) return; pickLookup(f); });
     document.querySelectorAll('[data-wm-base]').forEach((b) => b.addEventListener('click', () => setBasemap(b.dataset.wmBase)));
     setBasemap(S.basemap, false);
     // The page has <base href="../">: keep in-page links (wa/#id) on this page without a reload
     document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="wa/#"]'); if (!a) return; const t = document.getElementById(a.getAttribute('href').slice(4)); if (!t) return;
       e.preventDefault(); t.scrollIntoView({ block: 'start', behavior: RMQ.matches ? 'auto' : 'smooth' }); if (!/^(INPUT|SELECT|TEXTAREA|BUTTON|A)$/.test(t.tagName)) t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); });
-    initMap();
+    if (form) form.addEventListener('focusin', warmHosts, { once: true });
+    const lat = Number(params.get('lat')), lng = Number(params.get('lng'));
+    const linked = isFinite(lat) && isFinite(lng) && lat && lng && lng >= WA_EXTENT.xmin && lng <= WA_EXTENT.xmax && lat >= WA_EXTENT.ymin && lat <= WA_EXTENT.ymax;
+    if (linked) S.startView = { center: [lng, lat], zoom: 16 }; // a link to a spot: start the map there, not at the statewide view
+    // maplibre-gl.js is deferred after this file: start the map when it has run (or say so if it failed)
+    const gl = $('wmGL');
+    if (window.maplibregl || !gl) initMap();
+    else { gl.addEventListener('load', initMap, { once: true }); gl.addEventListener('error', initMap, { once: true }); window.addEventListener('load', initMap, { once: true }); }
     // Stop painting the WebGL map while it is scrolled out of view (as landing.js does on the home page)
     try { const col = $('wmMapCol'); if (col && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => col.classList.toggle('wm-offscreen', !e.isIntersecting), { rootMargin: '200px 0px' }).observe(col); } catch (_) {}
-    const lat = Number(params.get('lat')), lng = Number(params.get('lng'));
-    if (isFinite(lat) && isFinite(lng) && lat && lng && lng >= WA_EXTENT.xmin && lng <= WA_EXTENT.xmax && lat >= WA_EXTENT.ymin && lat <= WA_EXTENT.ymax) lookupPoint([lng, lat]);
-    window.creekWA = { state: S, get map() { return map; }, lookupPoint: lookupPoint, setWidth: setWidth };
+    if (linked) tapLookup([lng, lat]);
+    window.creekWA = { state: S, get map() { return map; }, lookupPoint: tapLookup, setWidth: setWidth };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
