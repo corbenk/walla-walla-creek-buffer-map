@@ -1,14 +1,14 @@
 {
-  "version": "2026-10-12.6",
+  "version": "2026-10-15.1",
   "status": "DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
   "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
     "headline": "This point is inside the proposed 100-foot stream buffer as mapped.",
-    "summary": "Under the draft Critical Areas Ordinance before City Council (hearing Oct 14, vote scheduled Oct 28, 2026), the minimum buffer on every named creek in the city goes from 35 feet (50 on Yellowhawk) to 100 feet, plus a new 15-foot building setback beyond the buffer, up from 5 feet. Inside the band, the draft's general rule is that all structures and activities must be located outside the buffer unless an exception applies. Existing homes stay; the rules bite when you build, expand, or rebuild.",
+    "summary": "Under the draft Critical Areas Ordinance before City Council (heard Oct 14, 2026; Council asked staff for options by the end of November), the minimum buffer on every named creek in the city goes from 35 feet (50 on Yellowhawk) to 100 feet, plus a new 15-foot building setback beyond the buffer, up from 5 feet. Inside the band, the draft's general rule is that all structures and activities must be located outside the buffer unless an exception applies. Existing homes stay; the rules bite when you build, expand, or rebuild.",
     "items": [
       {
         "q": "Can my existing house stay?",
-        "a": "Yes. Legally built homes and structures continue as nonconforming structures under city code chapter 20.212, which the draft leaves in place. Nothing requires you to move, remove, or plant anything on day one. The new rules apply when you apply for a permit to build, expand, or rebuild. If adopted Oct 28, the ordinance takes effect Dec 31, 2026.",
+        "a": "Yes. Legally built homes and structures continue as nonconforming structures under city code chapter 20.212, which the draft leaves in place. Nothing requires you to move, remove, or plant anything on day one. The new rules apply when you apply for a permit to build, expand, or rebuild. The City's page says the update takes effect Dec 31, 2026. On Oct 14 staff raised another idea: adopt it, but set the 100-foot buffer to take effect Dec 31, 2027, with applications filed before then reviewed under today's buffers. Council has not decided.",
         "basis": "draft"
       },
       {
@@ -75,7 +75,7 @@
       },
       {
         "q": "Is the County doing this too?",
-        "a": "Walla Walla County published its own minimum riparian buffer GIS layer on Aug 31, 2026 using tiered widths of 35, 50, 75, and 100 feet depending on the stream. The County has not yet posted a draft ordinance or hearing dates. The City's draft uses one width, 100 feet, for every creek, even though it adopts the state's four-type stream classification in its definitions.",
+        "a": "Walla Walla County published its own minimum riparian buffer GIS layer on Aug 31, 2026 using tiered widths of 35, 50, 75, and 100 feet depending on the stream. The County has not yet posted a draft ordinance or hearing dates. The City's draft uses one width, 100 feet, for every creek.",
         "basis": "draft"
       },
       {
@@ -166,10 +166,10 @@
   },
   "ask": {
     "headline": "Tell the City Council: honor the Planning Commission's 7-0 vote and get the local science before drawing the line.",
-    "body": "The public hearing is Wednesday, Oct 14, 2026 at 6:30 pm, City Hall, 15 N 3rd Ave (3-minute comments; Zoom ID 845 3179 8905). No vote that night; the adoption vote is scheduled Oct 28. Written comments go to CityClerk@wallawallawa.gov before the hearing so they are in the record. On Sept 14 the City's own Planning Commission voted 7-0 to send this draft back for science matching local conditions; staff's Oct 9 draft still has the flat 100 feet. Ask Council to honor that recommendation: do not adopt Table 6 as written, adopt tiered buffers that match each creek's real condition (as the County's own buffer map does), publish a parcel and housing-capacity analysis first, and protect existing homes in writing.",
+    "body": "On Oct 14, 2026 Council heard from residents and did not vote. It asked staff to bring back options and a plan of action no earlier than the first November meeting (Wed Nov 4) and by the end of November. Email CityClerk@wallawallawa.gov (cc citycouncil@wallawallawa.gov) with what you hope those options include. On Sept 14 the City's own Planning Commission voted 7-0 to send this draft back for science matching local conditions; staff's Oct 9 draft still has the flat 100 feet. Ask Council to honor that recommendation: tiered buffers that match each creek's real condition (as the County's own buffer map does), a parcel and housing-capacity analysis first, and existing homes protected in writing.",
     "email_to": "CityClerk@wallawallawa.gov",
-    "email_subject": "Critical Areas Ordinance (Item 6E): please do not adopt a flat 100-foot buffer on Oct 28",
-    "email_body": "Dear Mayor and Councilmembers,\n\nMy name is [NAME] and I live at [ADDRESS]. Please include this in the record for the Oct 14 hearing on the Critical Areas Ordinance.\n\nThe proposed 100-foot buffer (up from 35 feet, or 50 on Yellowhawk), plus the new 15-foot building setback, [touches my property / affects my neighborhood / affects the city I live in].\n\nOn Sept 14 your Planning Commission voted 7-0 to recommend that staff revise this draft using science matching local conditions. The Oct 9 draft still proposes a flat 100 feet on every creek. No state law sets that number; the Department of Fish and Wildlife's own letter on this draft says 'a site evaluation would be best.' Walla Walla County's own August 2026 buffer map is tiered at 35, 50, 75 and 100 feet. The City's consultant says the regulated area goes from 269 to 757 acres, and no parcel count or housing-capacity analysis has been published.\n\nBefore the Oct 28 vote, please: (1) do not adopt Table 6 or the 15-foot setback as drafted; (2) honor the 7-0 recommendation and direct staff to return with tiered buffers that reflect each creek's condition and fish use, with a locally scoped science review and written findings under WAC 365-195-915(1)(c); (3) publish a parcel-level and housing-capacity analysis first; and (4) protect existing homes in writing, including repairs, additions and ADUs on the side away from the creek, and rebuilding after fire without losing grandfathered status in six months.\n\nThank you,\n[NAME]\n[ADDRESS]"
+    "email_subject": "Critical Areas Ordinance (creek buffers): what I hope the November options include",
+    "email_body": "Dear Mayor and Councilmembers,\n\nMy name is [NAME] and I live at [ADDRESS]. Thank you for listening at the Oct 14 hearing and for asking staff to bring back options before you decide on the Critical Areas Ordinance.\n\nThe proposed 100-foot buffer (up from 35 feet, or 50 on Yellowhawk), plus the new 15-foot building setback, [touches my property / affects my neighborhood / affects the city I live in].\n\nOn Sept 14 your Planning Commission voted 7-0 to recommend that staff revise this draft using science matching local conditions. The Oct 9 draft still proposes a flat 100 feet on every creek. No state law sets that number; the Department of Fish and Wildlife's own letter on this draft says 'a site evaluation would be best.' Walla Walla County's own August 2026 buffer map is tiered at 35, 50, 75 and 100 feet. The City's consultant says the regulated area goes from 269 to 757 acres, and no parcel count or housing-capacity analysis has been published.\n\nAs you weigh the options, please: (1) do not adopt Table 6 or the 15-foot setback as drafted; (2) honor the 7-0 recommendation and direct staff to return with tiered buffers that reflect each creek's condition and fish use, with a locally scoped science review and written findings under WAC 365-195-915(1)(c); (3) publish a parcel-level and housing-capacity analysis first; and (4) protect existing homes in writing, including repairs, additions and ADUs on the side away from the creek, and rebuilding after fire without losing grandfathered status in six months.\n\nThank you,\n[NAME]\n[ADDRESS]"
   },
   "about_data": {
     "streams_source": "City of Walla Walla GIS, \"WW_Streams_Riparian_Buffer\" public map service (visible stream centerlines and the City's 100-ft buffer polygon), published Oct 6, 2026; parcels from Walla Walla County GIS Tax_Parcels (data dated Sept 28, 2026)",
@@ -178,7 +178,7 @@
   },
   "sources": [
     {
-      "label": "City of Walla Walla, Critical Areas Ordinance project page (hearing Oct 14, adoption Oct 28, effective Dec 31, 2026)",
+      "label": "City of Walla Walla, Critical Areas Ordinance project page (as of Oct 15, 2026 it still lists an Oct 28 adoption and a Dec 31, 2026 effective date, written before Council’s Oct 14 motion)",
       "url": "https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance"
     },
     {
@@ -220,6 +220,10 @@
     {
       "label": "Walla Walla County GIS, Minimum Riparian Buffer (working layer, Aug 31, 2026) and Hydrologic Features",
       "url": "https://services8.arcgis.com/COL6rRPkF9w28VGX/ArcGIS/rest/services/Minimum_Riparian_Buffer/FeatureServer/0"
+    },
+    {
+      "label": "City Council meeting video, Oct 14, 2026 (City of Walla Walla on Vimeo; the creek-buffer item starts at 1:17)",
+      "url": "https://vimeo.com/1229198442#t=4620s"
     }
   ]
 }

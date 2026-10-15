@@ -28,7 +28,7 @@
   }
   function renderPledge(d) {
     // The home-page attendance control lives in the hearing disclosure, independently of a dismissed count.
-    var b = $('ccPledgeBtn');
+    var b = $('ccPledgeBtn'); if (!b) return;   // 2026-10-15: the Oct 14 pledge button is gone from the markup
     if (!pledgeOpen) b.hidden = true;
     else if (ls('cc_pledged') === '1') { b.disabled = true; b.textContent = pledgeText(d && d.pledge || 1); }
   }
@@ -40,7 +40,7 @@
     root.hidden = false;
     countUp($('ccLots'), d.lot);
     row('ccEmailRow', 'ccEmail', d.email, SHOW.email);
-    row('ccPledgeRow', 'ccPledge', pledgeOpen ? d.pledge : -1, SHOW.pledge);
+    if ($('ccPledgeRow')) row('ccPledgeRow', 'ccPledge', pledgeOpen ? d.pledge : -1, SHOW.pledge);
     creekRow();
   }
   function post(m, creek) {
@@ -68,7 +68,7 @@
     if (reduce) { root.hidden = true; return; }
     root.style.height = root.offsetHeight + 'px'; void root.offsetHeight; root.classList.add('bn-leave');
     setTimeout(function () { root.hidden = true; root.classList.remove('bn-leave'); root.style.height = ''; }, 520); });
-  $('ccPledgeBtn').addEventListener('click', function () {
+  if ($('ccPledgeBtn')) $('ccPledgeBtn').addEventListener('click', function () {
     var b = this; if (ls('cc_pledged') === '1') return;
     b.disabled = true; $('ccSaved').textContent = '';
     post('pledge').then(function (res) {

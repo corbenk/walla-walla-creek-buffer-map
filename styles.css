@@ -1319,3 +1319,43 @@ html {overflow-x:clip}
 .mail-web,.mail-alt .text-button {display:inline-flex;align-items:center;min-height:40px;padding:6px 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);color:var(--ink);font:600 14px/1.2 var(--body);text-decoration:none;cursor:pointer}
 .mail-web:hover,.mail-alt .text-button:hover {border-color:var(--cta)}
 .mail-web:focus-visible,.mail-alt .text-button:focus-visible {outline:3px solid var(--focus);outline-offset:2px}
+
+/* BEGIN WHATS NEXT (2026-10-15; written into styles.css by write_index.py) */
+.whats-next .eyebrow {color:var(--creek)}
+.whats-next h2 {max-width:24ch}
+.wn-cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:26px 0 8px}
+.wn-card {padding:20px 20px 16px;background:var(--panel);border:1px solid var(--line-strong);border-top:5px solid var(--creek);border-radius:var(--r-s)}
+.wn-card .kicker {font:600 12px/1.4 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.screen .wn-card h3 {font-size:23px;line-height:1.12;margin:0 0 10px}
+.screen .wn-card p {font-size:16px;line-height:1.5;margin:0}
+.screen .wn-sub {font-size:25px;margin:40px 0 14px}
+.wn-steps {list-style:none;counter-reset:wn;margin:0;padding:0;display:grid;gap:12px}
+.wn-steps>li {counter-increment:wn;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-s);max-width:none}
+.wn-steps>li::before {content:counter(wn);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--creek);color:#fff;font:700 18px/1 var(--display)}
+.wn-steps b {display:block;font:700 20px/1.2 var(--display);margin:0 0 4px}
+.screen .wn-steps p {font-size:15.5px;line-height:1.45;margin:0;color:var(--muted);max-width:60ch}
+.wn-actions {display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.wn-actions .btn {min-height:44px;white-space:nowrap}
+.wn-two {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 40px}
+.screen .wn-note {font-size:15px;color:var(--muted);margin:-4px 0 12px}
+.wn-questions,.wn-mind {margin:0;padding:0 0 0 1.1em}
+.screen .wn-questions li,.screen .wn-mind li {font-size:16px;line-height:1.5;margin:0 0 10px}
+.wn-questions li::marker {color:var(--creek);content:"? ";font-weight:700}
+.wn-mind {list-style:none;padding:0}
+.wn-mind li {padding-left:14px;border-left:3px solid var(--amber)}
+.wn-mind b {display:block}
+.wn-dates {list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:3px solid var(--line-strong)}
+.wn-dates li {position:relative;padding:18px 12px 0 0;max-width:none;font-size:14px;line-height:1.35;color:var(--muted)}
+.wn-dates li::before {content:"";position:absolute;top:-9px;left:0;width:14px;height:14px;border-radius:50%;background:var(--panel);border:3px solid var(--line-strong)}
+.wn-dates li.done::before {background:var(--sage);border-color:var(--sage)}
+.wn-dates li.next::before {background:var(--creek);border-color:var(--creek)}
+.wn-dates .d {display:block;font:700 22px/1 var(--display);color:var(--ink);margin-bottom:4px}
+.wn-dates b {display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
+.wn-dates span:last-child {display:block}
+.screen .wn-source {font-size:13.5px;color:var(--muted);margin:26px 0 0;max-width:80ch}
+@media(max-width:860px) {.wn-cards {grid-template-columns:1fr}.wn-two {grid-template-columns:1fr}.wn-steps>li {grid-template-columns:36px minmax(0,1fr)}.wn-actions {grid-column:2;justify-content:flex-start}}
+@media(max-width:720px) {.screen .wn-card h3 {font-size:21px}.wn-steps>li {padding:14px 14px;gap:6px 12px;grid-template-columns:32px minmax(0,1fr)}.wn-steps>li::before {width:30px;height:30px;font-size:16px}
+  .wn-actions {grid-column:1 / -1}.wn-actions .btn {flex:1 1 auto;white-space:normal;text-align:center}
+  .wn-dates {grid-template-columns:1fr;border-top:0;border-left:3px solid var(--line-strong);margin-left:6px;gap:16px}
+  .wn-dates li {padding:0 0 0 18px}.wn-dates li::before {top:2px;left:-9px}.wn-dates .d {display:inline;font-size:19px;margin-right:6px}.wn-dates b {display:inline}}
+/* END WHATS NEXT */
