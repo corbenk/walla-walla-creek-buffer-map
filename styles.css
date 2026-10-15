@@ -1358,6 +1358,23 @@ html {overflow-x:clip}
   .wn-actions {grid-column:1 / -1}.wn-actions .btn {flex:1 1 auto;white-space:normal;text-align:center}
   .wn-dates {grid-template-columns:1fr;border-top:0;border-left:3px solid var(--line-strong);margin-left:6px;gap:16px}
   .wn-dates li {padding:0 0 0 18px}.wn-dates li::before {top:2px;left:-9px}.wn-dates .d {display:inline;font-size:19px;margin-right:6px}.wn-dates b {display:inline}}
+/* statewide section on the home page (2026-10-15) */
+.statewide .eyebrow {color:var(--creek)}
+.sw-grid {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:32px;align-items:center}
+.screen .sw-near {list-style:none;margin:18px 0 22px;padding:0;display:grid;gap:10px}
+.screen .sw-near li {font-size:16px;line-height:1.45;padding-left:14px;border-left:3px solid var(--amber);max-width:58ch}
+.sw-map {margin:0;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.sw-map svg {display:block;width:100%;height:auto}
+.sw-c path {stroke:var(--panel);stroke-width:1.1;fill:#c9ccbd;transition:filter .15s ease}
+.sw-c.g-c path {fill:var(--creek)}.sw-c.g-d path {fill:var(--amber)}.sw-c.g-a path {fill:#d4d6c9}
+.sw-c:hover path,.sw-c:focus-visible path {filter:brightness(1.15);stroke:var(--ink);stroke-width:1.6}
+.sw-c.ww path {stroke:var(--ink);stroke-width:1.8}
+.sw-pin {fill:#fff;stroke:var(--band-edge);stroke-width:2.6;pointer-events:none}
+.sw-map figcaption {display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:10px;font-size:13.5px;color:var(--muted)}
+.sw-k {display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:-8px;background:#c9ccbd}.sw-k.g-c {background:var(--creek)}.sw-k.g-d {background:var(--amber)}
+.search-elsewhere {margin:6px 0 0;font-size:13.5px;color:var(--muted)}.search-elsewhere a {color:var(--creek)}
+@media(max-width:860px) {.sw-grid {grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce) {.sw-c path {transition:none}}
 /* END WHATS NEXT */
 
 /* BEGIN CRITICAL AREAS BRIEF (2026-10-15; written into styles.css by write_community.py) */
@@ -1533,6 +1550,27 @@ html {overflow-x:clip}
   .wa-cta {padding:18px 16px}.community-page .wa-cta h2 {font-size:24px}
 }
 @media(prefers-reduced-motion:reduce) {.wa-card.flash {animation:none}.wa-county path {transition:none}}
+.wa-county-link {margin:10px 0 0;font-size:14px}.wa-county-link a {color:var(--creek);font-weight:600}
+/* county pages */
+.cty {--gc:var(--creek);--gd:var(--amber);--gb:#b9bdae;--ga:#d4d6c9;max-width:1080px;margin:0 0 64px}
+.cty-top {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.cty-facts {padding:20px 22px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.cty-due {display:flex;align-items:baseline;gap:12px;margin:0 0 8px}.cty-due span {font-weight:600;color:var(--muted)}.cty-due b {font:700 40px/1 var(--display);color:var(--creek)}
+.cty-status {margin:0 0 10px}
+.cty-sum {font-size:17px;line-height:1.55;margin:0 0 10px}
+.cty-mapfig {margin:0;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.cty-map {display:block;width:100%;height:auto}
+.cty-map path {stroke:var(--panel);stroke-width:1;fill:var(--ga)}
+.cty-map path.g-c {fill:color-mix(in srgb,var(--gc) 35%,var(--panel))}.cty-map path.g-d {fill:color-mix(in srgb,var(--gd) 35%,var(--panel))}.cty-map path.g-b {fill:var(--ga)}
+.cty-map path.focus {fill:var(--band);stroke:var(--ink);stroke-width:1.6}
+.cty-pin {fill:#fff;stroke:var(--ink);stroke-width:2}
+.cty-mapfig figcaption {font-size:13.5px;color:var(--muted);margin-top:8px}
+.cty-sec {margin-top:40px}
+.community-page .cty-sec h2 {font-size:26px;margin:0 0 12px}
+.cty-steps {margin:0;padding-left:22px;display:grid;gap:10px;max-width:70ch}.cty-steps li {font-size:16.5px;line-height:1.55}
+.cty-others {font-size:16px;line-height:1.9;max-width:80ch}.cty-others a {color:var(--creek)}
+.cty-ww {padding:18px 20px;border-left:5px solid var(--band);background:var(--panel);border-radius:8px}
+@media(max-width:860px) {.cty-top {grid-template-columns:1fr}}
 /* END WASHINGTON TRACKER */
 
 /* BEGIN SITE PAGES (2026-10-15; written into styles.css by write_community.py): site footer, Learn history, featured comment, compact comment cards */
@@ -1591,4 +1629,11 @@ footer.site-foot .site-footer {width:min(var(--container,1120px),100% - 2 * var(
 .pc-compact .memo-source-links {display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px}
 @media(max-width:860px) {.pc-compact-list .pc-cards {grid-template-columns:1fr}}
 @media(max-width:720px) {.fc-card {padding:18px 16px}.citizen-memo.pc-compact {padding:16px 14px 12px}}
+/* five tabs since 2026-10-15 (Map · Walla Walla impact · Washington · Learn more · Get involved); overrides the four-column rules above */
+.tabs {grid-template-columns:.5fr 1.1fr .95fr .9fr .95fr}
+.landing .site-head .tabs {min-width:0;flex:1 1 auto;max-width:660px;grid-template-columns:.5fr 1.1fr .95fr .9fr .95fr}
+@media(max-width:720px) {.tabs,.landing .site-head .tabs {min-width:0;grid-template-columns:.6fr 1.2fr 1.05fr 1fr 1fr}.tabs a {font-size:12px;padding:6px 3px}}
+html {overflow-x:clip}   /* belt and braces: nothing may open a sideways scroll on phones */
+@keyframes bn-fade-in {from {opacity:0} to {opacity:1}}
+@media(max-width:720px) {.hearing-banner,.latest-banner,.cc-count {animation-name:bn-fade-in}}   /* phones: banners fade in instead of sliding (the slide briefly widened the page) */
 /* END SITE PAGES */
