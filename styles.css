@@ -1461,3 +1461,134 @@ html {overflow-x:clip}
   .community-page .ca-card h2,.community-page .ca-fair h2 {font-size:25px}.ca-card,.ca-fair {padding:18px 16px}
 }
 /* END CRITICAL AREAS BRIEF */
+
+/* BEGIN WASHINGTON TRACKER (2026-10-15; written into styles.css by write_washington.py) */
+.wa-hero h1 {max-width:14ch}
+.wa {--gc:var(--creek);--gd:var(--amber);--gb:#b9bdae;--ga:#d4d6c9;max-width:1080px;margin:0 0 64px}
+.wa .eyebrow {color:var(--creek)}
+.wa-stats {list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line-strong);border-radius:8px;background:var(--panel);overflow:hidden}
+.wa-stats li {padding:20px 20px 18px;border-left:1px solid var(--line)}
+.wa-stats li:first-child {border-left:0}
+.wa-stats b {display:block;font:700 46px/1 var(--display);margin-bottom:6px;font-variant-numeric:tabular-nums}
+.wa-stats .g-c b {color:var(--gc)}.wa-stats .g-d b {color:var(--amber-ink)}.wa-stats .g-b b {color:var(--muted)}.wa-stats .g-x b {color:var(--band-edge)}
+.wa-stats span {display:block;font-size:14.5px;line-height:1.4;color:var(--muted)}
+
+/* map */
+.wa-mapfig {margin:28px 0 0;padding:18px 18px 14px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.wa-svg {display:block;width:100%;height:auto}
+.wa-county path {stroke:var(--panel);stroke-width:1.1;stroke-linejoin:round;transition:filter .15s ease}
+.wa-county.g-c path {fill:var(--gc)}.wa-county.g-d path {fill:var(--gd)}.wa-county.g-b path {fill:var(--gb)}.wa-county.g-a path {fill:var(--ga)}
+.wa-county:hover path,.wa-county:focus-visible path {filter:brightness(1.12) saturate(1.1);stroke:var(--ink);stroke-width:1.6}
+.wa-county:focus-visible {outline:none}
+.wa-lbl {font:600 7.2px var(--body);fill:#fff;text-anchor:middle;dominant-baseline:middle;pointer-events:none;paint-order:stroke;stroke:rgba(20,30,28,.35);stroke-width:1.6px}
+.wa-dot {fill:#fff;stroke:var(--band-edge);stroke-width:2.4;pointer-events:none}
+.wa-mapfig figcaption {display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:12px;font-size:13.5px;color:var(--muted)}
+.wa-key {display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:-8px;vertical-align:-2px}
+.wa-key.g-c {background:var(--gc)}.wa-key.g-d {background:var(--gd)}.wa-key.g-b {background:var(--gb)}.wa-key.g-a {background:var(--ga)}
+.wa-key-dot {display:inline-block;width:11px;height:11px;border-radius:50%;background:#fff;border:2.5px solid var(--band-edge);margin-right:-8px;vertical-align:-1px}
+.wa-src {flex-basis:100%;font-size:12.5px}
+.wa-src a {color:var(--muted)}
+
+/* find */
+.wa-find {display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:40px 0 4px;scroll-margin-top:16px}
+.wa-find label {font:700 20px/1.2 var(--display)}
+.wa-find input {flex:1 1 220px;max-width:360px;min-height:46px;padding:10px 14px;border:1px solid var(--line-strong);border-radius:6px;background:var(--panel);font:16px var(--body);color:var(--ink)}
+.wa-find input:focus {outline:3px solid var(--focus);outline-offset:1px}
+
+/* groups and cards */
+.wa-group {margin-top:36px}
+.community-page .wa-group h2 {display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;font-size:28px;margin:0 0 14px;padding-bottom:10px;border-bottom:3px solid var(--line-strong)}
+.wa-group.g-c h2 {border-color:var(--gc)}.wa-group.g-d h2 {border-color:var(--gd)}
+.wa-group h2 span {font:500 15px var(--body);color:var(--muted)}
+.wa-grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.wa-card {padding:16px 18px 14px;background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--gb);border-radius:8px;scroll-margin-top:20px;min-width:0}
+.wa-card.g-c {border-top-color:var(--gc)}.wa-card.g-d {border-top-color:var(--gd)}.wa-card.g-a {border-top-color:var(--ga)}
+.wa-card.flash {animation:wa-flash 1.6s ease}
+@keyframes wa-flash {0%,30% {box-shadow:0 0 0 4px var(--focus)} 100% {box-shadow:0 0 0 0 transparent}}
+.wa-card header {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;margin-bottom:6px}
+.community-page .wa-card h3 {font:700 21px/1.15 var(--display);margin:0}
+.wa-chip {display:inline-flex;align-items:center;min-height:24px;padding:2px 10px;border-radius:12px;font:600 12.5px/1.2 var(--body);border:1px solid var(--line-strong);color:var(--muted);background:var(--paper);white-space:nowrap}
+.wa-chip.st-draft,.wa-chip.st-hearing {background:var(--band-soft);border-color:var(--band-edge);color:var(--ink)}
+.wa-chip.st-adopted {background:var(--sage-soft);border-color:var(--sage);color:var(--sage-ink)}
+.wa-chip.st-started {background:var(--amber-soft);border-color:var(--amber);color:var(--amber-ink)}
+.wa-due {font-size:13.5px;color:var(--muted);margin:0 0 8px}.wa-due span {font-weight:600;color:var(--ink);margin-right:4px}
+.wa-sum {font-size:15.5px;line-height:1.5;margin:0 0 8px}
+.wa-meta {font-size:14.5px;line-height:1.45;margin:0 0 6px}.wa-meta span {font-weight:600}
+.wa-links {display:flex;flex-wrap:wrap;gap:4px 14px;margin:8px 0 0;font-size:14px}
+.wa-links a {color:var(--creek)}
+.wa-places {list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.wa-place {padding:10px 12px;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+.wa-place-head {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px}
+.wa-place p {font-size:14.5px;line-height:1.45;margin:0 0 5px}
+.wa-checked {font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.wa-cta {margin-top:48px;padding:24px;border-left:5px solid var(--creek);background:var(--creek-soft);border-radius:8px}
+.community-page .wa-cta h2 {font-size:28px;margin:0 0 8px}
+.wa-cta p {font-size:16.5px;line-height:1.6;margin:0;max-width:66ch}
+.wa-note {font-size:13.5px;color:var(--muted);margin:20px 0 0;max-width:80ch}
+@media(max-width:860px) {.wa-stats {grid-template-columns:1fr 1fr}.wa-stats li:nth-child(3) {border-left:0}.wa-stats li:nth-child(n+3) {border-top:1px solid var(--line)}}
+@media(max-width:720px) {
+  .wa-stats li {padding:14px}.wa-stats b {font-size:34px}.wa-stats span {font-size:13px}
+  .wa-mapfig {padding:10px 8px 10px}.wa-lbl {display:none}
+  .wa-grid {grid-template-columns:1fr}.community-page .wa-group h2 {font-size:24px}
+  .wa-cta {padding:18px 16px}.community-page .wa-cta h2 {font-size:24px}
+}
+@media(prefers-reduced-motion:reduce) {.wa-card.flash {animation:none}.wa-county path {transition:none}}
+/* END WASHINGTON TRACKER */
+
+/* BEGIN SITE PAGES (2026-10-15; written into styles.css by write_community.py): site footer, Learn history, featured comment, compact comment cards */
+/* footer */
+.site-footer {margin-top:56px;padding:36px 0 22px;border-top:3px solid var(--ink);color:var(--muted);font-size:15px}
+footer.site-foot .site-footer {width:min(var(--container,1120px),100% - 2 * var(--gutter,24px));margin:56px auto 0}
+.site-footer .ft-top {display:grid;grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr));gap:28px 32px}
+.site-footer .ft-brand p {margin:12px 0 0;max-width:34ch;line-height:1.5}
+.site-footer .ft-brand .ft-small {font-size:13px}
+.site-footer .ft-brand .brand {color:var(--ink)}
+.site-footer nav.ft-col {display:block}
+.site-footer .ft-col h2 {font:700 13px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin:4px 0 10px}
+.site-footer .ft-col ul {list-style:none;margin:0;padding:0;display:grid;gap:0}
+.site-footer .ft-col li {margin:0;padding:0}
+.site-footer .ft-col a {display:inline-flex;align-items:center;min-height:32px;color:var(--muted);text-decoration:none;font-size:15px;line-height:1.3}
+.site-footer .ft-col a:hover {color:var(--creek);text-decoration:underline;text-underline-offset:3px}
+.site-footer .ft-col a[aria-current="page"] {color:var(--ink);font-weight:600}
+.site-footer .ft-bottom {display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:13px}
+@media(max-width:980px) {.site-footer .ft-top {grid-template-columns:repeat(2,minmax(0,1fr))}.site-footer .ft-brand {grid-column:1 / -1}}
+@media(max-width:420px) {.site-footer .ft-top {grid-template-columns:1fr}.site-footer .ft-col a {min-height:40px}}
+
+/* Learn: a short history */
+.learn-history {margin-top:8px}
+.learn-history .ca {margin:18px 0 0}
+.learn-history .lh-actions {display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+
+/* Learn: featured comment */
+.featured-comment {margin-top:56px}
+.fc-card {margin:16px 0 0;padding:26px 28px 22px;background:var(--panel);border:1px solid var(--line-strong);border-left:6px solid var(--creek);border-radius:8px}
+.fc-card blockquote {margin:0}
+.fc-card blockquote p {font:600 clamp(22px,3vw,30px)/1.25 var(--display);margin:0;max-width:40ch;text-wrap:balance}
+.fc-card figcaption {margin-top:12px;font-size:15px;color:var(--muted)}
+.fc-card figcaption b {color:var(--ink)}
+.fc-links {display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0 0;font-size:15px}
+.fc-links a {color:var(--creek)}
+.fc-more {display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:16px}
+.fc-more p {margin:0;font-size:15px;color:var(--muted);max-width:52ch}
+
+/* comments.html: compact cards */
+.pc-compact-list .pc-cards {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.citizen-memo.pc-compact {padding:20px 22px 16px;margin:0}
+.pc-compact .pc-head h3 {font-size:24px;margin:2px 0 2px}
+.pc-compact .memo-kicker {margin:0}
+.pc-compact .memo-affiliation {margin:0;font-size:14.5px}
+.pc-compact .pc-date {margin:4px 0 0;font-size:13px;color:var(--muted)}
+.pc-compact blockquote.pc-quote {margin:14px 0 0;padding:0 0 0 14px;border-left:3px solid var(--amber)}
+.pc-compact blockquote.pc-quote p {font:600 18px/1.4 var(--body);margin:0;color:var(--ink)}
+.pc-compact .pc-cap {font-size:13px;color:var(--muted);margin:8px 0 0}
+.pc-compact .pc-actions {margin-top:12px}.pc-compact .pc-actions .btn {font-size:14px;min-height:40px}
+.pc-compact details.pc-more {margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.pc-compact details.pc-more summary {cursor:pointer;min-height:40px;display:flex;align-items:center;font-weight:600;color:var(--creek);font-size:14.5px}
+.pc-compact .memo-routing {margin:8px 0}
+.pc-compact .pc-points {margin:8px 0 0;padding-left:20px}
+.pc-compact .pc-points h5 {font-size:15px;margin:0}.pc-compact .pc-points p {font-size:14.5px;margin:2px 0 8px}.pc-compact .pc-points span {font-size:12.5px;color:var(--muted)}
+.pc-compact .pc-note {font-size:13.5px;color:var(--muted);margin:8px 0}
+.pc-compact .memo-source-links {display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px}
+@media(max-width:860px) {.pc-compact-list .pc-cards {grid-template-columns:1fr}}
+@media(max-width:720px) {.fc-card {padding:18px 16px}.citizen-memo.pc-compact {padding:16px 14px 12px}}
+/* END SITE PAGES */
