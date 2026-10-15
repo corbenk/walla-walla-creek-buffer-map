@@ -1636,4 +1636,11 @@ footer.site-foot .site-footer {width:min(var(--container,1120px),100% - 2 * var(
 html {overflow-x:clip}   /* belt and braces: nothing may open a sideways scroll on phones */
 @keyframes bn-fade-in {from {opacity:0} to {opacity:1}}
 @media(max-width:720px) {.hearing-banner,.latest-banner,.cc-count {animation-name:bn-fade-in}}   /* phones: banners fade in instead of sliding (the slide briefly widened the page) */
+/* 2026-10-15: Walla Walla | All of Washington view switch (home and /wa/) */
+.view-switch {display:flex;width:fit-content;max-width:calc(100% - 32px);margin:12px auto 0;padding:3px;gap:3px;background:var(--panel);border:1px solid var(--line-strong);border-radius:22px}
+.view-switch a {display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:6px 16px;border-radius:18px;font:600 14.5px/1.1 var(--body);color:var(--muted);text-decoration:none;white-space:nowrap}
+.view-switch a:hover {color:var(--ink);background:var(--creek-soft)}
+.view-switch a[aria-current="page"] {background:var(--creek);color:#fff}
+.document-header + .view-switch {margin:-20px 0 22px}
+@media(max-width:720px) {.view-switch {margin:10px 16px 0}.document-header + .view-switch {margin:-12px 0 18px}.view-switch a {padding:6px 14px;font-size:14px}}
 /* END SITE PAGES */

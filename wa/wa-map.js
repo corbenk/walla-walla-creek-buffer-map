@@ -66,7 +66,7 @@
     const ctl = typeof AbortController === 'function' ? new AbortController() : null;
     const t = setTimeout(() => { if (ctl) ctl.abort(); }, ms || 20000);
     try {
-      const r = await fetch(url, ctl ? { signal: ctl.signal } : undefined);
+      const r = await fetch(url, Object.assign({ referrerPolicy: 'strict-origin-when-cross-origin' }, ctl ? { signal: ctl.signal } : {})); // 2026-10-15: the Esri key needs a referrer; never inherit a no-referrer page policy
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const j = await r.json();
       if (j && j.error) throw new Error('Service error ' + (j.error.code || '') + ' ' + (j.error.message || ''));
@@ -316,6 +316,10 @@
   async function runLot(lot, pt, my) {
     if (my !== S.seq) return;
     const L = planarLot(lot);
+    // 2026-10-15 (review): lots in the Walla Walla map's area (app.js AREA_BBOX) get the Walla Walla map, which uses the City's and County's own buffer layers — never a second, statewide answer for the same lot
+    { const c = L.inner; if (c && c[0] >= -118.52 && c[0] <= -118.14 && c[1] >= 45.96 && c[1] <= 46.16) {
+      status('This lot is in the Walla Walla area. Opening the detailed Walla Walla map for it…');
+      location.assign('/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&w=100'); return; } }
     S.lot = lot; S.geo = L; S.pt = pt || L.inner; S.dnr = null; S.rmz = null; S.bands = {}; S.juris = null; S.dist = null; S.sd = null;
     const b = L.bbox, dLng = SEARCH_M / L.P.kx, dLat = SEARCH_M / L.P.ky;
     S.env = [b[0] - dLng, b[1] - dLat, b[2] + dLng, b[3] + dLat];
@@ -508,6 +512,7 @@
       '</div><p class="wm-pill-unit">feet from the mapped stream line</p><p id="wmBand" class="wm-loading">Measuring…</p>' +
       '<p class="wm-note" id="wmBandNote">A width you pick, not an official buffer. Drawn from DNR’s mapped stream centerlines; ditches, canals and pipes get no band here.</p></dd></div>' +
       '</dl>' +
+      '<p class="wm-notchecked"><b>Not checked here:</b> lakes, marine shorelines, wetlands, steep slopes and flood areas. Those have their own rules; your city or county planning office can tell you which apply.</p>' +
       '<section class="wm-card wm-county" id="wmCountyCard" aria-labelledby="wmCountyTitle"><p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">Loading…</h2></section>' +
       '<p class="wm-fine"><b>An awareness tool, not a legal determination.</b> Streams: WA DNR data; DNR says its water types are “intended for DNR Forest Practices regulatory purposes only.” Lots: WaTech statewide parcels, “for informational purposes only.” The WDFW zone is an estimate; site-scale delineation “requires field verification.” Only your county or city can say what applies to this property. <a href="wa/#wmAbout">About the data</a></p>' +
       '<div class="actions wm-again"><button type="button" class="btn" id="wmAgain">Check another address</button></div>';
@@ -520,7 +525,7 @@
     const el = $('wmJuris'); if (!el) return; el.classList.remove('wm-loading'); const j = S.juris;
     if (!j || j.error) { el.textContent = 'The city-limits service did not answer. Try again in a minute.'; el.classList.add('wm-err'); return; }
     let extra = '';
-    if (j.kind === 'city') extra = 'Inside city limits, the city’s critical areas rules apply. A city under 25,000 people may adopt the county’s rules by reference.';
+    if (j.kind === 'city') extra = 'Inside city limits, the city’s critical areas rules apply (some small cities adopt their county’s rules instead).';
     else if (j.kind === 'uga') extra = 'Unincorporated land, including urban growth areas, is generally under the county’s rules.';
     else if (j.kind === 'county') extra = 'Outside city limits, the county’s rules generally apply.';
     el.innerHTML = '<b>' + esc(j.label) + '</b>' + (extra ? '<span class="wm-note">' + esc(extra) + '</span>' : '');
@@ -533,7 +538,7 @@
   function renderStreams() {
     const el = $('wmStream'); if (!el) return; el.classList.remove('wm-loading'); const d = S.dist, F = S.dnr.feats;
     if (!d || d.stream.f < 0 || d.stream.d > SEARCH_M) {
-      el.innerHTML = 'No DNR-mapped stream within about ' + (Math.round(SEARCH_M * M2FT / 10) * 10).toLocaleString('en-US') + ' ft of this lot.' +
+      el.innerHTML = 'No DNR-mapped stream within about ' + (Math.round(SEARCH_M * M2FT / 10) * 10).toLocaleString('en-US') + ' ft of this lot.' + '<span class="wm-note">Lakes, marine shorelines and wetlands are not checked here.</span>' +
         (d && d.any.f >= 0 && d.any.d <= SEARCH_M ? '<span class="wm-note">A mapped ' + esc(kindWord(F[d.any.f].properties)) + ' is ' + ftLabel(d.any.d) + ' away.</span>' : '');
       return;
     }

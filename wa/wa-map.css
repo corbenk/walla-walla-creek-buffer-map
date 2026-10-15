@@ -169,3 +169,6 @@ p.wm-note {margin:8px 0 0}
   .wm-page *,.wm-page *::before,.wm-page *::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 @media (max-width:899px) {#wmWW:empty+.wm-lotcard {border-top:0;padding-top:10px}}
+
+/* 2026-10-15: what this tool does not check */
+.wm-notchecked {margin:14px 0 0;padding:10px 12px;font-size:14.5px;line-height:1.45;background:var(--paper);border-left:3px solid var(--amber);border-radius:4px}
