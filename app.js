@@ -339,7 +339,7 @@
   function skeleton(on) { // shimmer placeholder in place of the result card while an address lookup is in flight
     let k = $('skel'); const r = $('result');
     if (on) { if (!k) { k = document.createElement('div'); k.id = 'skel'; k.className = 'result loading'; k.innerHTML = '<div class="skel w55"></div><div class="skel w90"></div><div class="skel w70"></div>'; k._was = !r.classList.contains('hidden'); r.before(k); } r.classList.add('hidden'); }
-    else if (k) { if (k._was) r.classList.remove('hidden'); k.remove(); }
+    else if (k) { if (prep.hold && prep.hold === prep.gen) return; /* 2026-10-16 performance hook: the placeholder stays while geoReady gathers this lot's numbers */ if (k._was) r.classList.remove('hidden'); k.remove(); }
   }
   function pulseAsk() { if (state.pulsed) return; state.pulsed = true; const b = document.querySelector('#ask .btn.primary'); if (b) b.classList.add('pulse-once'); } // once per page load
   function revealCard(r, cls, key) { // slide the card up for a new point; on a width toggle or parcel resolve only the stripe/tint re-color
@@ -706,45 +706,181 @@
     return '<p class="juris">You are in: <b>' + esc(j.name) + '</b>' + (z ? ' · zoning <b>' + esc(z.code || '') + '</b>' + (z.name ? ' (' + esc(z.name) + ')' : '') : (j.code === 'ww' || j.code === 'cp' ? ' <span class="muted">· city zoning: no public layer</span>' : '')) + '</p>';
   }
 
+  // ---------- 2026-10-16 performance hook: exact skips, caches and a worker for the lot checks (same numbers, same names) ----------
+  // Why: a lookup measured every lot vertex against every segment of the ~240 City stream lines (turf.nearestPointOnLine) and cut the
+  // lot out of the City's whole 24,600-vertex band on the main thread: ~0.4-0.85 s blocked per lookup at 4x CPU (profiled 2026-10-16).
+  // Exact skips: every point turf measures to (a vertex, or a projection that lies on the segment) is inside that segment's box (boxes
+  // padded 1e-7°, ~1 cm, for rounding). lowBound() never exceeds turf.distance() to anything in a box: haversine grows with the latitude
+  // gap, the longitude gap and cos(latitude), so it takes the smallest gaps and the smaller cosine, then drops 1e-6 of the result for
+  // rounding. A group whose bound is above a distance already measured cannot hold the minimum, so skipping it cannot change any
+  // minimum, and ties still go to the first line, as before. Lines are cut into groups of 8 segments: the smallest group result is the
+  // same number turf returns for the whole line (each segment is measured the same way either way). Any non-numeric coordinate in a
+  // layer, lot or point turns the skips off for it, so even malformed data takes the original path.
+  const R_EARTH = 6371008.8, RAD = Math.PI / 180, PAD = 1e-7, SEG8 = 8, ANY_BOX = [-Infinity, -Infinity, Infinity, Infinity];
+  const finite = (c) => Number.isFinite(c[0]) && Number.isFinite(c[1]);
+  function boxOf(coords) { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const c of coords) { if (!finite(c)) return ANY_BOX; if (c[0] < x0) x0 = c[0]; if (c[0] > x1) x1 = c[0]; if (c[1] < y0) y0 = c[1]; if (c[1] > y1) y1 = c[1]; }
+    return [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD]; }
+  const cosMin = (b) => Math.min(Math.cos(b[1] * RAD), Math.cos(b[3] * RAD)); // the smaller cosine over the box's latitudes
+  function lowBound(x, y, cy, b, cm) { // metres; never more than turf.distance([x, y], q) for any q in box b (cy = cos of y)
+    const gx = b[0] - x > 0 ? b[0] - x : (x - b[2] > 0 ? x - b[2] : 0), gy = b[1] - y > 0 ? b[1] - y : (y - b[3] > 0 ? y - b[3] : 0);
+    if (!(gx > 0 || gy > 0)) return 0;
+    const sy = Math.sin(gy * RAD / 2), sx = Math.sin(gx * RAD / 2), a = sy * sy + sx * sx * cy * cm;
+    const v = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * R_EARTH * (1 - 1e-6); return v > 0 ? v : 0;
+  }
+  const groups = (coords) => { const out = []; for (let i = 0; i < coords.length - 1; i += SEG8) { const c = coords.slice(i, i + SEG8 + 1), b = boxOf(c); out.push({ line: turf.lineString(c), b, cm: cosMin(b) }); } return out; };
+  const GEO_L = new WeakMap(), GEO_P = new WeakMap(); // per FeatureCollection, built once (the layers are never edited after they load)
+  function lineIndex(fc) { // the lines nearestStream() walks, in its order, cut into groups; and every feature's vertices for parcelDistanceFt()
+    let ix = GEO_L.get(fc); if (ix) return ix; ix = { parts: [], feats: [], safe: true };
+    for (const f of fc.features) { const g = f.geometry; if (!g) continue;
+      const coords = turf.coordAll(f); if (!coords.every(finite)) ix.safe = false; ix.feats.push({ f, coords, bb: null });
+      const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
+      for (const c of lines) { if (c.length < 2) continue; const b = boxOf(c); ix.parts.push({ f, coords: c, chunks: groups(c), b, cm: cosMin(b) }); } }
+    GEO_L.set(fc, ix); return ix;
+  }
+  // Measures, nearest box first, every group that could still beat the smallest distance so far (m0: one already known, or Infinity);
+  // returns that smallest distance. per[i] (optional) gets line i's smallest measured group: exact whenever it is <= the result.
+  function scan(pt, ix, m0, per) {
+    const P = turf.getCoord(pt), x = P[0], y = P[1], cy = Math.cos(y * RAD), on = ix.safe && finite(P), cand = []; let M = m0;
+    for (let i = 0; i < ix.parts.length; i++) { const lb = on ? lowBound(x, y, cy, ix.parts[i].b, ix.parts[i].cm) : 0; if (lb <= M) cand.push([lb, i]); }
+    cand.sort((a, b) => a[0] - b[0]);
+    for (const [lb, i] of cand) { if (lb > M) break;
+      for (const c of ix.parts[i].chunks) { if (on && lowBound(x, y, cy, c.b, c.cm) > M) continue;
+        const d = turf.nearestPointOnLine(c.line, pt, { units: 'meters' }).properties.dist;
+        if (per && (per[i] === undefined || d < per[i])) per[i] = d; if (d < M) M = d; } }
+    return M;
+  }
+  // the band share (turf.intersect) in a worker: it runs this file's own shareCompute source (below) with the same turf build on
+  // structured-cloned (bit-identical) inputs, so the numbers are the same. Any failure or a 6 s silence: the main thread, as before.
+  const MEMO = { share: new WeakMap(), dist: new WeakMap() }; // FeatureCollection -> WeakMap(parcel -> value); same inputs, same value
+  const memoHas = (k, fc, parcel) => { const m = MEMO[k].get(fc); return !!(m && m.has(parcel)); };
+  const memoSet = (k, fc, parcel, v) => { let m = MEMO[k].get(fc); if (!m) MEMO[k].set(fc, m = new WeakMap()); m.set(parcel, v); return v; };
+  const SW = { w: null, ids: new WeakMap(), n: 0, seq: 0, jobs: new Map(), off: false };
+  function shareWorker() {
+    if (SW.w || SW.off) return SW.w;
+    try {
+      const s = document.querySelector('script[src*="@turf/turf@"]'); if (!s || !window.Worker || !window.Blob || !window.URL) throw new Error('no worker');
+      const src = 'importScripts(' + JSON.stringify(s.src) + ');var fcs={};' + shareCompute.toString() +
+        ';onmessage=function(e){var d=e.data;if(d.fc){fcs[d.id]=d.fc;return;}var out=null,err=null;try{out=shareCompute(d.parcel,fcs[d.id]);}catch(x){err=String(x&&x.message||x);}postMessage({job:d.job,out:out,err:err});};';
+      const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+      w.onmessage = (e) => { const j = SW.jobs.get(e.data.job); SW.jobs.delete(e.data.job); if (j) j(e.data); };
+      w.onerror = (e) => { SW.off = true; SW.w = null; const all = [...SW.jobs.values()]; SW.jobs.clear(); all.forEach(j => j(null)); if (e && e.preventDefault) e.preventDefault(); };
+      SW.w = w;
+    } catch (e) { SW.off = true; }
+    return SW.w;
+  }
+  function shareSend(fc) { const w = shareWorker(); if (!w) return null; let id = SW.ids.get(fc); if (id == null) { id = ++SW.n; w.postMessage({ id, fc }); SW.ids.set(fc, id); } return id; }
+  function shareJob(parcel, fc) { // resolves when the share is cached, or when it should be computed on the main thread
+    return new Promise((res) => {
+      let id = null; try { id = shareSend(fc); } catch (e) { SW.off = true; }
+      if (id == null) return setTimeout(() => { try { parcelShareFC(parcel, fc); } catch (e) {} res(); }, 0);
+      const job = ++SW.seq; const t = setTimeout(() => { if (SW.jobs.delete(job)) { SW.off = true; res(); } }, 6000);
+      SW.jobs.set(job, (d) => { clearTimeout(t); if (d && !d.err) memoSet('share', fc, parcel, d.out); res(); });
+      try { SW.w.postMessage({ job, id, parcel }); } catch (e) { SW.jobs.delete(job); clearTimeout(t); res(); }
+    });
+  }
+  function distJob(parcel, fc, g) { // parcelDistanceFt in short tasks (yields between the crossing tests); dropped if a newer check starts
+    return new Promise((res) => { const it = pdistSteps(parcel, fc);
+      const step = () => { if (prep.gen !== g) return res(); const t0 = performance.now(); let r;
+        while (!(r = it.next()).done) if (performance.now() - t0 > 12) return setTimeout(step, 0);
+        memoSet('dist', fc, parcel, r.value); res(); };
+      setTimeout(step, 0); });
+  }
+  // Before evaluate() measures a lot, gather its slow numbers (band shares in the worker, lot-to-creek distances in short tasks) while
+  // the lookup placeholder stays up (or the creek loader shows; for the same point the card on screen stays); then evaluate() runs,
+  // unchanged, with the latest arguments and reads them from the caches. geoNeeds() follows evaluate()'s own branches; anything it
+  // misses is computed inline, as before.
+  const prep = { gen: 0, direct: false, hold: 0 };
+  function geoNeeds(lnglat, parcel) {
+    const out = [], want = (k, fc) => { if (fc && !memoHas(k, fc, parcel)) out.push([k, fc]); }, jur = jurisdiction(turf.point(lnglat));
+    if (jur.code === 'cp' || jur.code === 'othercity') return out;
+    if (jur.code === 'uga' || jur.code === 'county') { if (state.countyBuf && layerOn('cbuf')) want('share', state.countyBuf); return out; }
+    if (!state.buffers[state.w] || !state.streams) return out;
+    want('share', state.buffers[state.w]); want('dist', state.streams);
+    if (state.mill && layerOn('mill')) want('dist', state.mill);
+    if (state.countyGaps && state.countyGaps.features.length) want('dist', state.countyGaps);
+    return out;
+  }
+  function geoReady(lnglat, label, parcel, parcelResolved) {
+    const g = ++prep.gen; if (prep.direct || !parcel || DEMO) return true;
+    let need; try { need = geoNeeds(lnglat, parcel); } catch (e) { return true; }
+    if (!need.length) return true;
+    state.lastPoint = lnglat; state.lastLabel = label; state.lastParcel = parcel; setParcelHit(parcel);
+    const r = $('result'), same = state.cardKey === lnglat.join(',') && !$('skel') && !r.classList.contains('hidden') && !r.classList.contains('pending') && !!r.querySelector('.status');
+    if ($('skel')) prep.hold = g; // an address search: its "Checking your lot…" placeholder stays until the card is ready (see skeleton)
+    else if (!same) { const h = window.ccLoad && window.ccLoad.waitHTML; r.className = 'result pending'; r.innerHTML = h ? h.replace('Loading the creeks…', 'Checking your lot…') : '<p class="detail">Checking your lot…</p>'; }
+    Promise.all(need.map(([k, fc]) => (k === 'share' ? shareJob(parcel, fc) : distJob(parcel, fc, g)))).then(() => {
+      if (prep.gen !== g || state.lastPoint !== lnglat) return; // a newer check took over
+      prep.hold = 0; prep.direct = true; try { evaluate(lnglat, label, parcel, parcelResolved); } finally { prep.direct = false; } });
+    return false;
+  }
+
   // ---------- Evaluation ----------
-  function nearestStream(pt, fc) {
-    fc = fc || state.streams; if (!fc) return null; let best = null;
-    for (const f of fc.features) {
-      const g = f.geometry; if (!g) continue; const lines = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : [];
-      for (const coords of lines) { if (coords.length < 2) continue; const snap = turf.nearestPointOnLine(turf.lineString(coords), pt, { units: 'meters' });
-        if (!best || snap.properties.dist < best.dist) best = { dist: snap.properties.dist, name: (f.properties && (f.properties.label || f.properties.name || f.properties.StreamName || f.properties.GNIS_NAME || f.properties.NAME)) || null, snap, props: f.properties || {} }; }
-    }
-    return best;
+  function nearestStream(pt, fc) { // 2026-10-16 performance hook: same line, distance and name as measuring every line (see lowBound, scan)
+    fc = fc || state.streams; if (!fc) return null; const ix = lineIndex(fc); if (!ix.parts.length) return null;
+    const per = []; scan(pt, ix, Infinity, per); let k = -1;
+    for (let i = 0; i < ix.parts.length; i++) if (per[i] !== undefined && (k < 0 || per[i] < per[k])) k = i; // first line wins a tie, as before
+    const pa = ix.parts[k], f = pa.f;
+    return { dist: per[k], name: (f.properties && (f.properties.label || f.properties.name || f.properties.StreamName || f.properties.GNIS_NAME || f.properties.NAME)) || null,
+      get snap() { return turf.nearestPointOnLine(turf.lineString(pa.coords), pt, { units: 'meters' }); }, props: f.properties || {} };
   }
   function insideBuffer(pt, w) { const fc = state.buffers[w]; if (!fc) return false; return fc.features.some(f => f.geometry && pip(pt, f)); }
   function parcelShare(parcel, w) { return parcelShareFC(parcel, state.buffers[w]); }
-  function parcelShareFC(parcel, fc) {
+  function parcelShareFC(parcel, fc) { // 2026-10-16 performance hook: cached per (layer, parcel); shareCompute is the unchanged original, also run by the worker
+    if (!fc || !parcel) return null; if (memoHas('share', fc, parcel)) return MEMO.share.get(fc).get(parcel);
+    return memoSet('share', fc, parcel, shareCompute(parcel, fc));
+  }
+  function shareCompute(parcel, fc) {
     if (!fc || !parcel) return null; const pb = turf.bbox(parcel); let inter = 0;
     for (const f of fc.features) { if (!f.geometry) continue; const bb = turf.bbox(f); if (bb[0] > pb[2] || bb[2] < pb[0] || bb[1] > pb[3] || bb[3] < pb[1]) continue;
       try { const x = turf.intersect(turf.featureCollection([parcel, f])); if (x) inter += turf.area(x); } catch { try { const x = turf.intersect(parcel, f); if (x) inter += turf.area(x); } catch {} } }
     const total = turf.area(parcel); return total > 0 ? { pct: Math.min(100, 100 * inter / total), acres: inter / 4046.8564224, total_acres: total / 4046.8564224 } : null;
   }
   // Distance (ft) from the parcel boundary to the nearest line in fc; 0 if a line crosses the parcel.
-  function parcelDistanceFt(parcel, fc) {
+  function parcelDistanceFt(parcel, fc) { // 2026-10-16 performance hook: cached per (layer, parcel); pdistSteps is the same computation
+    const F = fc || state.streams; if (F && parcel && memoHas('dist', F, parcel)) return MEMO.dist.get(F).get(parcel);
+    const it = pdistSteps(parcel, fc); let r; while (!(r = it.next()).done); return F && parcel ? memoSet('dist', F, parcel, r.value) : r.value;
+  }
+  function* pdistSteps(parcel, fc) { // 2026-10-16 performance hook: the original parcelDistanceFt with the exact skips (lowBound), step by step
     fc = fc || state.streams;
     if (!fc || !parcel || !parcel.geometry) return null;
     try {
-      for (const f of fc.features) if (f.geometry && turf.booleanIntersects(f, parcel)) return 0;
-      let best = Infinity;
-      for (const v of turf.explode(parcel).features) { const ns = nearestStream(v, fc); if (ns && ns.dist < best) best = ns.dist; }
+      for (const f of fc.features) { if (f.geometry && turf.booleanIntersects(f, parcel)) return 0; yield; } // unchanged: every crossing test, in order
+      let best = Infinity; const ix = lineIndex(fc);
+      for (const v of turf.explode(parcel).features) if (ix.parts.length) best = scan(v, ix, best, null); // = min over vertices of nearestStream(v, fc).dist
       const outline = turf.polygonToLine(parcel); const rings = outline.type === 'FeatureCollection' ? outline.features : [outline];
+      const on = ix.safe && turf.coordAll(parcel).every(finite), rb = rings.map(r => { const b = on ? boxOf(turf.coordAll(r)) : ANY_BOX; return { r, b, cm: cosMin(b) }; });
       const pb = turf.bbox(parcel); const m = 0.003; // ~250 m search margin
-      for (const f of fc.features) { if (!f.geometry) continue; const sb = turf.bbox(f); if (sb[0] > pb[2] + m || sb[2] < pb[0] - m || sb[1] > pb[3] + m || sb[3] < pb[1] - m) continue;
-        for (const sp of turf.explode(f).features) for (const ring of rings) { const d = turf.nearestPointOnLine(ring, sp, { units: 'meters' }).properties.dist; if (d < best) best = d; } }
+      for (const e of ix.feats) { const sb = e.bb || (e.bb = turf.bbox(e.f)); if (sb[0] > pb[2] + m || sb[2] < pb[0] - m || sb[1] > pb[3] + m || sb[3] < pb[1] - m) continue;
+        for (const c of e.coords) { const cy = Math.cos(c[1] * RAD);
+          for (const q of rb) { if (on && lowBound(c[0], c[1], cy, q.b, q.cm) > best) continue; const d = turf.nearestPointOnLine(q.r, turf.point(c), { units: 'meters' }).properties.dist; if (d < best) best = d; } } }
       return isFinite(best) ? best * FT_PER_M : null;
     } catch (e) { console.warn('parcel distance failed', e); return null; }
   }
-  function polyEdgeDistanceFt(pt, fc) { // distance (ft) from a point to the nearest polygon edge in fc; 0 when inside
-    let best = Infinity, hit = null;
-    for (const f of fc.features) { if (!f.geometry) continue;
-      if (pip(pt, f)) return { dist: 0, feat: f };
+  function polyIndex(fc) { // 2026-10-16 performance hook: each polygon's exact box (a point outside it is outside the polygon) and the outline lines turf measured
+    let ix = GEO_P.get(fc); if (ix) return ix; ix = { feats: [], safe: true };
+    for (const f of fc.features) { if (!f.geometry) continue; const all = turf.coordAll(f); if (!all.every(finite)) ix.safe = false;
+      const b = boxOf(all), e = { f, bb: turf.bbox(f), b, cm: cosMin(b), lines: [] };
       try { const ol = turf.polygonToLine(f); const lines = ol.type === 'FeatureCollection' ? ol.features : [ol];
-        for (const ln of lines) { const d = turf.pointToLineDistance(pt, ln, { units: 'meters' }) * FT_PER_M; if (d < best) { best = d; hit = f; } } } catch {} }
+        for (const ln of lines) { if (!ln || ln.type !== 'Feature' || !ln.geometry || ln.geometry.type !== 'LineString') break; e.lines.push(groups(ln.geometry.coordinates)); } } catch {} // pointToLineDistance threw on a non-LineString (a ring with holes), which ended that polygon's loop
+      ix.feats.push(e); }
+    GEO_P.set(fc, ix); return ix;
+  }
+  function polyEdgeDistanceFt(pt, fc) { // distance (ft) from a point to the nearest polygon edge in fc; 0 when inside
+    // 2026-10-16 performance hook: same distance and polygon as the full loop: point-in-polygon only where the point is in the box, and
+    // edges only where the bound is within one edge distance actually measured (the nearest group by bound); ties go to the first, as before.
+    const ix = polyIndex(fc), P = turf.getCoord(pt), x = P[0], y = P[1], cy = Math.cos(y * RAD), on = ix.safe && finite(P);
+    const lbFt = (o) => (on ? lowBound(x, y, cy, o.b, o.cm) * FT_PER_M : 0), edgeFt = (c) => turf.pointToLineDistance(pt, c.line, { units: 'meters' }) * FT_PER_M;
+    let seed = null, sl = Infinity, M = Infinity;
+    for (const e of ix.feats) if (e.lines.length && lbFt(e) < sl) for (const gs of e.lines) for (const c of gs) { const l = lbFt(c); if (l < sl) { sl = l; seed = c; } }
+    if (seed) M = edgeFt(seed);
+    let best = Infinity, hit = null;
+    for (const e of ix.feats) {
+      if ((!on || (e.bb[0] <= x && x <= e.bb[2] && e.bb[1] <= y && y <= e.bb[3])) && pip(pt, e.f)) return { dist: 0, feat: e.f };
+      if (lbFt(e) > M) continue;
+      for (const gs of e.lines) { let d = Infinity, any = false;
+        for (const c of gs) { if (lbFt(c) > M) continue; any = true; const v = edgeFt(c); if (v < d) d = v; }
+        if (any && d < best) { best = d; hit = e.f; } } }
     return isFinite(best) ? { dist: best, feat: hit } : null;
   }
   function setParcelHit(parcel) { const s = map.getSource('parcel-hit'); if (s) s.setData(parcel ? turf.featureCollection([parcel]) : EMPTY); }
@@ -768,6 +904,7 @@
       if (!pend.queued) { pend.queued = true; pend.ready.then(() => { const a = pend.args; pend.args = null; pend.queued = false; if (a && state.lastPoint === a[0]) evaluate(a[0], a[1], a[2], a[3]); }); }
       return;
     }
+    if (!geoReady(lnglat, label, parcel, parcelResolved)) return; // 2026-10-16 performance hook: a lot's slow numbers first (see geoReady), then the code below, unchanged
     state.lastPoint = lnglat; state.lastLabel = label; state.lastParcel = parcel || null; setParcelHit(state.lastParcel);
     const pt = turf.point(lnglat); const w = state.w; const r = $('result'); skeleton(false); r.classList.remove('hidden'); const key = lnglat.join(',');
     const pp = parcel ? parcel.properties || {} : {};
@@ -997,4 +1134,12 @@
   $('agree').onclick = () => { lsSet('ww_cao_ack', '1'); closeModal(); };
 
   loadData().finally(() => Promise.resolve(window.ccLoad && window.ccLoad.turf().catch(() => {})).then(pend.release)); // 2026-10-15 performance hook: release waiting lookups (see pend)
+  // 2026-10-16 performance hook: once the City layers are in, in idle time and one small task each: cut the City streams into groups (one
+  // throwaway nearest-creek query, so the first lookup does not run cold code),
+  // start the share worker and hand it the City band (so the first lookup does not pay for either), then the County layers' groups.
+  pend.ready.then(() => { if (DEMO) return; const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 3000 }) : setTimeout(fn, 200));
+    const steps = [() => state.streams && nearestStream(turf.point(CENTER), state.streams), () => state.buffers[100] && shareSend(state.buffers[100]),
+      () => state.buffers[100] && shareJob(turf.circle(CENTER, 10, { units: 'meters', steps: 8 }), state.buffers[100]), // one throwaway share, so the worker's first lookup is not cold code
+      () => Promise.resolve(state.loading.county).then(() => idle(() => { if (state.countyStreams) lineIndex(state.countyStreams); idle(() => { if (state.countyBuf) polyIndex(state.countyBuf); }); }))];
+    const next = () => { const s = steps.shift(); if (!s) return; try { s(); } catch (e) {} idle(next); }; idle(next); });
 })();

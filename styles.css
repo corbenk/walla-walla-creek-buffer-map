@@ -1584,6 +1584,13 @@ html {overflow-x:clip}
 .cty-others {font-size:16px;line-height:1.9;max-width:80ch}.cty-others a {color:var(--creek)}
 .cty-ww {padding:18px 20px;border-left:5px solid var(--band);background:var(--panel);border-radius:8px}
 @media(max-width:860px) {.cty-top {grid-template-columns:1fr}}
+/* 2026-10-16 (Phase A): checked date beside every chip, staleness, honest coverage */
+.wa-st {display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px;min-width:0}
+.wa-chk {font-size:12.5px;line-height:1.3;color:var(--muted);font-variant-numeric:tabular-nums}
+.wa-stale {font-weight:600;color:var(--amber-ink)}
+.wa-coverage {margin:12px 0 0;font-size:16.5px;line-height:1.5;max-width:62ch}
+.wa-coverage b {color:var(--ink)}
+.cty-status .wa-chk {font-size:13.5px}
 /* END WASHINGTON TRACKER */
 
 /* BEGIN SITE PAGES (2026-10-15; written into styles.css by write_community.py): site footer, Learn history, featured comment, compact comment cards */

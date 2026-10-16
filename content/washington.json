@@ -1,5 +1,5 @@
 {
- "version": "2026-10-15.4",
+ "version": "2026-10-16.2",
  "schedule_source": {
   "label": "RCW 36.70A.130(5)",
   "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=36.70A.130",
@@ -26,47 +26,276 @@
  "counties": {
   "King": {
    "group": "a",
-   "status": "unchecked",
-   "summary": "",
-   "riparian": "",
+   "status": "adopted",
+   "summary": "Adopted Dec 2, 2025; in effect Feb 18, 2026 outside shoreline areas. Widths are set by stream type; the County says its fish-bearing widths fall within the average range of site-potential tree height.",
+   "riparian": "Fish-bearing 200 ft in rural areas, 180 ft in urban growth areas; Type N 100 ft; Type O 50 ft (was 115–165 / 65 / 25 ft)",
    "next": "",
-   "links": [],
-   "places": [],
-   "checked": "",
-   "sources": []
+   "links": [
+    {
+     "label": "County CAO page",
+     "url": "https://kingcounty.gov/en/dept/local-services/certificates-permits-licenses/permits/permits-inspections-codes-buildings-land-use/permit-forms-application-materials/land-use/critical-areas"
+    },
+    {
+     "label": "County code 21A.24",
+     "url": "https://aqua.kingcounty.gov/council/clerk/code/24-30_Title_21A.htm"
+    }
+   ],
+   "places": [
+    {
+     "name": "Seattle",
+     "status": "started",
+     "summary": "Update underway; the city last updated its critical areas code in 2017. No draft yet, and an open house is planned for January 2027 (tentative).",
+     "riparian": "Current: 100 ft on creeks with fish or wildlife habitat (shorelines under separate rules)",
+     "next": "Online listening sessions Oct 22–29, 2026",
+     "links": [
+      {
+       "label": "Seattle update page",
+       "url": "https://www.seattle.gov/sdci/codes/changes-to-code/environmentally-critical-areas-update"
+      },
+      {
+       "label": "Seattle code 25.09",
+       "url": "https://library.municode.com/wa/seattle/codes/municipal_code?nodeId=TIT25ENPRHIPR_CH25.09REENCRAR"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-150"
+     ],
+     "next_date": "2026-10-29",
+     "contact": {
+      "label": "Seattle City Council",
+      "url": "https://www.seattle.gov/council"
+     }
+    },
+    {
+     "name": "Bellevue",
+     "status": "adopted",
+     "summary": "Adopted Dec 9, 2025; in effect Jan 1, 2026. Widths are set by stream type, with wider buffers where native plant cover is sparse.",
+     "riparian": "Fish-bearing 150 ft, Np 75 ft, Ns 50 ft; 200 / 100 / 67 ft where native cover is sparse and not restored",
+     "next": "",
+     "links": [
+      {
+       "label": "City CAO page",
+       "url": "https://bellevuewa.gov/code-amendments/critical-areas-ordinance-update"
+      },
+      {
+       "label": "Adopted ordinance",
+       "url": "https://bellevue.municipal.codes/enactments/Ord6894/media/original.pdf"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-151"
+     ],
+     "contact": {
+      "label": "Bellevue City Council",
+      "url": "https://bellevuewa.gov/city-government/city-council"
+     }
+    },
+    {
+     "name": "Kent",
+     "status": "adopted",
+     "summary": "Adopted June 16, 2026. Fish-bearing buffers may be reduced by up to 25% with full replanting.",
+     "riparian": "Fish-bearing 150 ft, non-fish 100 ft; 50 ft on industrial valley reaches of Mill, Garrison and Springbrook Creeks",
+     "next": "",
+     "links": [
+      {
+       "label": "City update page",
+       "url": "https://engage.kentwa.gov/planningupdates/news_feed/2025-critical-area-oridinance-update"
+      },
+      {
+       "label": "City code 11.06",
+       "url": "https://www.codepublishing.com/WA/Kent/html/Kent11/Kent1106.html"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-152"
+     ]
+    },
+    {
+     "name": "Renton",
+     "status": "adopted",
+     "summary": "Adopted Dec 8, 2025. Widths are set by stream type, with wider buffers where native plant cover is sparse and not restored.",
+     "riparian": "Fish-bearing 115 ft, Np 75 ft, Ns 50 ft; 200 / 100 / 67 ft where native cover is sparse and not restored",
+     "next": "",
+     "links": [
+      {
+       "label": "City CAO page",
+       "url": "https://yourvoice.rentonwa.gov/cao"
+      },
+      {
+       "label": "City code 4-3-050",
+       "url": "https://www.codepublishing.com/WA/Renton/html/Renton04/Renton0403/Renton0403050.html"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-153"
+     ],
+     "contact": {
+      "label": "Renton City Council",
+      "url": "https://www.rentonwa.gov/Government/City-Council"
+     }
+    },
+    {
+     "name": "Federal Way",
+     "status": "none_found",
+     "summary": "We found no critical areas update on official pages; the stream buffer rules date to 2015. The state Commerce Department’s September 2026 status list shows the city’s critical areas update as not yet complete.",
+     "riparian": "Current: fish-bearing 100 ft, Np 50 ft, Ns 35 ft",
+     "next": "",
+     "links": [
+      {
+       "label": "City code 19.145",
+       "url": "https://www.codepublishing.com/WA/FederalWay/html/FederalWay19/FederalWay19145.html"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-154",
+      "F-148"
+     ],
+     "contact": {
+      "label": "Federal Way City Council",
+      "url": "https://www.federalwaywa.gov/city-council"
+     }
+    }
+   ],
+   "checked": "2026-10-16",
+   "sources": [
+    "F-149",
+    "F-147",
+    "F-148",
+    "research/15-statewide-largest-places.md"
+   ],
+   "contact": {
+    "label": "King County Council",
+    "url": "https://kingcounty.gov/en/dept/council"
+   }
   },
   "Kitsap": {
    "group": "a",
-   "status": "unchecked",
-   "summary": "",
-   "riparian": "",
+   "status": "adopted",
+   "summary": "Adopted Oct 14, 2024; in effect Apr 1, 2025. Wider buffers set by stream type; the state agency’s tree-height method is a voluntary option.",
+   "riparian": "Adopted ordinance: fish-bearing 200 ft (was 150), non-fish 100 ft (was 50), Type O 50 ft; 150 / 75 ft option for some urban projects",
    "next": "",
-   "links": [],
+   "links": [
+    {
+     "label": "County CAO page",
+     "url": "https://www.kitsap.gov/dcd/Pages/Critical-Areas-Ordinance-Update-2024.aspx"
+    }
+   ],
    "places": [],
-   "checked": "",
-   "sources": []
+   "checked": "2026-10-16",
+   "sources": [
+    "F-162",
+    "F-147",
+    "F-148",
+    "research/15-statewide-largest-places.md"
+   ],
+   "contact": {
+    "label": "Kitsap County Commissioners",
+    "url": "https://www.kitsap.gov/BOC_p/Pages/default.aspx"
+   }
   },
   "Pierce": {
    "group": "a",
-   "status": "unchecked",
-   "summary": "",
-   "riparian": "",
+   "status": "adopted",
+   "summary": "Adopted Dec 3, 2024 with the County’s periodic update; in effect Feb 1, 2025. Wider buffers set by stream type.",
+   "riparian": "Fish-bearing 175 ft (was 150), Np 115 ft, Ns 100 ft, Type O 65 ft",
    "next": "",
-   "links": [],
-   "places": [],
-   "checked": "",
-   "sources": []
+   "links": [
+    {
+     "label": "County code 18E.40.060",
+     "url": "https://pierce.county.codes/PCC/18E.40.060"
+    },
+    {
+     "label": "Adopted ordinance",
+     "url": "https://pierce.county.codes/enactments/Ord2024-553s2"
+    }
+   ],
+   "places": [
+    {
+     "name": "Tacoma",
+     "status": "adopted",
+     "summary": "Adopted July 14, 2026. Widths assume dense native plant cover; where cover is sparse, a project must enhance the buffer under an approved plan.",
+     "riparian": "Fish-bearing 150 ft (was 100–150 ft); non-fish 100 ft (was 25–100 ft); 200 ft on salmon-bearing “streams of local significance” outside shoreline areas (was 150 ft)",
+     "next": "",
+     "links": [
+      {
+       "label": "City CAO page",
+       "url": "https://tacoma.gov/project/critical-areas-ordinance-update/"
+      },
+      {
+       "label": "City code 13.11",
+       "url": "https://ecode360.com/48475690"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-156"
+     ],
+     "contact": {
+      "label": "Tacoma City Council",
+      "url": "https://tacoma.gov/government/departments/city-council/"
+     }
+    }
+   ],
+   "checked": "2026-10-16",
+   "sources": [
+    "F-155",
+    "F-147",
+    "F-148",
+    "research/15-statewide-largest-places.md"
+   ]
   },
   "Snohomish": {
    "group": "a",
-   "status": "unchecked",
-   "summary": "",
-   "riparian": "",
-   "next": "",
-   "links": [],
-   "places": [],
-   "checked": "",
-   "sources": []
+   "status": "hearing",
+   "summary": "Adopted May 14, 2025. In Feb 2026 the state Growth Management Hearings Board sent the stream buffers back for revision by Dec 17, 2026; the County’s draft response widens them.",
+   "riparian": "Proposed fish-bearing 200 ft (180 ft for some urban projects), non-fish 100 ft (now 150 / 50 ft)",
+   "next": "Planning Commission hearing Oct 27, 2026, 5:30 pm",
+   "links": [
+    {
+     "label": "County update page",
+     "url": "https://www.snohomishcountywa.gov/2183/Critical-Areas-Regulations-Update"
+    },
+    {
+     "label": "Oct 27 agenda",
+     "url": "https://www.snohomishcountywa.gov/AgendaCenter/ViewFile/Agenda/_10272026-2642"
+    }
+   ],
+   "places": [
+    {
+     "name": "Everett",
+     "status": "adopted",
+     "summary": "Adopted Apr 15, 2026; in effect June 1, 2026. One 100-ft standard buffer on fish-bearing and non-fish streams, wider where vegetation is sparse.",
+     "riparian": "100 ft on fish-bearing and non-fish streams; 150 / 125 ft where vegetation is sparse and not restored (non-fish was 50 ft)",
+     "next": "",
+     "links": [
+      {
+       "label": "Adopted ordinance",
+       "url": "https://lfportal.everettwa.gov/WebLink/0/edoc/2096459/Ordinance%204175-26.pdf"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-158"
+     ]
+    }
+   ],
+   "checked": "2026-10-16",
+   "sources": [
+    "F-157",
+    "F-147",
+    "F-148",
+    "research/15-statewide-largest-places.md"
+   ],
+   "next_date": "2026-10-27",
+   "contact": {
+    "label": "Snohomish County Council",
+    "url": "https://www.snohomishcountywa.gov/172/County-Council"
+   }
   },
   "Clallam": {
    "group": "b",
@@ -81,14 +310,54 @@
   },
   "Clark": {
    "group": "b",
-   "status": "unchecked",
-   "summary": "",
-   "riparian": "",
+   "status": "adopted",
+   "summary": "Critical areas rules were updated in March 2023, using the state agency’s tree-height method for fish-bearing streams. The 20-year plan adopted Oct 13, 2026 leaves them unchanged. The state Commerce Department’s September 2026 status list, issued before that vote, shows the critical areas update as not yet complete.",
+   "riparian": "Fish-bearing 150–235 ft and Np 100–155 ft by site class (soil productivity); Ns 100 ft (was 200 / 100 / 75 ft)",
    "next": "",
-   "links": [],
-   "places": [],
-   "checked": "",
-   "sources": []
+   "links": [
+    {
+     "label": "County CAO update (2023)",
+     "url": "https://clark.wa.gov/community-planning/cpz2022-00010"
+    },
+    {
+     "label": "Plan adoption news",
+     "url": "https://clark.wa.gov/community-planning/clark-county-adopts-20-year-growth-plan"
+    }
+   ],
+   "places": [
+    {
+     "name": "Vancouver",
+     "status": "adopted",
+     "summary": "Adopted Dec 9, 2024. One width for all stream types, based on tree-height averages.",
+     "riparian": "Adopted 2024: 185 ft on fish-bearing and non-fish streams alike, a 100-ft management area plus an 85-ft outer buffer where development is allowed if it meets performance standards; the state tree-height tool may justify less on constrained sites (was 125–175 ft)",
+     "next": "",
+     "links": [
+      {
+       "label": "City CAO page",
+       "url": "https://yourvoicevancouver.us.engagementhq.com/criticalareas"
+      }
+     ],
+     "checked": "2026-10-16",
+     "facts": [
+      "F-160"
+     ],
+     "contact": {
+      "label": "Vancouver City Council",
+      "url": "https://www.cityofvancouver.us/government/mayor-and-city-council/contact-city-council/"
+     }
+    }
+   ],
+   "checked": "2026-10-16",
+   "sources": [
+    "F-159",
+    "F-147",
+    "F-148",
+    "research/15-statewide-largest-places.md"
+   ],
+   "contact": {
+    "label": "Clark County Council",
+    "url": "https://clark.wa.gov/councilors"
+   }
   },
   "Island": {
    "group": "b",
@@ -158,14 +427,33 @@
   },
   "Thurston": {
    "group": "b",
-   "status": "unchecked",
-   "summary": "",
-   "riparian": "",
-   "next": "",
-   "links": [],
+   "status": "draft",
+   "summary": "Critical areas update underway, separate from the 2045 plan adopted Dec 16, 2025. The Oct 7, 2026 draft replaces stream-type widths with the state agency’s tree-height method.",
+   "riparian": "Proposed: one 200-year site-potential tree height, at least 100 ft (now 100–250 ft by stream type)",
+   "next": "Planning Commission public hearing anticipated Dec 2, 2026",
+   "links": [
+    {
+     "label": "County CAO page",
+     "url": "https://www.thurstoncountywa.gov/departments/community-planning-and-economic-development/community-planning/critical-areas-ordinance-cao"
+    },
+    {
+     "label": "Draft habitat chapter",
+     "url": "https://www.thurstoncountywa.gov/media/35332"
+    }
+   ],
    "places": [],
-   "checked": "",
-   "sources": []
+   "checked": "2026-10-16",
+   "sources": [
+    "F-161",
+    "F-147",
+    "F-148",
+    "research/15-statewide-largest-places.md"
+   ],
+   "next_date": "2026-12-02",
+   "contact": {
+    "label": "Thurston County Commissioners",
+    "url": "https://www.thurstoncountywa.gov/departments/board-county-commissioners"
+   }
   },
   "Whatcom": {
    "group": "b",
@@ -184,6 +472,7 @@
    "summary": "Draft critical areas code published; Planning Commission hearing held Oct 6, 2026. Raises stream buffers to 100 ft, citing the state fish and wildlife agency’s guidance.",
    "riparian": "Proposed 100 ft on fish-bearing and non-fish streams (shorelines under separate rules)",
    "next": "Commissioners’ hearing Nov 3, 2026, 9 am, Courthouse, Prosser",
+   "next_date": "2026-11-03",
    "links": [
     {
      "label": "County update page",
@@ -215,6 +504,7 @@
      "summary": "Draft critical areas code sets buffers by stream type, with a 15-ft building setback.",
      "riparian": "Fish-bearing 100 ft, Np 50 ft, Ns 25 ft",
      "next": "Council resolution to accept the proposed update Oct 20, 2026",
+     "next_date": "2026-10-20",
      "links": [
       {
        "label": "City update page",
@@ -229,6 +519,7 @@
      "summary": "We did not find its critical areas chapter in the city’s draft code package.",
      "riparian": "",
      "next": "Planning Commission hearing Oct 28, 2026",
+     "next_date": "2026-10-28",
      "links": [
       {
        "label": "Richland 2046",
@@ -247,6 +538,7 @@
    "summary": "No critical areas amendments found in the County’s 2026 update; its current rules date to 2021.",
    "riparian": "",
    "next": "Planning Commission Oct 28; written comments due Nov 3; commissioners’ hearings Nov 10, 2026",
+   "next_date": "2026-11-10",
    "links": [
     {
      "label": "County update page",
@@ -260,6 +552,7 @@
      "summary": "The city’s 2026 package does not include its critical areas title.",
      "riparian": "",
      "next": "Council hearing Nov 19, 2026, 5:15 pm",
+     "next_date": "2026-11-19",
      "links": [
       {
        "label": "Comprehensive Plan 2046",
@@ -327,6 +620,7 @@
    "summary": "Draft critical areas code published July 16, 2026; comments closed Sept 25. How the draft sets stream buffer widths is not yet clear to us.",
    "riparian": "Under review",
    "next": "Joint planning hearing Oct 28; commissioners Dec 8 and 15, 2026 (tentative)",
+   "next_date": "2026-12-15",
    "links": [
     {
      "label": "County update page",
@@ -344,6 +638,7 @@
      "summary": "Draft critical area code amendments published.",
      "riparian": "",
      "next": "Joint Planning Commission hearing Oct 28, 2026, 5:30 pm",
+     "next_date": "2026-10-28",
      "links": [
       {
        "label": "East Wenatchee 2046",
@@ -375,6 +670,7 @@
      "summary": "Critical areas update (file CA2025-005) is at the Planning Commission; we have not yet read its stream buffer widths.",
      "riparian": "",
      "next": "Planning Commission Oct 29, 2026, 6:30 pm (rescheduled)",
+     "next_date": "2026-10-29",
      "links": [
       {
        "label": "Hearing notice",
@@ -406,6 +702,7 @@
      "summary": "The city’s 2026 code package does not amend its critical areas rules.",
      "riparian": "",
      "next": "Planning Commission hearing Oct 22, 2026; council Nov 2 and 16 (tentative)",
+     "next_date": "2026-11-16",
      "links": [
       {
        "label": "Ellensburg 2046",
@@ -424,6 +721,7 @@
    "summary": "Joint County and Stevenson draft keeps today’s buffers, with a formal explanation of why it departs from the state agency’s wider guidance. Hearing held Oct 12, 2026.",
    "riparian": "Fish-bearing 100 ft, Np 50 ft, Ns 25 ft (unchanged)",
    "next": "Adoption hearings planned Nov 10, 2026 (tentative)",
+   "next_date": "2026-11-10",
    "links": [
     {
      "label": "County CAO update page",
@@ -437,6 +735,7 @@
      "summary": "Plans to adopt the County’s critical areas rules by reference.",
      "riparian": "Same as the County draft",
      "next": "Adoption hearing planned Nov 10, 2026 (tentative)",
+     "next_date": "2026-11-10",
      "links": [],
      "checked": "2026-10-15"
     }
@@ -450,6 +749,7 @@
    "summary": "Draft critical areas code published; the Planning Commission hearing opened July 16 and remains open. Wider flat buffers by stream type.",
    "riparian": "Proposed fish-bearing 150 ft, non-fish 100 ft (now 100 / 75 / 25 ft)",
    "next": "Planning Commission Nov 12; commissioners Dec 15, 2026 (tentative)",
+   "next_date": "2026-12-15",
    "links": [
     {
      "label": "County CAO page",
@@ -458,32 +758,58 @@
    ],
    "places": [
     {
-     "name": "City of Spokane",
+     "name": "Spokane",
      "status": "none_found",
-     "summary": "No critical areas update found in the 2026 plan package.",
-     "riparian": "",
-     "next": "Plan Commission hearing early November (tentative)",
+     "summary": "The city plans to update its critical areas rules after its 2026 plan update; no draft yet.",
+     "riparian": "Current: fish-bearing 150–250 ft, non-fish 150 ft (shorelines under separate rules)",
+     "next": "Plan Commission hearing on the plan Nov 2, 2026 (tentative)",
      "links": [
       {
        "label": "PlanSpokane",
        "url": "https://my.spokanecity.org/planspokane/"
+      },
+      {
+       "label": "City code 17E.020.050",
+       "url": "https://my.spokanecity.org/smc/?Section=17E.020.050"
       }
      ],
-     "checked": "2026-10-15"
+     "checked": "2026-10-16",
+     "facts": [
+      "F-163",
+      "F-146"
+     ],
+     "next_date": "2026-11-02",
+     "contact": {
+      "label": "Spokane City Council",
+      "url": "https://my.spokanecity.org/citycouncil/"
+     }
     },
     {
      "name": "Spokane Valley",
-     "status": "draft",
-     "summary": "Draft code (Sept 18, 2026) sets creek-by-creek widths, with an option to use the state tree-height tool.",
+     "status": "hearing",
+     "summary": "Draft code (Sept 18, 2026) sets creek-by-creek widths, with an option to use the state tree-height tool where it gives a smaller width.",
      "riparian": "Chester Creek 115 ft, Saltese Creek 125 ft, 100 ft default (now 150 / 50 / 30 ft)",
-     "next": "Council hearing Dec 1; adoption Dec 15, 2026 (draft schedule)",
+     "next": "Planning Commission hearing Oct 22, 2026, 6 pm, City Hall",
      "links": [
       {
-       "label": "City critical areas page",
-       "url": "https://www.spokanevalleywa.gov/280/Critical-Areas"
+       "label": "Plan and draft code",
+       "url": "https://www.spokanevalleywa.gov/278/Comprehensive-Plan"
+      },
+      {
+       "label": "Hearing notice",
+       "url": "https://www.spokanevalleywa.gov/CivicAlerts.aspx?AID=808"
       }
      ],
-     "checked": "2026-10-15"
+     "checked": "2026-10-16",
+     "facts": [
+      "F-164",
+      "F-146"
+     ],
+     "next_date": "2026-10-22",
+     "contact": {
+      "label": "Spokane Valley City Council",
+      "url": "https://www.spokanevalleywa.gov/193/City-Council"
+     }
     }
    ],
    "checked": "2026-10-15",
@@ -495,6 +821,7 @@
    "summary": "The County’s periodic update is underway; no critical areas draft is posted yet. Its current code already sets creek buffers by named reach, from 35 ft to 100 ft.",
    "riparian": "Current: tiered by reach, 35 / 50 / 75 / 100 ft (County code 18.08.650)",
    "next": "County says plan and code drafts release in fall 2026",
+   "next_date": "2026-12-21",
    "links": [
     {
      "label": "County update page",
@@ -512,6 +839,7 @@
      "summary": "Draft raises most creek buffers from 35 ft (50 on Yellowhawk) to 100 ft plus a 15-ft setback. After an Oct 14 hearing, Council asked staff for options no earlier than Nov 4 and by the end of November.",
      "riparian": "Flat 100 ft on every creek it covers (Mill Creek under shoreline rules)",
      "next": "Options due Nov 4–18, 2026",
+     "next_date": "2026-11-18",
      "links": [
       {
        "label": "CreekChecker map",
@@ -586,6 +914,7 @@
      "summary": "The city’s 2026 package does not include a critical areas update.",
      "riparian": "",
      "next": "Council hearing Nov 2, 2026",
+     "next_date": "2026-11-02",
      "links": [
       {
        "label": "City plan amendments",
@@ -631,6 +960,7 @@
    "summary": "County draft (part of a joint update with Dayton and Starbuck) reviewed by the Planning Commission Oct 12, 2026. One width for every stream outside shoreline areas; whether it will apply inside Dayton is not yet clear.",
    "riparian": "Proposed flat 100 ft (now 75–150 ft; 50 ft on small and non-fish streams)",
    "next": "Planning Commission Nov 9, 2026, 5:30 pm; adoption planned March–June 2027",
+   "next_date": "2027-06-30",
    "links": [
     {
      "label": "County update page",
@@ -647,6 +977,7 @@
    "summary": "Draft plan and development code posted July 2026.",
    "riparian": "Draft table: shoreline 150 ft, fish-bearing 100 ft, non-fish 50 ft",
    "next": "Hearings planned Jan–May 2027",
+   "next_date": "2027-05-31",
    "links": [
     {
      "label": "County update page",
@@ -663,6 +994,7 @@
    "summary": "Joint County and Pomeroy update; no critical areas draft is public yet.",
    "riparian": "",
    "next": "Final plan expected June 2027",
+   "next_date": "2027-06-30",
    "links": [
     {
      "label": "County update page",
@@ -695,6 +1027,7 @@
    "summary": "Draft plan comments closed Sept 15, 2026; no critical areas draft found.",
    "riparian": "",
    "next": "Final plan expected fall 2026",
+   "next_date": "2026-12-21",
    "links": [
     {
      "label": "Update site",
@@ -727,6 +1060,7 @@
    "summary": "Science review dated Aug 2026; a public draft was expected in October (tentative).",
    "riparian": "",
    "next": "Planning Commission hearing Nov 2026 (tentative)",
+   "next_date": "2026-11-30",
    "links": [
     {
      "label": "County update page",
@@ -786,6 +1120,7 @@
    "summary": "Critical areas update introduced Sept 30, 2026; staff signaled a 100-ft minimum streamside zone. No draft text yet.",
    "riparian": "",
    "next": "Planning Commission Oct 22, 2026, 2 pm",
+   "next_date": "2026-10-22",
    "links": [
     {
      "label": "Update site",
@@ -818,6 +1153,7 @@
    "summary": "Commissioners approved critical areas amendments June 29, 2026; a second round is underway.",
    "riparian": "Drafts: fish-bearing 180 ft, non-fish 100 ft (up to 180 ft on unstable slopes), tree-height option never below 100 ft; the drafts replace 150–225 ft defaults",
    "next": "Planning Commission workshop Jan 6, 2027 (draft schedule)",
+   "next_date": "2027-01-06",
    "links": [
     {
      "label": "County CAO page",

@@ -12,7 +12,13 @@
    buildStyle() drops the Natural Earth relief raster (over 1 MB of PNG at the statewide view), inlines the TileJSON and puts the
    imagery in the style from the start, so there is one style load and no street-to-aerial switch. @turf/turf (band drawing only)
    is never loaded with the page: it is fetched when someone starts a lookup (focus in the form, the tap-to-zoom step, or a lookup
-   itself), and buildBand waits for it. The creek loader (#wmLoader) covers the map until its first 'idle' and during each lookup. */
+   itself), and buildBand waits for it. The creek loader (#wmLoader) covers the map until its first 'idle' and during each lookup.
+   PHASE A (2026-10-16, prompts/13): DNR Water Bodies (layer 1: lakes, ponds, reservoirs, wide rivers, marine water) are read with
+   each lookup; the result names any within the chosen width and says their rules are separate and not checked. Every result ends
+   with next steps: a share link (?lat&lng&width, copy and native share), the official county or city page from
+   content/washington.json, and who to contact (the optional "contact" field, else a council/commission link, else the county's
+   card on washington.html); all local. County cards show "Checked <date>" beside each chip, "may be out of date" after 21 days,
+   and drop "Next" lines whose next_date has passed. */
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
@@ -28,11 +34,21 @@
     cityUga: 'https://services.arcgis.com/jsIt88o09Q0r1j8h/ArcGIS/rest/services/Washington_State_City_Urban_Growth_Areas/FeatureServer/0',
     counties: 'https://data.wsdot.wa.gov/arcgis/rest/services/Shared/CountyBoundaries/MapServer/0',
     dnr: 'https://gis.dnr.wa.gov/site2/rest/services/Public_Forest_Practices/WADNR_PUBLIC_FP_Hydro/MapServer/0',
+    water: 'https://gis.dnr.wa.gov/site2/rest/services/Public_Forest_Practices/WADNR_PUBLIC_FP_Hydro/MapServer/1', // 2026-10-16: Water Bodies (FP), verified live (statewide-layers.md §2.3a)
     rmz: 'https://geodataservices.wdfw.wa.gov/arcgis/rest/services/PHSOnTheWeb/RDE_RMZ/MapServer/0',
     geocode: 'https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates'
   };
   const PARCEL_FIELDS = 'PARCEL_ID_NR,SITUS_ADDRESS,SUB_ADDRESS,SITUS_CITY_NM,SITUS_ZIP_NR,FIPS_NR,DATA_LINK';
   const DNR_FIELDS = 'WC_GNIS_NM,FP_WTRTY_CD,WC_PERIOD_LABEL_NM,WC_HYDR_FTR_LABEL_NM';
+  // 2026-10-16 (Phase A): DNR Water Bodies. Only these cartographic kinds are asked for and kept (marshes, glaciers, sewage, industrial,
+  // hatchery, tailing ponds, ditches, pipes and the like are left out). The service's fields are untrusted: kinds and types are
+  // whitelisted, names are cleaned and escaped, geometry must be a polygon with numeric rings.
+  const WATER_FIELDS = 'WB_GNIS_NM,FP_WTRTY_CD,WB_CART_FTR_LABEL_NM';
+  const WATER_KIND = { 'Lake/pond': 'lake', 'Flooded pit': 'lake', 'Reservoir': 'reservoir', 'Stream/river': 'river', 'Rapids': 'river', 'Falls': 'river', 'Channel': 'river', 'Bay/estuary': 'marine' };
+  const WATER_WHERE = 'WB_CART_FTR_LABEL_NM IN (' + Object.keys(WATER_KIND).map((k) => "'" + k + "'").join(',') + ')';
+  const WATER_WORD = { lake: 'lake or pond', reservoir: 'reservoir', river: 'wide river', marine: 'marine water' };
+  const MAX_WATER = 150;
+  const STALE_DAYS = 21; // county cards: a check older than this says "may be out of date" (same rule as washington.html)
   const COUNTY_NAMES = ['Adams', 'Asotin', 'Benton', 'Chelan', 'Clallam', 'Clark', 'Columbia', 'Cowlitz', 'Douglas', 'Ferry', 'Franklin', 'Garfield', 'Grant',
     'Grays Harbor', 'Island', 'Jefferson', 'King', 'Kitsap', 'Kittitas', 'Klickitat', 'Lewis', 'Lincoln', 'Mason', 'Okanogan', 'Pacific', 'Pend Oreille', 'Pierce',
     'San Juan', 'Skagit', 'Skamania', 'Snohomish', 'Spokane', 'Stevens', 'Thurston', 'Wahkiakum', 'Walla Walla', 'Whatcom', 'Whitman', 'Yakima'];
@@ -52,8 +68,10 @@
     draft: ['Draft out', 'A draft of the critical areas update is public.'], started: ['Underway', 'The update has started; no public critical areas draft found yet.'],
     none_found: ['No draft found', 'No public critical areas draft found on official pages.'], unchecked: ['Not checked yet', 'We have not checked this county yet.'] };
 
-  const S = { seq: 0, w: WIDTHS.includes(Number(params.get('w'))) ? Number(params.get('w')) : 100, lot: null, pt: null, env: null, geo: null,
-    dnr: null, rmz: null, bands: {}, bandJob: 0, juris: null, content: null, basemap: 'aerial', asotinEnv: null, picks: [] };
+  // 2026-10-16: shared links carry the width as "width" (a "w" parameter is reserved for the Walla Walla map's routing); "w" is still read
+  const W0 = Number(params.get('width') || params.get('w'));
+  const S = { seq: 0, w: WIDTHS.includes(W0) ? W0 : 100, lot: null, pt: null, env: null, geo: null,
+    dnr: null, rmz: null, water: null, bands: {}, bandJob: 0, juris: null, content: null, basemap: 'aerial', asotinEnv: null, picks: [] };
   try { if (localStorage.getItem('cc_basemap') === 'street') S.basemap = 'street'; } catch (_) {}
 
   // ---------- Small helpers ----------
@@ -62,6 +80,11 @@
   const now = () => (window.performance ? performance.now() : Date.now());
   const pause = () => new Promise((r) => setTimeout(r, 0));
   const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  // 2026-10-16: freshness (local calendar date, YYYY-MM-DD), the same rules as washington.html's view-time script
+  const isoDay = (s) => (/^\d{4}-\d{2}-\d{2}$/.test(String(s || '')) ? String(s) : '');
+  const today = () => { const d = new Date(), p = (n) => (n < 10 ? '0' : '') + n; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); };
+  const daysOld = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s), d = new Date(); return m ? (Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(+m[1], m[2] - 1, +m[3])) / 864e5 : 0; };
+  const nextLive = (x) => !!(x && x.next) && !(isoDay(x.next_date) && x.next_date < today());
   const EMPTY = { type: 'FeatureCollection', features: [] };
   const fc = (features) => ({ type: 'FeatureCollection', features: features });
   function status(msg, kind) { const el = $('wmStatus'); if (!el) return; el.textContent = msg || ''; el.className = 'wm-status' + (kind ? ' is-' + kind : '');
@@ -370,7 +393,7 @@
     { const c = L.inner; if (c && c[0] >= -118.52 && c[0] <= -118.14 && c[1] >= 45.96 && c[1] <= 46.16) {
       status('This lot is in the Walla Walla area. Opening the detailed Walla Walla map for it…');
       location.assign('/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&w=100'); return; } }
-    S.lot = lot; S.geo = L; S.pt = pt || L.inner; S.nearLL = null; S.dnr = null; S.rmz = null; S.bands = {}; S.juris = null; S.dist = null; S.sd = null;
+    S.lot = lot; S.geo = L; S.pt = pt || L.inner; S.nearLL = null; S.dnr = null; S.rmz = null; S.water = null; S.bands = {}; S.juris = null; S.dist = null; S.sd = null;
     const b = L.bbox, dLng = SEARCH_M / L.P.kx, dLat = SEARCH_M / L.P.ky;
     S.env = [b[0] - dLng, b[1] - dLat, b[2] + dLng, b[3] + dLat];
     $('wmPicks').innerHTML = '';
@@ -383,9 +406,10 @@
     const cP = loadContent().catch((e) => { console.warn('content', e); return null; });
     const dP = loadStreams(S.env).then((d) => analyseStreams(d, my)).catch((e) => { console.warn('dnr', e); if (my === S.seq) renderStreamsError(); });
     const rP = loadRmz(S.env).then((r) => analyseRmz(r, my)).catch((e) => { console.warn('rmz', e); if (my === S.seq) renderRmzError(); });
+    const wP = loadWater(S.env).then((w) => analyseWater(w, my)).catch((e) => { console.warn('water', e); if (my === S.seq) renderWaterError(); });
     await Promise.all([jP, cP]); if (my !== S.seq) return;
-    renderCounty();
-    await Promise.all([dP, rP]); if (my !== S.seq) return;
+    renderCounty(); renderNext();
+    await Promise.all([dP, rP, wP]); if (my !== S.seq) return;
     status('Done. Your lot, nearby mapped streams and the what-if band are on the map.', 'ok');
     document.documentElement.classList.add('wm-has-result');
   }
@@ -471,6 +495,115 @@
     renderRmz();
   }
 
+  // ---------- 2026-10-16 (Phase A): DNR Water Bodies (lakes, ponds, reservoirs, wide rivers, marine water) ----------
+  // Distance is measured from the lot to each mapped water edge (exact, planar), inside counts as 0. Big polygons (Puget Sound,
+  // Hood Canal, the Columbia) come back whole, so only their edges near the checked area are measured, and the map draws them
+  // clipped to that area. 3 m generalization: Hood Canal, the largest case tried, is about 110 KB gzipped (378 KB raw).
+  async function loadWater(env) {
+    return queryGeo(SVC.water, Object.assign(envParams(env), { where: WATER_WHERE, outFields: WATER_FIELDS, maxAllowableOffset: 0.00003, geometryPrecision: 6, resultRecordCount: 200 }), 25000);
+  }
+  const cleanName = (s) => (typeof s === 'string' ? s.replace(/[\u0000-\u001f\u007f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) : '');
+  const goodRing = (r) => Array.isArray(r) && r.length >= 4 && r.every((c) => Array.isArray(c) && isFinite(c[0]) && isFinite(c[1]));
+  function clipRing(r, b) { // Sutherland–Hodgman against [xmin, ymin, xmax, ymax] (drawing only); null if nothing is left
+    let pts = r.slice(0, -1);
+    const sides = [[0, b[0], 1], [0, b[2], -1], [1, b[1], 1], [1, b[3], -1]];
+    for (let s = 0; s < 4 && pts.length; s++) { const ax = sides[s][0], bd = sides[s][1], sg = sides[s][2], out = [];
+      for (let i = 0; i < pts.length; i++) { const p = pts[i], q = pts[(i + 1) % pts.length], pin = sg * (p[ax] - bd) >= 0, qin = sg * (q[ax] - bd) >= 0;
+        if (pin) out.push(p);
+        if (pin !== qin) { const t = (bd - p[ax]) / (q[ax] - p[ax]); out.push(ax === 0 ? [bd, p[1] + t * (q[1] - p[1])] : [p[0] + t * (q[0] - p[0]), bd]); } }
+      pts = out; }
+    if (pts.length < 3) return null; pts.push(pts[0]); return pts;
+  }
+  async function analyseWater(j, my) {
+    if (my !== S.seq) return;
+    const L = S.geo, P = L.P, e = S.env, gx = (e[2] - e[0]) * 0.1, gy = (e[3] - e[1]) * 0.1, grow = [e[0] - gx, e[1] - gy, e[2] + gx, e[3] + gy];
+    const g0 = P.f([grow[0], grow[1]]), g1 = P.f([grow[2], grow[3]]), gp = [g0[0], g0[1], g1[0], g1[1]];
+    let feats = [];
+    (j.features || []).forEach((f) => { const p = f.properties || {}, cart = p.WB_CART_FTR_LABEL_NM;
+      if (typeof cart !== 'string' || !Object.prototype.hasOwnProperty.call(WATER_KIND, cart)) return;
+      const polys = polysOf(f.geometry || {}).map((pl) => (Array.isArray(pl) ? pl.filter(goodRing) : [])).filter((pl) => pl.length);
+      if (!polys.length) return;
+      const b = [Infinity, Infinity, -Infinity, -Infinity]; polys.forEach((pl) => bboxOfCoords(pl[0], b));
+      feats.push({ polys: polys, b: b, props: { k: WATER_KIND[cart], t: /^[FNSUX]$/.test(p.FP_WTRTY_CD || '') ? p.FP_WTRTY_CD : 'X', n: cleanName(p.WB_GNIS_NM) } }); });
+    if (feats.length > MAX_WATER) feats = feats.map((f) => [f, boxGap2(f.b, L.bbox)]).sort((x, y) => x[1] - y[1]).slice(0, MAX_WATER).map((x) => x[0]);
+    const dist = []; let t0 = now();
+    for (let i = 0; i < feats.length; i++) {
+      const pr = feats[i].polys.map((pl) => pl.map((r) => r.map(P.f)));
+      const A = [], B = [];
+      pr.forEach((pl) => pl.forEach((r) => { for (let k = 1; k < r.length; k++) { const a = r[k - 1], c = r[k], x0 = Math.min(a[0], c[0]), y0 = Math.min(a[1], c[1]), x1 = Math.max(a[0], c[0]), y1 = Math.max(a[1], c[1]);
+        if (x1 < gp[0] || x0 > gp[2] || y1 < gp[1] || y0 > gp[3]) continue; A.push(a[0], a[1], c[0], c[1]); B.push(x0, y0, x1, y1); } }));
+      const n = A.length / 4, SG = { n: n, A: new Float64Array(A), B: new Float64Array(B), F: new Int32Array(n).fill(i) };
+      let d = n ? lotDistance(L, SG, null).d : Infinity, inside = false;
+      if (d > 0) { // no edge touches the lot: it is wholly inside the water or wholly outside (test one point per lot part)
+        const c = P.f(L.inner); if (inPolys(c[0], c[1], pr) || L.polys.some((lp) => inPolys(lp[0][0][0], lp[0][0][1], pr))) { d = 0; inside = true; } }
+      dist.push({ i: i, d: d, inside: inside });
+      if (now() - t0 > TASK_MS) { await pause(); if (my !== S.seq) return; t0 = now(); }
+    }
+    dist.sort((x, y) => x.d - y.d);
+    const shown = feats.map((f) => { const polys = [];
+      f.polys.forEach((pl) => { const outer = clipRing(pl[0], grow); if (!outer) return; polys.push([outer].concat(pl.slice(1).map((r) => clipRing(r, grow)).filter(Boolean))); });
+      return polys.length ? { type: 'Feature', properties: { k: f.props.k, t: f.props.t }, geometry: { type: 'MultiPolygon', coordinates: polys } } : null; }).filter(Boolean);
+    S.water = { props: feats.map((f) => f.props), dist: dist, shown: shown, capped: !!j.exceededTransferLimit || (j.features || []).length >= 200 };
+    drawWater(); renderWater(); renderBandShare();
+  }
+  const waterName = (p) => p.n || (p.k === 'marine' ? 'Marine water' : 'Unnamed ' + WATER_WORD[p.k]);
+  const waterNear = () => (S.water ? S.water.dist.filter((x) => x.d <= S.w * FT) : []);
+  function renderWater() {
+    const el = $('wmWater'); if (!el || !S.water) return; el.classList.remove('wm-loading', 'wm-err');
+    const W = S.water, near = waterNear(), first = W.dist[0], inArea = first && first.d <= SEARCH_M;
+    const head = (x) => { const p = W.props[x.i]; return '<b>' + esc(waterName(p)) + '</b> <span class="wm-type t-' + p.t + '">' + esc(TYPE[p.t]) + '</span>' + (p.n ? ' <span class="wm-per">' + esc(WATER_WORD[p.k]) + '</span>' : ''); };
+    let html;
+    if (near.length) {
+      const x = near[0], p = W.props[x.i];
+      html = head(x) + '<span class="wm-dist">' + (x.inside ? 'This lot lies inside the mapped water area.' : x.d === 0 ? 'The mapped water edge touches this lot.' : ftLabel(x.d) + ' from the lot line to the mapped water edge, within ' + S.w + ' ft.') + '</span>';
+      if (near.length > 1) html += '<span class="wm-note">Also within ' + S.w + ' ft: ' + near.slice(1, 4).map((y) => esc(waterName(W.props[y.i]))).join(', ') + (near.length > 4 ? ' and ' + (near.length - 4) + ' more' : '') + '.</span>';
+      html += '<span class="wm-note">The ' + esc(WATER_WORD[p.k]) + ' is shown on the map. Rules for lakes, ponds and shorelines are separate from the stream buffer and are not checked here.</span>';
+      if (near.some((y) => W.props[y.i].t === 'S')) html += '<span class="wm-note">Type S waters are usually under the local Shoreline Master Program rather than the critical areas stream buffer.</span>';
+    } else if (inArea) {
+      const fp = W.props[first.i];
+      html = 'None within ' + S.w + ' ft of this lot.<span class="wm-note">Nearest: ' + (fp.n ? esc(fp.n) + ' (' + esc(WATER_WORD[fp.k]) + ')' : fp.k === 'marine' ? 'marine water' : 'an unnamed ' + esc(WATER_WORD[fp.k])) + ', ' + ftLabel(first.d) + ' from the lot line.</span>';
+    } else html = 'No DNR-mapped lake, pond, wide river or marine water in the area checked around this lot.';
+    if (near.length || inArea) html += '<span class="wm-note">Measured to DNR’s mapped water edge, which is approximate.</span>';
+    if (W.capped) html += '<span class="wm-note">Dense area: we read the first 200 water bodies DNR returned, so some small ponds may be missing.</span>';
+    el.innerHTML = html;
+  }
+  function renderWaterError() { const el = $('wmWater'); if (el) { el.classList.remove('wm-loading'); el.classList.add('wm-err'); el.textContent = 'The DNR water body service did not answer. Try again in a minute.'; } }
+
+  // ---------- 2026-10-16 (Phase A): next steps (share link, official page, who to contact; all local) ----------
+  function shareUrl() { const c = S.geo && S.geo.inner; if (!c) return '';
+    try { return new URL('wa/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&width=' + S.w, document.baseURI).href; } catch (_) { return ''; } }
+  const httpUrl = (u) => /^https?:\/\//i.test(String(u || ''));
+  const firstOfficial = (x) => ((x && Array.isArray(x.links)) ? x.links : []).find((l) => l && l.label && httpUrl(l.url)) || null;
+  const COUNCIL = /\b(council|commissioners|county commission|board of county commissioners)\b/i;
+  function contactOf(x) { // the optional "contact" field (county commission or city council page), else a link that names one
+    if (!x) return null; const k = x.contact;
+    if (k && typeof k === 'object' && k.label && httpUrl(k.url)) return k;
+    return (Array.isArray(x.links) ? x.links : []).find((l) => l && l.label && httpUrl(l.url) && COUNCIL.test(String(l.label)) && !/planning commission/i.test(String(l.label))) || null;
+  }
+  function setShare() { const u = shareUrl(), i = $('wmShareUrl'); if (i && u) i.value = u; }
+  function renderNext() {
+    const off = $('wmOfficial'), con = $('wmContact'); if (!off || !con) return; off.classList.remove('wm-loading'); con.classList.remove('wm-loading');
+    const j = S.juris || {}, name = j.county, data = S.content, c = name && data && data.counties ? data.counties[name] : null, pl = placeMatch(c, j), s = name ? slug(name) : '';
+    const o = firstOfficial(pl) ? { who: pl.name, l: firstOfficial(pl) } : firstOfficial(c) ? { who: name + ' County', l: firstOfficial(c) } : null;
+    if (name && !c) off.innerHTML = '<b>Find the official page.</b> Our county list did not load. <a href="county/' + esc(s) + '.html">' + esc(name) + ' County page →</a>';
+    else if (o) off.innerHTML = '<b>Read the official page.</b> ' + linkHtml({ label: o.who + ': ' + o.l.label, url: o.l.url }) +
+      (j.kind === 'city' && !pl ? '<span class="wm-note">' + esc(j.city) + ' sets the rules inside its limits; its planning office can tell you which apply.</span>' : '');
+    else if (name) off.innerHTML = '<b>Find the official page.</b> We have not added one for ' + esc(name) + ' County yet. Its planning or community development department is the place to start. <a href="county/' + esc(s) + '.html">' + esc(name) + ' County page →</a>';
+    else off.innerHTML = '<b>Find the official page.</b> Your city or county planning office can tell you which rules apply.';
+    const k = j.kind === 'city' ? contactOf(pl) : contactOf(c);
+    con.innerHTML = '<b>Who to contact.</b> ' + (k ? linkHtml(k) : name ? '<a href="washington.html#c-' + esc(s) + '">' + esc(name) + ' County on Where does your county stand? →</a>' : '<a href="washington.html">Where does your county stand? →</a>');
+  }
+  async function copyShare() {
+    const u = shareUrl(), msg = $('wmShareMsg'), i = $('wmShareUrl'); if (!u) return; let ok = false;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(u); ok = true; } } catch (_) { ok = false; }
+    if (!ok && i) { try { i.focus(); i.select(); ok = document.execCommand && document.execCommand('copy'); } catch (_) { ok = false; } }
+    if (msg) msg.textContent = ok ? 'Link copied.' : 'Select the link above and copy it.';
+  }
+  async function nativeShare() {
+    const u = shareUrl(); if (!u || !navigator.share) return;
+    try { await navigator.share({ title: 'CreekChecker', text: 'Mapped creeks near this Washington lot', url: u }); } catch (_) {} // a closed share sheet is not an error
+  }
+
   // ---------- What-if band: cell-by-cell turf buffers, clipped to disjoint cells (no overlaps, no long tasks) ----------
   function clipLine(c, bb) { // Liang–Barsky per segment; returns runs inside bb
     const runs = []; let cur = null;
@@ -539,7 +672,7 @@
     if (!WIDTHS.includes(w)) return; S.w = w;
     document.querySelectorAll('[data-wm-w]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.wmW) === w)));
     const lg = $('wmLegendBand'); if (lg) lg.textContent = 'What-if ' + w + ' ft — a width you pick, not an official buffer';
-    renderBandShare();
+    renderBandShare(); renderWater(); setShare(); // 2026-10-16: the water row and the share link follow the width
     if (S.geo && S.bandLines) { drawBand(); buildBand(w, S.seq); }
   }
 
@@ -560,20 +693,27 @@
       '<dl class="wm-facts">' +
       '<div><dt>Who sets the rules here</dt><dd id="wmJuris" class="wm-loading">Checking city limits and urban growth areas…</dd></div>' +
       '<div><dt>Nearest mapped stream</dt><dd id="wmStream" class="wm-loading">Reading DNR watercourses…</dd></div>' +
+      '<div><dt>Mapped lakes, ponds, wide rivers and marine water</dt><dd id="wmWater" class="wm-loading">Reading DNR water bodies…</dd></div>' +
       '<div><dt>Inside WDFW’s estimated riparian management zone?</dt><dd id="wmRmz" class="wm-loading">Reading the WDFW estimate…</dd></div>' +
       '<div class="wm-band-row"><dt>What-if band</dt><dd><div class="wm-pills" role="group" aria-label="What-if width in feet">' +
       WIDTHS.map((w) => '<button type="button" data-wm-w="' + w + '" aria-pressed="' + (w === S.w) + '" aria-label="' + w + ' feet">' + w + '</button>').join('') +
       '</div><p class="wm-pill-unit">feet from the mapped stream line</p><p id="wmBand" class="wm-loading">Measuring…</p>' +
       '<p class="wm-note" id="wmBandNote">A width you pick, not an official buffer. Drawn from DNR’s mapped stream centerlines; ditches, canals and pipes get no band here.</p></dd></div>' +
       '</dl>' +
-      '<p class="wm-notchecked"><b>Not checked here:</b> lakes, marine shorelines, wetlands, steep slopes and flood areas. Those have their own rules; your city or county planning office can tell you which apply.</p>' +
+      '<p class="wm-notchecked"><b>Not checked here:</b> wetlands, steep slopes, flood areas, and the shoreline rules for lakes and marine water. Each has its own rules; your city or county planning office can tell you which apply. Lakes, ponds and marine water are shown only where DNR maps them.</p>' +
       '<section class="wm-card wm-county" id="wmCountyCard" aria-labelledby="wmCountyTitle"><p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">Loading…</h2></section>' +
-      '<p class="wm-fine"><b>An awareness tool, not a legal determination.</b> Streams: WA DNR data; DNR says its water types are “intended for DNR Forest Practices regulatory purposes only.” Lots: WaTech statewide parcels, “for informational purposes only.” The WDFW zone is an estimate; site-scale delineation “requires field verification.” Only your county or city can say what applies to this property. <a href="wa/#wmAbout">About the data</a></p>' +
+      '<p class="wm-fine"><b>An awareness tool, not a legal determination.</b> Streams and water bodies: WA DNR data; DNR says its water types are “intended for DNR Forest Practices regulatory purposes only.” Lots: WaTech statewide parcels, “for informational purposes only.” The WDFW zone is an estimate; site-scale delineation “requires field verification.” Only your county or city can say what applies to this property. <a href="wa/#wmAbout">About the data</a></p>' +
+      '<section class="wm-card wm-next" id="wmNext" aria-labelledby="wmNextTitle"><h2 id="wmNextTitle">Next steps for this lot</h2><ol class="wm-steps">' +
+      '<li><b>Share this lot.</b> The link opens this same lot and width.<div class="wm-share"><input id="wmShareUrl" type="url" readonly aria-label="Link to this lot" spellcheck="false">' +
+      '<button type="button" class="btn" id="wmCopy">Copy link</button><button type="button" class="btn" id="wmShareBtn" hidden>Share…</button></div><p class="wm-note" id="wmShareMsg" role="status" aria-live="polite"></p></li>' +
+      '<li id="wmOfficial" class="wm-loading">Finding the official page…</li><li id="wmContact" class="wm-loading">Finding who to contact…</li></ol></section>' +
       '<div class="actions wm-again"><button type="button" class="btn" id="wmAgain">Check another address</button></div>';
     r.querySelectorAll('[data-wm-w]').forEach((b) => b.addEventListener('click', () => setWidth(Number(b.dataset.wmW))));
     $('wmYes').addEventListener('click', () => { $('wmConfirm').innerHTML = '<span>Thanks. The checks below use this lot.</span>'; });
     $('wmNo').addEventListener('click', () => { status('Tap your lot on the map. Zoom in first if you need to.'); scrollToMap(); });
     $('wmAgain').addEventListener('click', () => { const q = $('wmQ'); q.value = ''; q.focus({ preventScroll: true }); $('wmSearch').scrollIntoView({ block: 'start', behavior: RMQ.matches ? 'auto' : 'smooth' }); });
+    setShare(); $('wmCopy').addEventListener('click', copyShare); $('wmShareUrl').addEventListener('focus', (e) => { try { e.target.select(); } catch (_) {} });
+    if (navigator.share) { const b = $('wmShareBtn'); b.hidden = false; b.addEventListener('click', nativeShare); }
   }
   function renderJuris() {
     const el = $('wmJuris'); if (!el) return; el.classList.remove('wm-loading'); const j = S.juris;
@@ -592,7 +732,7 @@
   function renderStreams() {
     const el = $('wmStream'); if (!el) return; el.classList.remove('wm-loading'); const d = S.dist, F = S.dnr.feats;
     if (!d || d.stream.f < 0 || d.stream.d > SEARCH_M) {
-      el.innerHTML = 'No DNR-mapped stream within about ' + (Math.round(SEARCH_M * M2FT / 10) * 10).toLocaleString('en-US') + ' ft of this lot.' + '<span class="wm-note">Lakes, marine shorelines and wetlands are not checked here.</span>' +
+      el.innerHTML = 'No DNR-mapped stream within about ' + (Math.round(SEARCH_M * M2FT / 10) * 10).toLocaleString('en-US') + ' ft of this lot.' + '<span class="wm-note">Mapped lakes, ponds and marine water are in the next row. Wetlands are not checked here.</span>' +
         (d && d.any.f >= 0 && d.any.d <= SEARCH_M ? '<span class="wm-note">A mapped ' + esc(kindWord(F[d.any.f].properties)) + ' is ' + ftLabel(d.any.d) + ' away.</span>' : '');
       return;
     }
@@ -626,12 +766,15 @@
     else if (n === a.length && allB) txt = 'All of this lot is within ' + S.w + ' ft of a DNR-mapped stream line.';
     else if (n === 0) txt = minD < m ? 'Less than 1% of this lot is within ' + S.w + ' ft of a DNR-mapped stream line.' : 'None of this lot is within ' + S.w + ' ft of a DNR-mapped stream line.';
     else txt = 'About ' + Math.min(99, Math.max(1, Math.round(100 * n / a.length))) + '% of this lot is within ' + S.w + ' ft of a DNR-mapped stream line.';
-    el.innerHTML = '<b>' + esc(txt) + '</b>';
+    const wn = waterNear(); // 2026-10-16: a lake or shore within the width is named above; say the band does not include it
+    el.innerHTML = '<b>' + esc(txt) + '</b>' + (wn.length ? '<span class="wm-note wm-band-water">The band is drawn from stream lines only. The mapped ' + esc(WATER_WORD[S.water.props[wn[0].i].k]) + ' above is within ' + S.w + ' ft of this lot and is not part of it.</span>' : '');
   }
-  function chip(st, group) {
+  function chip(st, group, checked) { // 2026-10-16: the checked date sits beside the chip; older than 21 days says "may be out of date"
     let label = (STATUS[st] || STATUS.unchecked)[0];
     if (st === 'unchecked' && (group === 'a' || group === 'b')) label = 'Deadline passed · not checked yet';
-    return '<span class="wm-chip st-' + esc(st) + '">' + esc(label) + '</span>';
+    const d = isoDay(checked);
+    return '<span class="wm-st"><span class="wm-chip st-' + esc(st) + '">' + esc(label) + '</span>' +
+      (d ? '<span class="wm-chk">Checked ' + esc(d) + (daysOld(d) > STALE_DAYS ? '<span class="wm-stale"> · may be out of date</span>' : '') + '</span>' : '') + '</span>';
   }
   function linkHtml(l) { const u = String(l.url || ''); const out = /^https?:\/\//i.test(u);
     return '<a href="' + esc(u) + '"' + (out ? ' target="_blank" rel="noopener"' : '') + '>' + esc(l.label) + (out ? ' ↗' : ' →') + '</a>'; }
@@ -641,33 +784,32 @@
   }
   function renderCounty() {
     const box = $('wmCountyCard'); if (!box) return; const j = S.juris || {}; const name = j.county; const data = S.content;
-    if (!name) { box.innerHTML = '<p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">County not found</h2><p>See <a href="washington.html">where every county stands →</a></p>'; return; }
+    if (!name) { box.innerHTML = '<p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">County not found</h2><p>See <a href="washington.html">all 39 counties →</a></p>'; return; }
     const c = data && data.counties ? data.counties[name] : null; const s = slug(name);
-    let html = '<p class="wm-kicker">Your county</p><div class="wm-county-head"><h2 id="wmCountyTitle">' + esc(name) + ' County</h2>' + (c ? chip(c.status, c.group) : '') + '</div>';
+    let html = '<p class="wm-kicker">Your county</p><div class="wm-county-head"><h2 id="wmCountyTitle">' + esc(name) + ' County</h2>' + (c ? chip(c.status, c.group, c.checked) : '') + '</div>';
     if (c) {
       const grp = (data.groups || {})[c.group] || {};
       const passed = (c.group === 'a' || c.group === 'b');
       const body = c.summary || ((STATUS[c.status] || STATUS.unchecked)[1] + (passed && c.status === 'unchecked' ? ' Its deadline has passed; we have not checked whether it adopted.' : ''));
       html += '<p class="wm-meta"><span>Deadline</span> ' + esc(grp.label || '') + (passed ? ' (passed)' : '') + '</p>' + '<p>' + esc(body) + '</p>' +
         (c.riparian ? '<p class="wm-meta"><span>Creek buffers</span> ' + esc(c.riparian) + '</p>' : '') +
-        (c.next ? '<p class="wm-meta"><span>Next</span> ' + esc(c.next) + '</p>' : '') +
+        (nextLive(c) ? '<p class="wm-meta wm-next"><span>Next</span> ' + esc(c.next) + '</p>' : '') +
         ((c.links || []).length ? '<p class="wm-links">' + c.links.map(linkHtml).join('') + '</p>' : '');
       const pl = placeMatch(c, j);
-      if (pl) html += '<div class="wm-place"><div class="wm-county-head"><h3>' + esc(pl.name) + '</h3>' + chip(pl.status, 'c') + '</div>' + (pl.summary ? '<p>' + esc(pl.summary) + '</p>' : '') +
-        (pl.riparian ? '<p class="wm-meta"><span>Creek buffers</span> ' + esc(pl.riparian) + '</p>' : '') + (pl.next ? '<p class="wm-meta"><span>Next</span> ' + esc(pl.next) + '</p>' : '') +
-        ((pl.links || []).length ? '<p class="wm-links">' + pl.links.map(linkHtml).join('') + '</p>' : '') + (pl.checked ? '<p class="wm-checked">Checked ' + esc(pl.checked) + '</p>' : '') + '</div>';
+      if (pl) html += '<div class="wm-place"><div class="wm-county-head"><h3>' + esc(pl.name) + '</h3>' + chip(pl.status, 'c', pl.checked) + '</div>' + (pl.summary ? '<p>' + esc(pl.summary) + '</p>' : '') +
+        (pl.riparian ? '<p class="wm-meta"><span>Creek buffers</span> ' + esc(pl.riparian) + '</p>' : '') + (nextLive(pl) ? '<p class="wm-meta wm-next"><span>Next</span> ' + esc(pl.next) + '</p>' : '') +
+        ((pl.links || []).length ? '<p class="wm-links">' + pl.links.map(linkHtml).join('') + '</p>' : '') + '</div>';
       else if (j.kind === 'city') html += '<p class="wm-note">We have not added ' + esc(j.city) + '’s critical areas update yet. Inside city limits, the city’s rules apply.</p>';
-      if (c.checked) html += '<p class="wm-checked">Checked ' + esc(c.checked) + '</p>';
     } else html += '<p class="wm-note">The county status list did not load. See the statewide page.</p>';
-    html += '<p class="wm-links wm-more"><a href="county/' + esc(s) + '.html">More on ' + esc(name) + ' County →</a><a href="washington.html">Where every county stands →</a></p>';
+    html += '<p class="wm-links wm-more"><a href="county/' + esc(s) + '.html">More on ' + esc(name) + ' County →</a><a href="washington.html">All 39 counties →</a></p>';
     box.innerHTML = html;
   }
 
   // ---------- Map ----------
   let map = null, styleReady = false, hasGlyphs = false;
   const PAINT = {
-    aerial: { band: '#ff5a4f', bandO: 0.34, edge: '#ffd0c9', rmz: '#b8f0a0', rmzO: 0.30, rmzE: '#e2ffd4', lot: '#fff7c2', env: '#ffffff', casing: 'rgba(255,255,255,.85)' },
-    street: { band: '#cc3e36', bandO: 0.30, edge: '#982b25', rmz: '#6f9f5f', rmzO: 0.26, rmzE: '#3f6b33', lot: '#1d2420', env: '#62695c', casing: 'rgba(255,255,255,.9)' }
+    aerial: { band: '#ff5a4f', bandO: 0.34, edge: '#ffd0c9', rmz: '#b8f0a0', rmzO: 0.30, rmzE: '#e2ffd4', lot: '#fff7c2', env: '#ffffff', casing: 'rgba(255,255,255,.85)', water: '#5fc4ff', waterO: 0.30, waterE: '#c9eeff' },
+    street: { band: '#cc3e36', bandO: 0.30, edge: '#982b25', rmz: '#6f9f5f', rmzO: 0.26, rmzE: '#3f6b33', lot: '#1d2420', env: '#62695c', casing: 'rgba(255,255,255,.9)', water: '#3d8fd1', waterO: 0.26, waterE: '#2a6fa8' }
   };
   const TYPE_COLOR = ['match', ['get', 't'], 'S', '#0d4fa8', 'F', '#1f78e0', 'N', '#2aa6c4', 'U', '#7a8ea8', '#9a9a9a'];
   const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty', PLANET_URL = 'https://tiles.openfreemap.org/planet';
@@ -716,8 +858,8 @@
     S.builtStyle = true; S.builtBase = S.basemap;
     return st;
   }
-  const OVERLAY_SRC = [['wm-env', () => ''], ['wm-rmz', () => 'Estimated riparian management zones: Washington Department of Fish and Wildlife'], ['wm-band', () => ''], ['wm-band-edge', () => ''],
-    ['wm-streams', () => 'Watercourses: WA DNR Forest Practices Division'], ['wm-lot', () => 'Parcels: WaTech, Washington State Counties'], ['wm-pt', () => (ESRI_KEY ? 'Address search: Powered by Esri' : '')]];
+  const OVERLAY_SRC = [['wm-env', () => ''], ['wm-water', () => ''], ['wm-rmz', () => 'Estimated riparian management zones: Washington Department of Fish and Wildlife'], ['wm-band', () => ''], ['wm-band-edge', () => ''],
+    ['wm-streams', () => 'Watercourses and water bodies: WA DNR Forest Practices Division'], ['wm-lot', () => 'Parcels: WaTech, Washington State Counties'], ['wm-pt', () => (ESRI_KEY ? 'Address search: Powered by Esri' : '')]];
   function initMap() {
     const box = $('wmMap'); if (!box || map || S.mapStarted) return; S.mapStarted = true;
     if (!window.maplibregl) { mapNote('The map library could not load. You can still search an address; the results appear without the map.'); mapLoaded(); return; }
@@ -806,9 +948,9 @@
     else if (data && data.features && data.features.length) map.getSource(id).setData(data); } // at style load: only the sources a lookup has already filled
   function ensureLayers() {
     if (!map || !styleReady) return;
-    src('wm-env', envFeature()); src('wm-rmz', rmzData(), 'Estimated riparian management zones: Washington Department of Fish and Wildlife');
+    src('wm-env', envFeature()); src('wm-water', waterData()); src('wm-rmz', rmzData(), 'Estimated riparian management zones: Washington Department of Fish and Wildlife');
     src('wm-band', bandData('fill')); src('wm-band-edge', bandData('line'));
-    src('wm-streams', streamData(), 'Watercourses: WA DNR Forest Practices Division'); src('wm-lot', S.lot ? fc([S.lot]) : EMPTY, 'Parcels: WaTech, Washington State Counties');
+    src('wm-streams', streamData(), 'Watercourses and water bodies: WA DNR Forest Practices Division'); src('wm-lot', S.lot ? fc([S.lot]) : EMPTY, 'Parcels: WaTech, Washington State Counties');
     src('wm-pt', S.pt ? fc([{ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: S.pt } }]) : EMPTY, ESRI_KEY ? 'Address search: Powered by Esri' : '');
     overlaySpecs().forEach((l) => { if (!map.getLayer(l.id)) map.addLayer(l); });
     if (!S.builtStyle) paintLayers();
@@ -817,6 +959,8 @@
     const c = PAINT[S.basemap] || PAINT.street;
     const out = [
       { id: 'wm-env-line', type: 'line', source: 'wm-env', paint: { 'line-width': 1.2, 'line-dasharray': [3, 3], 'line-opacity': 0.8, 'line-color': c.env } },
+      { id: 'wm-water-fill', type: 'fill', source: 'wm-water', paint: { 'fill-color': c.water, 'fill-opacity': c.waterO } }, // 2026-10-16: DNR water bodies
+      { id: 'wm-water-line', type: 'line', source: 'wm-water', paint: { 'line-width': 1.4, 'line-color': c.waterE } },
       { id: 'wm-rmz-fill', type: 'fill', source: 'wm-rmz', paint: { 'fill-color': c.rmz, 'fill-opacity': c.rmzO } },
       { id: 'wm-rmz-line', type: 'line', source: 'wm-rmz', paint: { 'line-width': 1, 'line-dasharray': [2, 2], 'line-color': c.rmzE } },
       { id: 'wm-band-fill', type: 'fill', source: 'wm-band', paint: { 'fill-antialias': false, 'fill-color': c.band, 'fill-opacity': c.bandO } },
@@ -837,17 +981,20 @@
     if (!map || !styleReady || !map.getLayer('wm-band-fill')) return; const c = PAINT[S.basemap] || PAINT.street;
     const set = (id, p, v) => { try { map.setPaintProperty(id, p, v); } catch (_) {} };
     set('wm-band-fill', 'fill-color', c.band); set('wm-band-fill', 'fill-opacity', c.bandO); set('wm-band-line', 'line-color', c.edge);
+    set('wm-water-fill', 'fill-color', c.water); set('wm-water-fill', 'fill-opacity', c.waterO); set('wm-water-line', 'line-color', c.waterE);
     set('wm-rmz-fill', 'fill-color', c.rmz); set('wm-rmz-fill', 'fill-opacity', c.rmzO); set('wm-rmz-line', 'line-color', c.rmzE);
     set('wm-lot-fill', 'fill-color', c.lot); set('wm-lot-line', 'line-color', c.lot); set('wm-env-line', 'line-color', c.env); set('wm-streams-casing', 'line-color', c.casing);
   }
   const envFeature = () => S.env ? fc([{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[S.env[0], S.env[1]], [S.env[2], S.env[1]], [S.env[2], S.env[3]], [S.env[0], S.env[3]], [S.env[0], S.env[1]]] } }]) : EMPTY;
   const streamData = () => S.dnr ? fc(S.dnr.feats.map((f) => ({ type: 'Feature', properties: f.properties, geometry: f.geometry }))) : EMPTY;
+  const waterData = () => (S.water ? fc(S.water.shown) : EMPTY);
   const rmzData = () => S.rmz ? fc(S.rmz.feats.map((f) => ({ type: 'Feature', properties: {}, geometry: f.geometry }))) : EMPTY;
   const bandData = (k) => (S.bands[S.w] ? S.bands[S.w][k] : EMPTY);
   function placePoint(pt) { S.pt = pt; if (map && styleReady && map.getSource('wm-pt')) map.getSource('wm-pt').setData(fc([{ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: pt } }])); }
-  function drawLot() { if (!map || !styleReady) return; ['wm-band', 'wm-band-edge', 'wm-streams', 'wm-rmz'].forEach((id) => map.getSource(id) && map.getSource(id).setData(EMPTY));
+  function drawLot() { if (!map || !styleReady) return; ['wm-band', 'wm-band-edge', 'wm-streams', 'wm-rmz', 'wm-water'].forEach((id) => map.getSource(id) && map.getSource(id).setData(EMPTY));
     map.getSource('wm-lot') && map.getSource('wm-lot').setData(fc([S.lot])); map.getSource('wm-env') && map.getSource('wm-env').setData(envFeature()); placePoint(S.pt); }
   function drawStreams() { if (map && styleReady && map.getSource('wm-streams')) map.getSource('wm-streams').setData(streamData()); }
+  function drawWater() { if (map && styleReady && map.getSource('wm-water')) map.getSource('wm-water').setData(waterData()); }
   function drawRmz() { if (map && styleReady && map.getSource('wm-rmz')) map.getSource('wm-rmz').setData(rmzData()); }
   function drawBand() { if (!map || !styleReady || !map.getSource('wm-band')) return; map.getSource('wm-band').setData(bandData('fill')); map.getSource('wm-band-edge').setData(bandData('line')); }
   function fitLot(instant) {

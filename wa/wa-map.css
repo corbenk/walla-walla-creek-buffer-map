@@ -179,3 +179,21 @@ p.wm-note {margin:8px 0 0}
 
 /* 2026-10-15: what this tool does not check */
 .wm-notchecked {margin:14px 0 0;padding:10px 12px;font-size:14.5px;line-height:1.45;background:var(--paper);border-left:3px solid var(--amber);border-radius:4px}
+
+/* 2026-10-16 (Phase A): water bodies, freshness beside chips, next steps */
+.wm-sw-water {background:rgba(61,143,209,.32);border:1px solid #2a6fa8}
+.wm-st {display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px;min-width:0}
+.wm-chk {font-size:12.5px;line-height:1.3;color:var(--muted);font-variant-numeric:tabular-nums}
+.wm-stale {font-weight:600;color:var(--amber-ink,#795917)}
+.wm-next h2 {font:700 22px/1.15 var(--display);margin:0 0 8px}
+.wm-steps {margin:0;padding-left:22px;display:grid;gap:12px}
+.wm-steps li {font-size:15px;line-height:1.5;min-width:0}
+.wm-steps li .wm-note {display:block;margin-top:4px}
+.wm-steps a {color:var(--creek);font-weight:600;overflow-wrap:anywhere}
+.wm-share {display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.wm-share input {flex:1 1 200px;min-width:0;min-height:44px;padding:8px 10px;font:14px/1.3 var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line-strong);border-radius:var(--r-s,5px);text-overflow:ellipsis}
+.wm-share .btn {min-height:44px;padding:8px 14px;white-space:nowrap}
+.wm-share .btn[hidden] {display:none}
+#wmShareMsg:empty {display:none}
+.wm-share .btn {flex:0 0 auto}
+.wm-per {white-space:nowrap}
