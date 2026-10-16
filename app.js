@@ -14,7 +14,11 @@
   const PARCEL_ZOOM = 16;                        // parcel outlines are fetched for the viewport at/above this zoom
   const params = new URLSearchParams(location.search);
   const DEMO = params.get('demo') === '1';
-  const DATA = DEMO ? 'dev-sample/' : 'data/';
+  // 2026-10-16 Phase A hook: ROOT ('/' from <meta name="cc-root">) makes this page's own fetches and runtime-built links root-absolute,
+  // so the same page works at /wallawalla/ as at /. Default '' = the old relative paths, for cached HTML without the meta.
+  const ROOT = (document.querySelector('meta[name="cc-root"]') || {}).content || '';
+  const rootRel = (u) => (ROOT && u && !/^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(u) ? ROOT + u : u); // 2026-10-16 Phase A hook: a relative site link (e.g. stats.json method_url) under ROOT
+  const DATA = ROOT + (DEMO ? 'dev-sample/' : 'data/'); // 2026-10-16 Phase A hook: ROOT prefix
   const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); // reduced motion: no animation, instant states
   const SHARED = !!(params.get('lat') && params.get('lng'));
   const RMX = RM || params.get('rm') === '1';                 // reduced motion for the entry sequence (rm=1 is a test hook)
@@ -355,7 +359,7 @@
     if (window.ccLoad && !DEMO) window.ccLoad.started.then(armSlow); else armSlow(); // 2026-10-15 performance hook: the 8 s "slow" clock starts when the City layers are actually requested
     if (window.ccLoad && !DEMO) window.ccLoad.preview.then(p => { if (p && !state.streams) { state.draw = p; if (styleReady) addLayers(); } }); // 2026-10-15 performance hook: light first-view copy (drawing only)
     tries.push(getJSON(DATA + 'stats.json').then(d => state.stats = d).catch(() => null));
-    tries.push(getJSON('content/restrictions.json').then(d => state.content = d).catch(() => null));
+    tries.push(getJSON(ROOT + 'content/restrictions.json').then(d => state.content = d).catch(() => null)); // 2026-10-16 Phase A hook: ROOT prefix
     if (DEMO) {
       tries.push(getJSON(DATA + 'streams.geojson').then(d => state.streams = d).catch(() => null));
       WIDTHS.forEach(w => tries.push(getJSON(DATA + 'buffer_' + w + '.geojson').then(d => { state.buffers[w] = d; state.bufferSource[w] = 'DEMO data'; }).catch(() => null)));
@@ -577,7 +581,7 @@
     const parcels = bw ? bw.parcels : (state.w === 100 ? s.parcels_touched : null);
     const k = s.consultant; const prev = el._vals || {};
     el.innerHTML = stat(s.stream_miles_city, 'mapped stream miles in city', 1, 0) + stat(acres, 'acres in ' + state.w + ' ft band', 0, 1) + stat(parcels, 'city parcels touched (' + state.w + ' ft)', 0, 2) +
-      '<div class="statnote">Source: ' + esc(s.source || '') + (s.method_url ? ' · <a href="' + esc(s.method_url) + '" target="_blank" rel="noopener">how we computed this</a>' : '') + ' \u00b7 <a href="impact.html">Walla Walla impact: see the charts</a></div>' +
+      '<div class="statnote">Source: ' + esc(s.source || '') + (s.method_url ? ' · <a href="' + esc(rootRel(s.method_url)) + '" target="_blank" rel="noopener">how we computed this</a>' : '') + ' \u00b7 <a href="' + ROOT + 'impact.html">Walla Walla impact: see the charts</a></div>' + // 2026-10-16 Phase A hook: ROOT on both links
       (k ? '<div class="statnote">' + esc(k.label) + ': buffer area <b>' + fmt(k.acres_today, 1) + ' → ' + fmt(k.acres_proposed, 1) + ' acres</b> on ' + fmt(k.stream_miles, 1) + ' stream miles (' + fmt(k.open_miles, 1) + ' open + ' + fmt(k.piped_miles, 1) + ' piped). ' + esc(k.note || '') + '</div>' : '');
     const bs = Array.from(el.querySelectorAll('.stat b[data-v]')); el._vals = {}; bs.forEach(b => el._vals[b.dataset.i] = +b.dataset.v);
     if (RM) { el._shown = true; return; }
@@ -1100,8 +1104,9 @@
         $('stepZip').textContent = 'Zooming to ZIP ' + zip; setStep('zip', 'active');
         let hit = null; try { const j2 = await (await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&postalcode=' + encodeURIComponent(zip) + '&countrycodes=us&viewbox=-124.9,49.1,-116.9,45.5&bounded=1', { headers: { Accept: 'application/json' } })).json(); hit = j2 && j2[0]; } catch (e) { console.warn(e); }
         if (hit) { const bb = hit.boundingbox.map(Number); await flyAsync({ bounds: [bb[2], bb[0], bb[3], bb[1]], padding: 30 }, 1500); }
-        setStep('zip', 'done', hit ? 'CreekChecker covers Walla Walla County today; statewide is next.' : 'ZIP not found in Washington. CreekChecker covers Walla Walla County today.');
-        $('hint').textContent = 'CreekChecker covers Walla Walla County today; statewide is next. Try a Walla Walla County address or ZIP.';
+        // 2026-10-16 Phase A hook (copy): the statewide map at /wa/ exists, so "statewide is next" was no longer true; link to it instead.
+        setStep('zip', 'done', hit ? 'This map is for Walla Walla County. You can check any Washington address on the statewide map.' : 'ZIP not found in Washington. This map is for Walla Walla County.');
+        $('hint').innerHTML = 'This map is for Walla Walla County. <a href="' + ROOT + 'wa/">Check any Washington address</a> on the statewide map, or try a Walla Walla County address or ZIP.';
         finishHoming(); return;
       } else { $('stepZip').textContent = 'ZIP skipped'; setStep('zip', 'done'); }
       if (zipOnly) { homing.pending = true; busy(false); $('q').value = ''; $('q').placeholder = 'Now your street address'; $('hint').textContent = 'Now your street address (e.g. 123 S Division St).'; $('go').textContent = 'Find out'; $('q').focus(); return; }

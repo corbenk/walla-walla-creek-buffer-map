@@ -18,7 +18,10 @@
    with next steps: a share link (?lat&lng&width, copy and native share), the official county or city page from
    content/washington.json, and who to contact (the optional "contact" field, else a council/commission link, else the county's
    card on washington.html); all local. County cards show "Checked <date>" beside each chip, "may be out of date" after 21 days,
-   and drop "Next" lines whose next_date has passed. */
+   and drop "Next" lines whose next_date has passed.
+   PHASE A (2026-10-16, root-absolute): the pages that load this file (/wa/ and the unlinked /next/) have no <base href>; every link
+   and fetch here is root-absolute. Lots inside the Walla Walla map's area go to the page named by <meta name="cc-ww-map"> ("/" on
+   /wa/ until the flip, "/wallawalla/" on /next/; default "/"). */
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
@@ -27,6 +30,8 @@
   let CFG = {};
   try { CFG = JSON.parse(($('wmConfig') || {}).textContent || '{}'); } catch (_) { CFG = {}; }
   const ESRI_KEY = String(CFG.esriKey || '').trim();
+  // 2026-10-16 (Phase A): where Walla Walla-area lots go; only a same-site path is accepted
+  const WW_MAP = (() => { const v = String((document.querySelector('meta[name="cc-ww-map"]') || {}).content || '/'); return /^\/[a-z0-9\/-]*$/i.test(v) ? v : '/'; })();
 
   // ---------- Services (verified 2026-10-15; data/sources/statewide-layers.md) ----------
   const SVC = {
@@ -392,7 +397,7 @@
     // 2026-10-15 (review): lots in the Walla Walla map's area (app.js AREA_BBOX) get the Walla Walla map, which uses the City's and County's own buffer layers — never a second, statewide answer for the same lot
     { const c = L.inner; if (c && c[0] >= -118.52 && c[0] <= -118.14 && c[1] >= 45.96 && c[1] <= 46.16) {
       status('This lot is in the Walla Walla area. Opening the detailed Walla Walla map for it…');
-      location.assign('/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&w=100'); return; } }
+      location.assign(WW_MAP + '?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&w=100'); return; } }
     S.lot = lot; S.geo = L; S.pt = pt || L.inner; S.nearLL = null; S.dnr = null; S.rmz = null; S.water = null; S.bands = {}; S.juris = null; S.dist = null; S.sd = null;
     const b = L.bbox, dLng = SEARCH_M / L.P.kx, dLat = SEARCH_M / L.P.ky;
     S.env = [b[0] - dLng, b[1] - dLat, b[2] + dLng, b[3] + dLat];
@@ -431,7 +436,7 @@
   }
   async function loadContent() {
     if (S.content) return S.content;
-    const r = await fetch('content/washington.json', { cache: 'no-cache' }); if (!r.ok) throw new Error('HTTP ' + r.status);
+    const r = await fetch('/content/washington.json', { cache: 'no-cache' }); if (!r.ok) throw new Error('HTTP ' + r.status);
     S.content = await r.json(); return S.content;
   }
   async function loadStreams(env) {
@@ -571,7 +576,7 @@
 
   // ---------- 2026-10-16 (Phase A): next steps (share link, official page, who to contact; all local) ----------
   function shareUrl() { const c = S.geo && S.geo.inner; if (!c) return '';
-    try { return new URL('wa/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&width=' + S.w, document.baseURI).href; } catch (_) { return ''; } }
+    try { return new URL('/wa/?lat=' + c[1].toFixed(6) + '&lng=' + c[0].toFixed(6) + '&width=' + S.w, location.href).href; } catch (_) { return ''; } } // 2026-10-16: always the /wa/ address (also from /next/)
   const httpUrl = (u) => /^https?:\/\//i.test(String(u || ''));
   const firstOfficial = (x) => ((x && Array.isArray(x.links)) ? x.links : []).find((l) => l && l.label && httpUrl(l.url)) || null;
   const COUNCIL = /\b(council|commissioners|county commission|board of county commissioners)\b/i;
@@ -585,13 +590,13 @@
     const off = $('wmOfficial'), con = $('wmContact'); if (!off || !con) return; off.classList.remove('wm-loading'); con.classList.remove('wm-loading');
     const j = S.juris || {}, name = j.county, data = S.content, c = name && data && data.counties ? data.counties[name] : null, pl = placeMatch(c, j), s = name ? slug(name) : '';
     const o = firstOfficial(pl) ? { who: pl.name, l: firstOfficial(pl) } : firstOfficial(c) ? { who: name + ' County', l: firstOfficial(c) } : null;
-    if (name && !c) off.innerHTML = '<b>Find the official page.</b> Our county list did not load. <a href="county/' + esc(s) + '.html">' + esc(name) + ' County page →</a>';
+    if (name && !c) off.innerHTML = '<b>Find the official page.</b> Our county list did not load. <a href="/county/' + esc(s) + '.html">' + esc(name) + ' County page →</a>';
     else if (o) off.innerHTML = '<b>Read the official page.</b> ' + linkHtml({ label: o.who + ': ' + o.l.label, url: o.l.url }) +
-      (j.kind === 'city' && !pl ? '<span class="wm-note">' + esc(j.city) + ' sets the rules inside its limits; its planning office can tell you which apply.</span>' : '');
-    else if (name) off.innerHTML = '<b>Find the official page.</b> We have not added one for ' + esc(name) + ' County yet. Its planning or community development department is the place to start. <a href="county/' + esc(s) + '.html">' + esc(name) + ' County page →</a>';
+      (j.kind === 'city' && !pl ? '<span class="wm-note">Inside ' + esc(j.city) + '’s limits, the city’s rules apply; its planning office can tell you which.</span>' : ''); // 2026-10-16 (coordinator): matches the line above (some small cities adopt their county’s rules, F-143)
+    else if (name) off.innerHTML = '<b>Find the official page.</b> We have not added one for ' + esc(name) + ' County yet. Its planning or community development department is the place to start. <a href="/county/' + esc(s) + '.html">' + esc(name) + ' County page →</a>';
     else off.innerHTML = '<b>Find the official page.</b> Your city or county planning office can tell you which rules apply.';
     const k = j.kind === 'city' ? contactOf(pl) : contactOf(c);
-    con.innerHTML = '<b>Who to contact.</b> ' + (k ? linkHtml(k) : name ? '<a href="washington.html#c-' + esc(s) + '">' + esc(name) + ' County on Where does your county stand? →</a>' : '<a href="washington.html">Where does your county stand? →</a>');
+    con.innerHTML = '<b>Who to contact.</b> ' + (k ? linkHtml(k) : name ? '<a href="/washington.html#c-' + esc(s) + '">' + esc(name) + ' County on Where does your county stand? →</a>' : '<a href="/washington.html">Where does your county stand? →</a>');
   }
   async function copyShare() {
     const u = shareUrl(), msg = $('wmShareMsg'), i = $('wmShareUrl'); if (!u) return; let ok = false;
@@ -702,7 +707,7 @@
       '</dl>' +
       '<p class="wm-notchecked"><b>Not checked here:</b> wetlands, steep slopes, flood areas, and the shoreline rules for lakes and marine water. Each has its own rules; your city or county planning office can tell you which apply. Lakes, ponds and marine water are shown only where DNR maps them.</p>' +
       '<section class="wm-card wm-county" id="wmCountyCard" aria-labelledby="wmCountyTitle"><p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">Loading…</h2></section>' +
-      '<p class="wm-fine"><b>An awareness tool, not a legal determination.</b> Streams and water bodies: WA DNR data; DNR says its water types are “intended for DNR Forest Practices regulatory purposes only.” Lots: WaTech statewide parcels, “for informational purposes only.” The WDFW zone is an estimate; site-scale delineation “requires field verification.” Only your county or city can say what applies to this property. <a href="wa/#wmAbout">About the data</a></p>' +
+      '<p class="wm-fine"><b>An awareness tool, not a legal determination.</b> Streams and water bodies: WA DNR data; DNR says its water types are “intended for DNR Forest Practices regulatory purposes only.” Lots: WaTech statewide parcels, “for informational purposes only.” The WDFW zone is an estimate; site-scale delineation “requires field verification.” Only your county or city can say what applies to this property. <a href="#wmAbout">About the data</a></p>' +
       '<section class="wm-card wm-next" id="wmNext" aria-labelledby="wmNextTitle"><h2 id="wmNextTitle">Next steps for this lot</h2><ol class="wm-steps">' +
       '<li><b>Share this lot.</b> The link opens this same lot and width.<div class="wm-share"><input id="wmShareUrl" type="url" readonly aria-label="Link to this lot" spellcheck="false">' +
       '<button type="button" class="btn" id="wmCopy">Copy link</button><button type="button" class="btn" id="wmShareBtn" hidden>Share…</button></div><p class="wm-note" id="wmShareMsg" role="status" aria-live="polite"></p></li>' +
@@ -726,7 +731,7 @@
     const ww = $('wmWW');
     if (ww && j.kind === 'city' && /^walla walla$/i.test(j.city || '')) {
       const ll = S.geo.inner;
-      ww.innerHTML = '<a class="wm-ww" href="./?lat=' + ll[1].toFixed(6) + '&amp;lng=' + ll[0].toFixed(6) + '"><b>For Walla Walla city lots, use the detailed City map →</b><span>It uses the City’s own 100-ft buffer layer and the current draft.</span></a>';
+      ww.innerHTML = '<a class="wm-ww" href="' + WW_MAP + '?lat=' + ll[1].toFixed(6) + '&amp;lng=' + ll[0].toFixed(6) + '"><b>For Walla Walla city lots, use the detailed City map →</b><span>It uses the City’s own 100-ft buffer layer and the current draft.</span></a>';
     }
   }
   function renderStreams() {
@@ -776,7 +781,8 @@
     return '<span class="wm-st"><span class="wm-chip st-' + esc(st) + '">' + esc(label) + '</span>' +
       (d ? '<span class="wm-chk">Checked ' + esc(d) + (daysOld(d) > STALE_DAYS ? '<span class="wm-stale"> · may be out of date</span>' : '') + '</span>' : '') + '</span>';
   }
-  function linkHtml(l) { const u = String(l.url || ''); const out = /^https?:\/\//i.test(u);
+  function linkHtml(l) { let u = String(l.url || ''); const out = /^https?:\/\//i.test(u);
+    if (!out && !/^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(u)) u = '/' + u.replace(/^(\.\/)+/, ''); // 2026-10-16: a site link in the data, root-absolute
     return '<a href="' + esc(u) + '"' + (out ? ' target="_blank" rel="noopener"' : '') + '>' + esc(l.label) + (out ? ' ↗' : ' →') + '</a>'; }
   function placeMatch(c, j) {
     if (!c || !j || j.kind !== 'city') return null; const want = String(j.city || '').toLowerCase().trim();
@@ -784,7 +790,7 @@
   }
   function renderCounty() {
     const box = $('wmCountyCard'); if (!box) return; const j = S.juris || {}; const name = j.county; const data = S.content;
-    if (!name) { box.innerHTML = '<p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">County not found</h2><p>See <a href="washington.html">all 39 counties →</a></p>'; return; }
+    if (!name) { box.innerHTML = '<p class="wm-kicker">Your county</p><h2 id="wmCountyTitle">County not found</h2><p>See <a href="/washington.html">all 39 counties →</a></p>'; return; }
     const c = data && data.counties ? data.counties[name] : null; const s = slug(name);
     let html = '<p class="wm-kicker">Your county</p><div class="wm-county-head"><h2 id="wmCountyTitle">' + esc(name) + ' County</h2>' + (c ? chip(c.status, c.group, c.checked) : '') + '</div>';
     if (c) {
@@ -801,7 +807,7 @@
         ((pl.links || []).length ? '<p class="wm-links">' + pl.links.map(linkHtml).join('') + '</p>' : '') + '</div>';
       else if (j.kind === 'city') html += '<p class="wm-note">We have not added ' + esc(j.city) + '’s critical areas update yet. Inside city limits, the city’s rules apply.</p>';
     } else html += '<p class="wm-note">The county status list did not load. See the statewide page.</p>';
-    html += '<p class="wm-links wm-more"><a href="county/' + esc(s) + '.html">More on ' + esc(name) + ' County →</a><a href="washington.html">All 39 counties →</a></p>';
+    html += '<p class="wm-links wm-more"><a href="/county/' + esc(s) + '.html">More on ' + esc(name) + ' County →</a><a href="/washington.html">All 39 counties →</a></p>';
     box.innerHTML = html;
   }
 
@@ -1019,8 +1025,8 @@
     $('wmPicks').addEventListener('click', (e) => { const b = e.target.closest('[data-pick]'); if (!b) return; const f = S.picks[Number(b.dataset.pick)]; if (!f) return; pickLookup(f); });
     document.querySelectorAll('[data-wm-base]').forEach((b) => b.addEventListener('click', () => setBasemap(b.dataset.wmBase)));
     setBasemap(S.basemap, false);
-    // The page has <base href="../">: keep in-page links (wa/#id) on this page without a reload
-    document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="wa/#"]'); if (!a) return; const t = document.getElementById(a.getAttribute('href').slice(4)); if (!t) return;
+    // In-page links (the skip link "#wmQ"): scroll and move focus to the target (2026-10-16: no <base href> any more, so "#id" stays on this page)
+    document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="#wm"]'); if (!a) return; const t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
       e.preventDefault(); t.scrollIntoView({ block: 'start', behavior: RMQ.matches ? 'auto' : 'smooth' }); if (!/^(INPUT|SELECT|TEXTAREA|BUTTON|A)$/.test(t.tagName)) t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }); });
     if (form) form.addEventListener('focusin', warmHosts, { once: true });
     const lat = Number(params.get('lat')), lng = Number(params.get('lng'));

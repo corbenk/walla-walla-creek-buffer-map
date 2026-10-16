@@ -197,3 +197,11 @@ p.wm-note {margin:8px 0 0}
 #wmShareMsg:empty {display:none}
 .wm-share .btn {flex:0 0 auto}
 .wm-per {white-space:nowrap}
+/* 2026-10-16 (Phase A): /next/ front door. The full-width Walla Walla button above the address box. */
+.wm-front {display:grid;gap:4px;width:100%;box-sizing:border-box;margin:0 0 24px;padding:16px 18px;border-radius:var(--r,8px);background:var(--creek);color:#fff;text-decoration:none;min-width:0}
+.wm-front b {font:700 clamp(22px,3vw,28px)/1.1 var(--display)}
+.wm-front span {font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+.wm-front:hover,.wm-front:focus-visible {background:var(--ink);color:#fff}
+.wm-hero .wm-coverage {margin:10px 0 0;font-size:16px;line-height:1.45;color:var(--ink)}
+.wm-front .nw {white-space:nowrap}
+@media(max-width:560px) {.wm-front {padding:13px 16px;margin-bottom:18px}.wm-front > span + span {display:none}}
