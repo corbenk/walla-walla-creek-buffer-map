@@ -1,7 +1,7 @@
 {
-  "version": "2026-10-15.1",
+  "version": "2026-10-22.1",
   "status": "DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
-  "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
+  "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. The map on the City's own Critical Areas page notes that it shows buffers \"in some areas where no buffer is required.\" Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
     "headline": "This point is inside the proposed 100-foot stream buffer as mapped.",
     "summary": "Under the draft Critical Areas Ordinance before City Council (heard Oct 14, 2026; Council asked staff for options by the end of November), the minimum buffer on every named creek in the city goes from 35 feet (50 on Yellowhawk) to 100 feet, plus a new 15-foot building setback beyond the buffer, up from 5 feet. Inside the band, the draft's general rule is that all structures and activities must be located outside the buffer unless an exception applies. Existing homes stay; the rules bite when you build, expand, or rebuild.",
@@ -135,7 +135,7 @@
   },
   "millcreek": {
     "q": "What about Mill Creek?",
-    "a": "Mill Creek is regulated under the City's Shoreline Master Program, not the proposed Critical Areas Ordinance. The SMP sets a 35-foot buffer along the flood channel (Gose St to the Bennington Lake diversion) and shoreline jurisdiction extends 200 feet; the 100-foot creek buffer in the draft does not apply here.",
+    "a": "Mill Creek is regulated under the City's Shoreline Master Program, not the proposed Critical Areas Ordinance. The SMP sets a 35-foot buffer along the flood channel (Gose St to the Bennington Lake diversion) and shoreline jurisdiction extends 200 feet; the 100-foot creek buffer in the draft does not apply here. The City says its Shoreline Master Program is scheduled to be updated by 2031.",
     "basis": "draft"
   },
   "limits": {
@@ -178,7 +178,7 @@
   },
   "sources": [
     {
-      "label": "City of Walla Walla, Critical Areas Ordinance project page (as of Oct 15, 2026 it still lists an Oct 28 adoption and a Dec 31, 2026 effective date, written before Council’s Oct 14 motion)",
+      "label": "City of Walla Walla, Critical Areas Ordinance project page (as of Oct 22, 2026 it still lists an Oct 28 adoption and a Dec 31, 2026 effective date; not yet updated for Council’s Oct 14 motion)",
       "url": "https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance"
     },
     {
