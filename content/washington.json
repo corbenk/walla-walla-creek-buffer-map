@@ -1,5 +1,5 @@
 {
- "version": "2026-10-16.3",
+ "version": "2026-10-22.1",
  "schedule_source": {
   "label": "RCW 36.70A.130(5)",
   "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=36.70A.130",
@@ -111,7 +111,11 @@
      "checked": "2026-10-16",
      "facts": [
       "F-152"
-     ]
+     ],
+     "contact": {
+      "label": "Kent City Council",
+      "url": "https://www.kentwa.gov/government/kent-city-council"
+     }
     },
     {
      "name": "Renton",
@@ -247,7 +251,11 @@
     "F-147",
     "F-148",
     "research/15-statewide-largest-places.md"
-   ]
+   ],
+   "contact": {
+    "label": "Pierce County Council",
+    "url": "https://www.piercecountywa.gov/3301/Council-Contact-Information"
+   }
   },
   "Snohomish": {
    "group": "a",
@@ -281,7 +289,11 @@
      "checked": "2026-10-16",
      "facts": [
       "F-158"
-     ]
+     ],
+     "contact": {
+      "label": "Everett City Council",
+      "url": "https://www.everettwa.gov/citycouncil"
+     }
     }
    ],
    "checked": "2026-10-16",
