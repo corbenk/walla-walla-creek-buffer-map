@@ -1,5 +1,5 @@
 {
- "version": "2026-10-26.2",
+ "version": "2026-10-29.3",
  "schedule_source": {
   "label": "RCW 36.70A.130(5)",
   "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=36.70A.130",
@@ -279,8 +279,8 @@
   },
   "Snohomish": {
    "group": "a",
-   "status": "hearing",
-   "summary": "Adopted May 14, 2025. In Feb 2026 the state Growth Management Hearings Board sent the stream buffers back for revision by Dec 17, 2026; the County’s draft response widens them.",
+   "status": "draft",
+   "summary": "Adopted May 14, 2025. In Feb 2026 the state Growth Management Hearings Board sent the stream buffers back for revision by Dec 17, 2026; the County’s draft response widens them. The Planning Commission hearing on it was set for Oct 27, 2026; we found no later hearing date posted.",
    "riparian": "Proposed fish-bearing 200 ft (180 ft for some urban projects), non-fish 100 ft (now 150 / 50 ft)",
    "next": "Planning Commission hearing Oct 27, 2026, 5:30 pm",
    "links": [
@@ -306,9 +306,10 @@
        "url": "https://lfportal.everettwa.gov/WebLink/0/edoc/2096459/Ordinance%204175-26.pdf"
       }
      ],
-     "checked": "2026-10-16",
+     "checked": "2026-10-29",
      "facts": [
-      "F-158"
+      "F-158",
+      "F-200"
      ],
      "contact": {
       "label": "Everett City Council",
@@ -316,7 +317,7 @@
      }
     }
    ],
-   "checked": "2026-10-26",
+   "checked": "2026-10-29",
    "sources": [
     "F-157",
     "F-147",
@@ -324,7 +325,8 @@
     "research/15-statewide-largest-places.md",
     "F-168",
     "F-188",
-    "research/16-statewide-recheck-2026-10-26.md"
+    "research/16-statewide-recheck-2026-10-26.md",
+    "F-205"
    ],
    "next_date": "2026-10-27",
    "contact": {
@@ -656,7 +658,7 @@
    "group": "c",
    "status": "hearing",
    "summary": "Planning Commission hearing held Oct 6, 2026. The final draft for the commissioners, posted Oct 22, 2026, keeps the proposed 100-ft stream buffers; the County cited the state fish and wildlife agency’s guidance.",
-   "riparian": "Proposed 100 ft on fish-bearing and non-fish streams (shorelines under separate rules)",
+   "riparian": "Proposed 100 ft minimum on fish-bearing and non-fish streams (now 75 ft fish-bearing, 50 ft non-fish, or 100 ft where the stream has adjacent slopes of 10% or more; shorelines under separate rules)",
    "next": "Commissioners’ hearing Nov 3, 2026, 9 am, Courthouse, Prosser",
    "next_date": "2026-11-03",
    "links": [
@@ -712,25 +714,33 @@
     },
     {
      "name": "Richland",
-     "status": "started",
-     "summary": "We did not find its critical areas chapter in the city’s draft code package.",
+     "status": "none_found",
+     "summary": "A city flyer in the Planning Commission’s Oct 28, 2026 packet says the critical areas update “will occur in early Spring” 2027, after the plan update.",
      "riparian": "",
-     "next": "Planning Commission hearing Oct 28, 2026",
-     "next_date": "2026-10-28",
+     "next": "City expects plan adoption in December 2026; Planning Commission hearing on the plan was set for Oct 28, 2026 (outcome not yet posted)",
+     "next_date": "2026-12-31",
      "links": [
       {
-       "label": "Richland 2046",
-       "url": "https://engage.ahbl.com/RL2046"
+       "label": "City plan page",
+       "url": "https://www.richlandwa.gov/CompPlan"
+      },
+      {
+       "label": "Oct 28 Planning Commission meeting",
+       "url": "https://richlandwa.portal.civicclerk.com/event/5927/files"
       }
      ],
-     "checked": "2026-10-15"
+     "checked": "2026-10-29",
+     "facts": [
+      "F-201"
+     ]
     }
    ],
    "checked": "2026-10-26",
    "sources": [
     "F-168",
     "F-173",
-    "research/16-statewide-recheck-2026-10-26.md"
+    "research/16-statewide-recheck-2026-10-26.md",
+    "F-204"
    ]
   },
   "Chelan": {
@@ -760,7 +770,10 @@
        "url": "https://www.wenatcheewa.gov/get-involved/comprehensive-plan-2046"
       }
      ],
-     "checked": "2026-10-15"
+     "checked": "2026-10-29",
+     "facts": [
+      "F-202"
+     ]
     }
    ],
    "checked": "2026-10-26",
@@ -1008,10 +1021,10 @@
   "Spokane": {
    "group": "c",
    "status": "draft",
-   "summary": "Draft critical areas code published; the Planning Commission hearing opened July 16 and remains open. Wider flat buffers by stream type.",
+   "summary": "Draft critical areas code published; the Planning Commission hearing opened July 16, 2026. The Commission’s Nov 12 agenda, posted Oct 28, has no critical areas item. Wider flat buffers by stream type.",
    "riparian": "Proposed fish-bearing 150 ft, non-fish 100 ft (now 100 / 75 / 25 ft)",
-   "next": "Planning Commission Nov 12; commissioners Dec 15, 2026 (tentative)",
-   "next_date": "2026-12-15",
+   "next": "No critical areas hearing date posted; after Nov 12, the Planning Commission next meets Dec 3, 2026",
+   "next_date": "2026-12-03",
    "links": [
     {
      "label": "County CAO page",
@@ -1078,16 +1091,19 @@
      }
     }
    ],
-   "checked": "2026-10-15",
-   "sources": []
+   "checked": "2026-10-29",
+   "sources": [
+    "F-199",
+    "F-146"
+   ]
   },
   "Walla Walla": {
    "group": "c",
    "status": "started",
-   "summary": "The County’s periodic update is underway; no critical areas draft is posted yet. Its current code already sets creek buffers by named reach, from 35 ft to 100 ft.",
+   "summary": "The County’s periodic update is underway; no critical areas draft is posted yet. Its current code already sets creek buffers by named reach, from 35 ft to 100 ft. The County says the update will include “updated maps, buffers, and mitigation standards.”",
    "riparian": "Current: tiered by reach, 35 / 50 / 75 / 100 ft (County code 18.08.650)",
-   "next": "County says plan and code drafts release in fall 2026",
-   "next_date": "2026-12-21",
+   "next": "County says its draft critical areas code comes after a draft environmental review due in early 2027; hearings continue through spring 2027",
+   "next_date": "2027-06-20",
    "links": [
     {
      "label": "County update page",
@@ -1167,11 +1183,12 @@
      ]
     }
    ],
-   "checked": "2026-10-26",
+   "checked": "2026-10-29",
    "sources": [
     "F-168",
     "F-169",
-    "research/16-statewide-recheck-2026-10-26.md"
+    "research/16-statewide-recheck-2026-10-26.md",
+    "F-203"
    ]
   },
   "Yakima": {
