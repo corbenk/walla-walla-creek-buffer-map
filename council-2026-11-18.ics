@@ -1,0 +1,36 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CreekChecker//Walla Walla//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:America/Los_Angeles
+BEGIN:STANDARD
+DTSTART:20261101T020000
+TZOFFSETFROM:-0700
+TZOFFSETTO:-0800
+TZNAME:PST
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:council-2026-11-18-cao@creekchecker.com
+DTSTAMP:20261030T170000Z
+DTSTART;TZID=America/Los_Angeles:20261118T183000
+DTEND;TZID=America/Los_Angeles:20261118T210000
+SUMMARY:Walla Walla City Council: creek-buffer options expected
+LOCATION:Walla Walla City Hall\, 15 N 3rd Ave\, Walla Walla\, WA
+DESCRIPTION:On Oct 14 the City Council asked staff to bring back options on
+  the Critical Areas Ordinance (proposed 100-ft creek buffer) by the end of
+  November. The City's Critical Areas page (read Oct 30) says this is expec
+ ted at this meeting. Check the agenda when it posts: https://agendas.ci.wa
+ lla-walla.wa.us\nWatch or join: https://www.wallawallawa.gov/government/ci
+ ty-council\nWritten comments: CityClerk@wallawallawa.gov (cc citycouncil@w
+ allawallawa.gov)\nCheck your lot: https://creekchecker.com
+URL:https://creekchecker.com/#whats-next
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:City Council tomorrow 6:30 pm: creek-buffer options expected
+END:VALARM
+END:VEVENT
+END:VCALENDAR

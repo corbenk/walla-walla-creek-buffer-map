@@ -1,5 +1,5 @@
 {
- "version": "2026-10-29.3",
+ "version": "2026-10-30.1",
  "schedule_source": {
   "label": "RCW 36.70A.130(5)",
   "url": "https://app.leg.wa.gov/RCW/default.aspx?cite=36.70A.130",
@@ -1118,9 +1118,9 @@
     {
      "name": "City of Walla Walla",
      "status": "draft",
-     "summary": "Draft raises most creek buffers from 35 ft (50 on Yellowhawk) to 100 ft plus a 15-ft setback. After an Oct 14 hearing, Council asked staff for options no earlier than Nov 4 and by the end of November.",
+     "summary": "Draft raises most creek buffers from 35 ft (50 on Yellowhawk) to 100 ft plus a 15-ft setback. After an Oct 14 hearing, Council asked staff for options by the end of November; the City’s page now expects them at the Nov 18, 2026 meeting.",
      "riparian": "Flat 100 ft on every creek it covers (Mill Creek under shoreline rules)",
-     "next": "Options due Nov 4–18, 2026",
+     "next": "Options expected Nov 18, 2026 (City page, read Oct 30)",
      "next_date": "2026-11-18",
      "links": [
       {
@@ -1129,17 +1129,18 @@
       },
       {
        "label": "City CAO page",
-       "url": "https://www.wallawallawa.gov/government/development-services/long-range-planning/critical-areas-ordinance"
+       "url": "https://www.wallawallawa.gov/government/community-development/long-range-planning/critical-areas-ordinance"
       }
      ],
-     "checked": "2026-10-26",
+     "checked": "2026-10-30",
      "facts": [
       "F-019",
       "F-020",
       "F-023",
       "F-136",
       "F-138",
-      "F-168"
+      "F-168",
+      "F-206"
      ]
     },
     {
