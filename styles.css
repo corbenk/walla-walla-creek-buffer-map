@@ -292,7 +292,7 @@ section.chart h2 {font-size:29px;line-height:1.15;margin:0 0 10px;max-width:48ch
   @page {size:letter;margin:.45in}
   :root {color-scheme:light;--paper:#ffffff;--panel:#ffffff;--ink:#242622;--muted:#62695c;--line:#d7d5c5;--amber-soft:#f2e7c9;--creek:#2c6577}
   body.map-page {height:auto;overflow:visible}.map-page #map,.map-page .panel,.map-page .legend,.layers,.map-label,.survey-scale,.banner,.toast,.modal,.skip-link {display:none!important}
-  .print-sheet {display:block!important;color:var(--ink);font-size:11pt}.print-sheet h1 {font-size:34pt;margin:16pt 0 10pt}.print-sheet .print-lede {font-size:17pt;line-height:1.25}.print-sheet .print-facts {display:flex;justify-content:space-between;border-block:1pt solid var(--line);padding:16pt 0;margin:18pt 0}.print-facts b {display:block;font:600 29pt var(--display)}.print-sheet .print-meeting {padding:18pt;border:1pt solid var(--ink);margin:18pt 0}.print-sheet .print-meeting h2 {font-size:22pt}.print-sheet .print-disclaimer {font-size:8.5pt;line-height:1.4;border-top:1pt solid var(--line);padding-top:12pt}.print-sheet .print-source {font-size:9pt;line-height:1.4}
+  .print-sheet {display:block!important;color:var(--ink);font-size:11pt}.print-sheet .print-title {font:600 34pt/1.08 var(--display);margin:16pt 0 10pt;text-wrap:balance}.print-sheet .print-lede {font-size:17pt;line-height:1.25}.print-sheet .print-facts {display:flex;justify-content:space-between;border-block:1pt solid var(--line);padding:16pt 0;margin:18pt 0}.print-facts b {display:block;font:600 29pt var(--display)}.print-sheet .print-meeting {padding:18pt;border:1pt solid var(--ink);margin:18pt 0}.print-sheet .print-meeting h2 {font-size:22pt}.print-sheet .print-disclaimer {font-size:8.5pt;line-height:1.4;border-top:1pt solid var(--line);padding-top:12pt}.print-sheet .print-source {font-size:9pt;line-height:1.4}
   .document-page {padding:0}.document-header,.tip,.chart button {display:none!important}.document-page h1 {font-size:30pt}.chart {break-inside:avoid;box-shadow:none}.document-page table {font-size:10pt}.document-page h2 {break-after:avoid}.mobile-chart {display:none!important}.chart:not(.show-table)>div>svg {display:block!important}
 }
 .print-sheet {display:none}
@@ -430,9 +430,9 @@ section.chart h2 {font-size:29px;line-height:1.15;margin:0 0 10px;max-width:48ch
 .guide-breadcrumb {display:flex;justify-content:space-between;gap:20px;align-items:center;margin:-20px 0 30px;font-size:14px;color:var(--muted)}
 .guide-breadcrumb a {display:inline-flex;min-height:44px;align-items:center}
 .next-steps-layout {display:grid;grid-template-columns:minmax(0,1.45fr) minmax(330px,1fr);gap:48px;align-items:start}
-.next-steps-layout h1 {font-size:clamp(38px,4.2vw,54px);line-height:1.08;margin:8px 0 20px}.next-steps-layout .lede {font-size:20px;line-height:1.5}
+.next-steps-layout h1,.next-steps-layout .guide-title {font-size:clamp(38px,4.2vw,54px);line-height:1.08;margin:8px 0 20px}.next-steps-layout .lede {font-size:20px;line-height:1.5}
 .guide-free {font-size:14px;color:var(--creek);padding-bottom:24px;border-bottom:1px solid var(--line-strong)}
-.community-page .next-steps-layout h2 {font-size:29px;margin:24px 0 16px}.community-page .next-steps-layout .signup-card h2 {font-size:32px;margin:6px 0 14px}
+.community-page .next-steps-layout h2,.community-page [data-property-guide] h3 {font-size:29px;margin:24px 0 16px}.community-page .next-steps-layout .signup-card h2 {font-size:32px;margin:6px 0 14px}
 .guide-answer summary {font-size:17px}.guide-answer p {font-size:16px;line-height:1.55}
 .question-action {margin:28px 0;padding:24px;background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r)}
 .question-action .eyebrow {margin:0}.community-page .question-action h2 {margin:8px 0 14px}.question-action p {font-size:16px}
@@ -729,7 +729,7 @@ figure.photo.tall img {aspect-ratio:4/3;object-fit:cover;object-position:center 
 /* S3: one type scale (h1 / section h2 / card h3 / compact head / minor head). App panel internals keep their sizes. */
 .community-page h1,.method-page h1,.impact-page h1 {font-size:var(--fs-1)}
 .screen h2,.charts h2,.community-page .section-intro h2,.community-page .evidence-callout h2,.community-invitation h2 {font-size:var(--fs-2)}
-.caution-card h3,.action-cards h3,.reading-row h3,section.chart h2,.chart h2,.document-page main>h2,.privacy-section h2,.community-page .next-steps-layout h2,.petition-draft h3,.policy-participate h3,.screen h3,.community-page .meeting-note h2 {font-size:var(--fs-3)}
+.caution-card h3,.action-cards h3,.reading-row h3,section.chart h2,.chart h2,.document-page main>h2,.privacy-section h2,.community-page .next-steps-layout h2,.community-page [data-property-guide] h3,.petition-draft h3,.policy-participate h3,.screen h3,.community-page .meeting-note h2 {font-size:var(--fs-3)}
 .act h2,.landing .result-next-step h2,.result-next-step h2,.limits h3,.org-grid article h3,.pc-voices .pc-city h3,.elsewhere-section .elsewhere-cards h3,.map-next-step h2,.community-page .guide-context h2,.photo-credits h3,.scenario-card h2,.faq-h,.memo-highlights h4 {font-size:var(--fs-4)}
 .how-steps h3,.landing .modal h2,.policy-stages h3 {font-size:var(--fs-5)}
 .community-hero .lede,.screen .lede,.document-page .lede,.document-page .sub,.next-steps-layout .lede {font-size:var(--fs-lede)}
@@ -1674,3 +1674,5 @@ html {overflow-x:clip}   /* belt and braces: nothing may open a sideways scroll 
 .creek-loader[hidden] {display:none}
 @media(prefers-reduced-motion:reduce) {.creek-loader .cl-flow {animation:none;stroke-dasharray:none}.creek-loader.cl-over {transition:none}}
 /* END SITE PAGES */
+/* 2026-11-02 SEO: next-steps guide titles are h2 (one h1 per page) but keep the h1 size; the later .community-page h2 rules would shrink them. */
+.community-page .next-steps-layout h2.guide-title {font-size:clamp(38px,4.2vw,54px);line-height:1.08;margin:8px 0 20px}
