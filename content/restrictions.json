@@ -1,6 +1,6 @@
 {
-  "version": "2026-10-30.1",
-  "status": "DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
+  "version": "2026-11-03.1",
+  "status": "2026-11-03: pool, driveway, neighbor’s creek and disaster wording added from the same draft text and unamended WWMC 21.04.620 (F-103, F-212). DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
   "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. The map on the City's own Critical Areas page notes that it shows buffers \"in some areas where no buffer is required.\" Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
     "headline": "This point is inside the proposed 100-foot stream buffer as mapped.",
@@ -17,12 +17,12 @@
         "basis": "draft"
       },
       {
-        "q": "Can I add on, or build a shop, shed, ADU, or new patio inside the band?",
-        "a": "The draft says new structures must be outside the buffer and the 15-foot setback, and it has no rule for additions to homes already inside the band. Existing city code (20.212) lets a nonconforming building extend along its existing line but not closer to the stream. Whether a landward addition or ADU on a house inside the band will be allowed, or will need a critical-areas report and a buffer reduction (averaging stops at 75 feet at its narrowest point on a 100-foot buffer, and the Oct 9 draft deletes the old reduction-with-planting option; a separate rule lets the director exclude buffer areas cut off by pavement or buildings) or a reasonable-use exception, has not been answered in writing. A new patio or uncovered deck is allowed in the 15-foot setback but not in the buffer.",
+        "q": "Can I add on, or build a shop, shed, ADU, pool, driveway or new patio inside the band?",
+        "a": "The draft says new structures must be outside the buffer and the 15-foot setback, and it has no rule for additions to homes already inside the band. Existing city code (20.212) lets a nonconforming building extend along its existing line but not closer to the stream. Whether a landward addition or ADU on a house inside the band will be allowed, or will need a critical-areas report and a buffer reduction (averaging stops at 75 feet at its narrowest point on a 100-foot buffer, and the Oct 9 draft deletes the old reduction-with-planting option; a separate rule lets the director exclude buffer areas cut off by pavement or buildings) or a reasonable-use exception, has not been answered in writing. A new patio or uncovered deck is allowed in the 15-foot setback but not in the buffer. The draft does not name pools; it keeps \"buildings and other structures\" outside the buffer and the setback, so ask the City whether yours counts. A new driveway is not named either; existing code 21.04.620, which the draft leaves in place, says private access crossings of a stream buffer \"may be permitted\" when its criteria are met.",
         "basis": "unknown"
       },
       {
-        "q": "If my house burns down, can I rebuild?",
+        "q": "If my house burns down or a disaster destroys it, can I rebuild?",
         "a": "Yes, if you apply within six months. The draft itself is silent and defers to existing city code 20.212, which says a damaged nonconforming structure loses its grandfathered status unless a building-permit application to repair or rebuild is filed within six months of the damage. Under that same existing code, reconstruction costing more than 25% of replacement value also needs a conditional-use permit. Miss the six-month window and the structure loses its grandfathered status, so a rebuild would have to meet the new 100-foot buffer and setback. The draft adds no fix, although residents and a commissioner asked for one at the Sept 14 hearing.",
         "basis": "code"
       },
@@ -45,6 +45,11 @@
         "q": "What does it cost to find out whether I can build?",
         "a": "Any permit near a creek needs a critical-areas report by a qualified professional (the City says a property owner 'typically needs to hire a biologist') to locate the ordinary high water mark and assess the buffer. The draft makes reports valid for five years. The cost is not stated anywhere in the record.",
         "basis": "draft"
+      },
+      {
+        "q": "The creek is on my neighbor’s lot. Does it affect me?",
+        "basis": "draft",
+        "a": "It can. The draft measures the buffer outward from the stream’s ordinary high water mark, or the top of bank where that mark cannot be found, not from property lines. So a creek on a neighbor’s lot can put part of your lot inside the 100-foot band and the 15-foot setback beyond it. This map draws the band the same way. Only a field survey sets the real line."
       }
     ]
   },
@@ -61,6 +66,11 @@
         "q": "What is the 15-foot setback?",
         "a": "The draft requires buildings to sit 15 feet back from the buffer edge, up from 5 feet today; the director can reduce it to 5 feet with a critical-areas report. Landscaping, uncovered decks, roof overhangs up to 24 inches, walkways, patios, and rain gardens are allowed in that setback; buildings are not.",
         "basis": "draft"
+      },
+      {
+        "q": "The creek is on my neighbor’s lot. Does it affect me?",
+        "basis": "draft",
+        "a": "It can. The draft measures the buffer outward from the stream’s ordinary high water mark, or the top of bank where that mark cannot be found, not from property lines. So a creek on a neighbor’s lot can put part of your lot inside the 100-foot band and the 15-foot setback beyond it. This map draws the band the same way. Only a field survey sets the real line."
       }
     ]
   },
