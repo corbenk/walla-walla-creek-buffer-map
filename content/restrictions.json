@@ -1,10 +1,10 @@
 {
-  "version": "2026-11-03.1",
-  "status": "2026-11-03: pool, driveway, neighbor’s creek and disaster wording added from the same draft text and unamended WWMC 21.04.620 (F-103, F-212). DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Attorney review (Hayner) still required before ATTORNEY-REVIEWED. Every number traces to research/FACTS.md.",
+  "version": "2026-11-22.3",
+  "status": "2026-11-22: updated after the Nov 18 Council meeting (no action; revised ordinance likely Dec 16; F-244 to F-262). 2026-11-03: pool, driveway, neighbor’s creek and disaster wording added from the same draft text and unamended WWMC 21.04.620 (F-103, F-212). DRAFT — reviewed by Legal Lead 2026-10-10 against the City's Oct 9, 2026 draft amendments table (pp. 5, 11–13, 17, 19, 38–44, 47), the City CAO webpage, WWMC 20.212, the Facet July 1, 2026 memo, and the PC Sept 14 minutes. Every number traces to research/FACTS.md.",
   "disclaimer": "This map is a community awareness tool, not an official determination. Stream lines and the 100-foot band come from the City of Walla Walla's own public GIS layers (published Oct 6, 2026), measured from stream centerlines. The proposed ordinance measures buffers from the ordinary high water mark, top of bank, or channel migration zone, whichever is greater, so the regulated area may be larger than shown. The map on the City's own Critical Areas page notes that it shows buffers \"in some areas where no buffer is required.\" Only the City can determine whether a specific property is subject to critical-areas rules. Nothing here is legal advice. Confirm with City of Walla Walla Development Services (509-524-4710, permits@wallawallawa.gov) or a land-use attorney before you buy, sell, build, or decide anything about your property.",
   "inside": {
     "headline": "This point is inside the proposed 100-foot stream buffer as mapped.",
-    "summary": "Under the draft Critical Areas Ordinance before City Council (heard Oct 14, 2026; Council asked staff for options by the end of November), the minimum buffer on every named creek in the city goes from 35 feet (50 on Yellowhawk) to 100 feet, plus a new 15-foot building setback beyond the buffer, up from 5 feet. Inside the band, the draft's general rule is that all structures and activities must be located outside the buffer unless an exception applies. Existing homes stay; the rules bite when you build, expand, or rebuild.",
+    "summary": "Under the draft Critical Areas Ordinance before City Council (heard Oct 14, 2026; no vote yet; staff said a revised ordinance will likely come back Dec 16), the minimum buffer on every named creek in the city goes from 35 feet (50 on Yellowhawk) to 100 feet, plus a new 15-foot building setback beyond the buffer, up from 5 feet. Inside the band, the draft's general rule is that all structures and activities must be located outside the buffer unless an exception applies. Existing homes stay; the rules bite when you build, expand, or rebuild.",
     "items": [
       {
         "q": "Can my existing house stay?",
@@ -23,7 +23,7 @@
       },
       {
         "q": "If my house burns down or a disaster destroys it, can I rebuild?",
-        "a": "Yes, if you apply within six months. The draft itself is silent and defers to existing city code 20.212, which says a damaged nonconforming structure loses its grandfathered status unless a building-permit application to repair or rebuild is filed within six months of the damage. Under that same existing code, reconstruction costing more than 25% of replacement value also needs a conditional-use permit. Miss the six-month window and the structure loses its grandfathered status, so a rebuild would have to meet the new 100-foot buffer and setback. The draft adds no fix, although residents and a commissioner asked for one at the Sept 14 hearing.",
+        "a": "Yes, if you apply within six months. The critical areas chapter already allows rebuilding an accidentally damaged nonconforming structure, as long as it is not expanded or rebuilt for a new use and the permit application is made within six months of the damage (21.04.085(B)(4), which the draft leaves in place). City code 20.212 sets the same six-month window, and under it reconstruction costing more than 25% of replacement value also needs a conditional-use permit. Miss the window and the structure loses its grandfathered status, so a rebuild would be reviewed like new construction: under the draft, that means the 100-foot buffer and setback, with the draft’s flexibility tools. On Nov 18 the City’s consultant and staff said a home lost to fire or flood could be rebuilt; the six-month limit was not mentioned. The draft does not change it, although at the Sept 14 Planning Commission hearing residents asked about rebuilding after a fire and a commissioner proposed adding language for grandfathered properties.",
         "basis": "code"
       },
       {
@@ -106,7 +106,7 @@
       },
       {
         "q": "Will the County do the same thing?",
-        "a": "The County has not published a draft yet. Its August 2026 buffer map is tiered rather than one width. Watch for its hearing dates this fall.",
+        "a": "The County has not published a draft yet. Its August 2026 buffer map is tiered rather than one width. The County’s plan page says its meetings and hearings will continue through spring 2027.",
         "basis": "typical"
       }
     ]
@@ -176,10 +176,10 @@
   },
   "ask": {
     "headline": "Tell the City Council: honor the Planning Commission's 7-0 vote and get the local science before drawing the line.",
-    "body": "On Oct 14, 2026 Council heard from residents and did not vote. It asked staff to bring back options and a plan of action by the end of November; the City’s page now expects them at the Wed Nov 18 meeting. Email CityClerk@wallawallawa.gov (cc citycouncil@wallawallawa.gov) with what you hope those options include. On Sept 14 the City's own Planning Commission voted 7-0 to send this draft back for science matching local conditions; staff's Oct 9 draft still has the flat 100 feet. Ask Council to honor that recommendation: tiered buffers that match each creek's real condition (as the County's own buffer map does), a parcel and housing-capacity analysis first, and existing homes protected in writing.",
+    "body": "Council heard from residents on Oct 14 and again on Nov 18, 2026 and has not voted. Staff said a revised ordinance will likely come back at the Wed Dec 16 meeting. Email CityClerk@wallawallawa.gov (cc citycouncil@wallawallawa.gov) with what you hope it includes. On Sept 14 the City's own Planning Commission voted 7-0 to send this draft back for science matching local conditions; the draft in the Nov 18 packet still has the flat 100 feet. Ask Council to honor that recommendation: tiered buffers that match each creek's real condition (as the County's own buffer map does), a parcel and housing-capacity analysis first, and existing homes protected in writing.",
     "email_to": "CityClerk@wallawallawa.gov",
-    "email_subject": "Critical Areas Ordinance (creek buffers): what I hope the November options include",
-    "email_body": "Dear Mayor and Councilmembers,\n\nMy name is [NAME] and I live at [ADDRESS]. Thank you for listening at the Oct 14 hearing and for asking staff to bring back options before you decide on the Critical Areas Ordinance.\n\nThe proposed 100-foot buffer (up from 35 feet, or 50 on Yellowhawk), plus the new 15-foot building setback, [touches my property / affects my neighborhood / affects the city I live in].\n\nOn Sept 14 your Planning Commission voted 7-0 to recommend that staff revise this draft using science matching local conditions. The Oct 9 draft still proposes a flat 100 feet on every creek. No state law sets that number; the Department of Fish and Wildlife's own letter on this draft says 'a site evaluation would be best.' Walla Walla County's own August 2026 buffer map is tiered at 35, 50, 75 and 100 feet. The City's consultant says the regulated area goes from 269 to 757 acres, and no parcel count or housing-capacity analysis has been published.\n\nAs you weigh the options, please: (1) do not adopt Table 6 or the 15-foot setback as drafted; (2) honor the 7-0 recommendation and direct staff to return with tiered buffers that reflect each creek's condition and fish use, with a locally scoped science review and written findings under WAC 365-195-915(1)(c); (3) publish a parcel-level and housing-capacity analysis first; and (4) protect existing homes in writing, including repairs, additions and ADUs on the side away from the creek, and rebuilding after fire without losing grandfathered status in six months.\n\nThank you,\n[NAME]\n[ADDRESS]"
+    "email_subject": "Critical Areas Ordinance (creek buffers): what I hope the revised ordinance includes",
+    "email_body": "Dear Mayor and Councilmembers,\n\nMy name is [NAME] and I live at [ADDRESS]. Thank you for listening at the Oct 14 hearing and again on Nov 18, and for taking the time to get the Critical Areas Ordinance right.\n\nThe proposed 100-foot buffer (up from 35 feet, or 50 on Yellowhawk), plus the new 15-foot building setback, [touches my property / affects my neighborhood / affects the city I live in].\n\nOn Sept 14 your Planning Commission voted 7-0 to recommend that staff revise this draft using science matching local conditions. The draft in your Nov 18 packet still proposes a flat 100 feet on every creek. No state law sets that number; the Department of Fish and Wildlife's own letter on this draft says 'a site evaluation would be best.' Walla Walla County's own August 2026 buffer map is tiered at 35, 50, 75 and 100 feet. The City's consultant says the regulated area goes from 269 to 757 acres, and no parcel count or housing-capacity analysis has been published.\n\nAs you weigh the revised ordinance, please: (1) do not adopt Table 6 or the 15-foot setback as drafted; (2) honor the 7-0 recommendation and direct staff to return with tiered buffers that reflect each creek's condition and fish use, with a locally scoped science review and written findings under WAC 365-195-915(1)(c); (3) publish a parcel-level and housing-capacity analysis first; and (4) protect existing homes in writing, including repairs, additions and ADUs on the side away from the creek, and rebuilding after fire without losing grandfathered status in six months.\n\nThank you,\n[NAME]\n[ADDRESS]"
   },
   "about_data": {
     "streams_source": "City of Walla Walla GIS, \"WW_Streams_Riparian_Buffer\" public map service (visible stream centerlines and the City's 100-ft buffer polygon), published Oct 6, 2026; parcels from Walla Walla County GIS Tax_Parcels (data dated Sept 28, 2026)",
@@ -188,7 +188,7 @@
   },
   "sources": [
     {
-      "label": "City of Walla Walla, Critical Areas Ordinance project page (read Oct 30, 2026: it now says Council’s options are expected at the Nov. 18, 2026 meeting; its FAQ still lists consideration in October 2026 and a Dec 31, 2026 effective date)",
+      "label": "City of Walla Walla, Critical Areas Ordinance project page (read Nov 22, 2026: it still says Council’s options are expected at the Nov. 18, 2026 meeting; its FAQ still lists consideration in October 2026 and a Dec 31, 2026 effective date)",
       "url": "https://www.wallawallawa.gov/government/community-development/long-range-planning/critical-areas-ordinance"
     },
     {
@@ -234,6 +234,22 @@
     {
       "label": "City Council meeting video, Oct 14, 2026 (City of Walla Walla on Vimeo; the creek-buffer item starts at 1:17)",
       "url": "https://vimeo.com/1229198442#t=4620s"
+    },
+    {
+      "label": "Nov 18, 2026 City Council agenda, Item 6F (consultant presentation; no action taken)",
+      "url": "https://agendas.ci.walla-walla.wa.us/agenda_publish.cfm?id=&mt=ALL&get_month=11&get_year=2026&dsp=ag&seq=4786"
+    },
+    {
+      "label": "City video of the Nov 18, 2026 Council meeting (the item starts at 1:12:52)",
+      "url": "https://vimeo.com/1239579897#t=4372s"
+    },
+    {
+      "label": "Facet, presentation slides for the Nov 18, 2026 Council meeting",
+      "url": "https://agendas.ci.walla-walla.wa.us/docs/2026/ccreg/20261118_4787/6071_City_of_Walla_Walla_CAO_Council_Mtg_11-18-26.pdf"
+    },
+    {
+      "label": "Critical Areas code amendments in context of Chapter 21.04, dated Nov 9, 2026 (Nov 18 packet)",
+      "url": "https://agendas.ci.walla-walla.wa.us/docs/2026/ccreg/20261118_4787/6071_20261109_Critical_Areas_Code_Amendments_in_context_FINAL_for_CC.pdf"
     }
   ]
 }

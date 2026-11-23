@@ -1,0 +1,37 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//CreekChecker//Walla Walla//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:America/Los_Angeles
+BEGIN:STANDARD
+DTSTART:20261101T020000
+TZOFFSETFROM:-0700
+TZOFFSETTO:-0800
+TZNAME:PST
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:council-2026-12-16-cao@creekchecker.com
+DTSTAMP:20261123T010000Z
+DTSTART;TZID=America/Los_Angeles:20261216T183000
+DTEND;TZID=America/Los_Angeles:20261216T210000
+SUMMARY:Walla Walla City Council: revised creek-buffer ordinance likely
+LOCATION:Walla Walla City Hall\, 15 N 3rd Ave\, Walla Walla\, WA
+DESCRIPTION:On Nov 18 City staff said a revised Critical Areas Ordinance (p
+ roposed 100-ft creek buffer) will likely come back to the City Council at 
+ this meeting. It is not on a posted agenda yet. Check the agenda when it p
+ osts: https://agendas.ci.walla-walla.wa.us\nWatch or join: https://www.wal
+ lawallawa.gov/government/city-council\nWritten comments: CityClerk@wallawa
+ llawa.gov (cc citycouncil@wallawallawa.gov)\nCheck your lot: https://creek
+ checker.com
+URL:https://creekchecker.com/#whats-next
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:City Council tomorrow 6:30 pm: revised creek-buffer ordinance l
+ ikely
+END:VALARM
+END:VEVENT
+END:VCALENDAR
